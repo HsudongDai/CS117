@@ -1,0 +1,71 @@
+02/11/2022 20:05:34.180295 ./pingserver:     Creating C150NastyDgmSocket(nastiness=4)
+02/11/2022 20:05:34.185540 ./pingserver:     Ready to accept messages
+02/11/2022 20:05:42.792719 ./pingserver:     C150DgmSocket::read: successful read with len=4 |One.|
+02/11/2022 20:05:42.792741 ./pingserver:     C150NastyDgmSocket::read: dropping packet of length 4 |One.|
+02/11/2022 20:05:45.792703 ./pingserver:     C150DgmSocket::read: successful read with len=4 |One.|
+02/11/2022 20:05:45.792724 ./pingserver:     C150NastyDgmSocket::read: dropping packet of length 4 |One.|
+02/11/2022 20:05:48.792663 ./pingserver:     C150DgmSocket::read: successful read with len=4 |One.|
+02/11/2022 20:05:48.792691 ./pingserver:     C150NastyDgmSocket::read: delivering packet of length 4 |One.|
+02/11/2022 20:05:48.792716 ./pingserver:     Successfully read 4 bytes. Message="One"
+02/11/2022 20:05:48.792756 ./pingserver:     Responding with message="You said One. Don't you know how to play ping pong?"
+02/11/2022 20:05:48.792789 ./pingserver:     C150DgmSocket::write: attempting to send packet with len=52 |You said One. Don't you know how to play ping pong?.|
+02/11/2022 20:05:48.792859 ./pingserver:     C150DgmSocket::write: Success writing packet with len=52 |You said One. Don't you know how to play ping pong?.|
+02/11/2022 20:05:51.339875 ./pingserver:     C150DgmSocket::read: successful read with len=4 |Two.|
+02/11/2022 20:05:51.339907 ./pingserver:     C150NastyDgmSocket::read: DELAYING packet of length 4 |Two.|
+02/11/2022 20:05:54.339618 ./pingserver:     C150DgmSocket::read: successful read with len=4 |Two.|
+02/11/2022 20:05:54.339639 ./pingserver:     C150NastyDgmSocket::read: delivering packet of length 4 |Two.|
+02/11/2022 20:05:54.339659 ./pingserver:     Successfully read 4 bytes. Message="Two"
+02/11/2022 20:05:54.339680 ./pingserver:     Responding with message="You said Two. Don't you know how to play ping pong?"
+02/11/2022 20:05:54.339706 ./pingserver:     C150DgmSocket::write: attempting to send packet with len=52 |You said Two. Don't you know how to play ping pong?.|
+02/11/2022 20:05:54.339755 ./pingserver:     C150DgmSocket::write: Success writing packet with len=52 |You said Two. Don't you know how to play ping pong?.|
+02/11/2022 20:05:57.091901 ./pingserver:     C150DgmSocket::read: successful read with len=6 |Three.|
+02/11/2022 20:05:57.091923 ./pingserver:     C150NastyDgmSocket::read: delivering packet of length 6 |Three.|
+02/11/2022 20:05:57.091943 ./pingserver:     Successfully read 6 bytes. Message="Three"
+02/11/2022 20:05:57.091964 ./pingserver:     Responding with message="You said Three. Don't you know how to play ping pong?"
+02/11/2022 20:05:57.091989 ./pingserver:     C150DgmSocket::write: attempting to send packet with len=54 |You said Three. Don't you know how to play ping pong?.|
+02/11/2022 20:05:57.092048 ./pingserver:     C150DgmSocket::write: Success writing packet with len=54 |You said Three. Don't you know how to play ping pong?.|
+02/11/2022 20:05:58.716918 ./pingserver:     C150DgmSocket::read: successful read with len=5 |Four.|
+02/11/2022 20:05:58.716940 ./pingserver:     C150NastyDgmSocket::read: delivering packet of length 5 |Four.|
+02/11/2022 20:05:58.716960 ./pingserver:     Successfully read 5 bytes. Message="Four"
+02/11/2022 20:05:58.716981 ./pingserver:     Responding with message="You said Four. Don't you know how to play ping pong?"
+02/11/2022 20:05:58.717006 ./pingserver:     C150DgmSocket::write: attempting to send packet with len=53 |You said Four. Don't you know how to play ping pong?.|
+02/11/2022 20:05:58.717063 ./pingserver:     C150DgmSocket::write: Success writing packet with len=53 |You said Four. Don't you know how to play ping pong?.|
+02/11/2022 20:06:00.699373 ./pingserver:     C150DgmSocket::read: successful read with len=5 |Five.|
+02/11/2022 20:06:00.699404 ./pingserver:     C150NastyDgmSocket::read: dropping packet of length 5 |Five.|
+02/11/2022 20:06:00.699433 ./pingserver:     C150NastyDgmSocket::read: delivering delayed packet. readlen=4 |Two.|
+02/11/2022 20:06:00.699461 ./pingserver:     Successfully read 4 bytes. Message="Two"
+02/11/2022 20:06:00.699500 ./pingserver:     Responding with message="You said Two. Don't you know how to play ping pong?"
+02/11/2022 20:06:00.699538 ./pingserver:     C150DgmSocket::write: attempting to send packet with len=52 |You said Two. Don't you know how to play ping pong?.|
+02/11/2022 20:06:00.699625 ./pingserver:     C150DgmSocket::write: Success writing packet with len=52 |You said Two. Don't you know how to play ping pong?.|
+02/11/2022 20:06:02.119686 ./pingserver:     C150DgmSocket::read: successful read with len=4 |Six.|
+02/11/2022 20:06:02.119708 ./pingserver:     C150NastyDgmSocket::read: delivering packet of length 4 |Six.|
+02/11/2022 20:06:02.119729 ./pingserver:     Successfully read 4 bytes. Message="Six"
+02/11/2022 20:06:02.119750 ./pingserver:     Responding with message="You said Six. Don't you know how to play ping pong?"
+02/11/2022 20:06:02.119775 ./pingserver:     C150DgmSocket::write: attempting to send packet with len=52 |You said Six. Don't you know how to play ping pong?.|
+02/11/2022 20:06:02.119839 ./pingserver:     C150DgmSocket::write: Success writing packet with len=52 |You said Six. Don't you know how to play ping pong?.|
+02/11/2022 20:06:04.490541 ./pingserver:     C150DgmSocket::read: successful read with len=6 |Seven.|
+02/11/2022 20:06:04.490563 ./pingserver:     C150NastyDgmSocket::read: delivering packet of length 6 |Seven.|
+02/11/2022 20:06:04.490583 ./pingserver:     Successfully read 6 bytes. Message="Seven"
+02/11/2022 20:06:04.490604 ./pingserver:     Responding with message="You said Seven. Don't you know how to play ping pong?"
+02/11/2022 20:06:04.490631 ./pingserver:     C150DgmSocket::write: attempting to send packet with len=54 |You said Seven. Don't you know how to play ping pong?.|
+02/11/2022 20:06:04.490697 ./pingserver:     C150DgmSocket::write: Success writing packet with len=54 |You said Seven. Don't you know how to play ping pong?.|
+02/11/2022 20:06:06.742995 ./pingserver:     C150DgmSocket::read: successful read with len=6 |Eight.|
+02/11/2022 20:06:06.743017 ./pingserver:     C150NastyDgmSocket::read: dropping packet of length 6 |Eight.|
+02/11/2022 20:06:09.742659 ./pingserver:     C150DgmSocket::read: successful read with len=6 |Eight.|
+02/11/2022 20:06:09.742681 ./pingserver:     C150NastyDgmSocket::read: delivering packet of length 6 |Eight.|
+02/11/2022 20:06:09.742701 ./pingserver:     Successfully read 6 bytes. Message="Eight"
+02/11/2022 20:06:09.742722 ./pingserver:     Responding with message="You said Eight. Don't you know how to play ping pong?"
+02/11/2022 20:06:09.742747 ./pingserver:     C150DgmSocket::write: attempting to send packet with len=54 |You said Eight. Don't you know how to play ping pong?.|
+02/11/2022 20:06:09.742807 ./pingserver:     C150DgmSocket::write: Success writing packet with len=54 |You said Eight. Don't you know how to play ping pong?.|
+02/11/2022 20:06:12.670216 ./pingserver:     C150DgmSocket::read: successful read with len=5 |Nine.|
+02/11/2022 20:06:12.670238 ./pingserver:     C150NastyDgmSocket::read: delivering packet of length 5 |Nine.|
+02/11/2022 20:06:12.670258 ./pingserver:     Successfully read 5 bytes. Message="Nine"
+02/11/2022 20:06:12.670279 ./pingserver:     Responding with message="You said Nine. Don't you know how to play ping pong?"
+02/11/2022 20:06:12.670305 ./pingserver:     C150DgmSocket::write: attempting to send packet with len=53 |You said Nine. Don't you know how to play ping pong?.|
+02/11/2022 20:06:12.670364 ./pingserver:     C150DgmSocket::write: Success writing packet with len=53 |You said Nine. Don't you know how to play ping pong?.|
+02/11/2022 20:06:15.253152 ./pingserver:     C150DgmSocket::read: successful read with len=4 |Ten.|
+02/11/2022 20:06:15.253173 ./pingserver:     C150NastyDgmSocket::read: delivering packet of length 4 |Ten.|
+02/11/2022 20:06:15.253193 ./pingserver:     Successfully read 4 bytes. Message="Ten"
+02/11/2022 20:06:15.253214 ./pingserver:     Responding with message="You said Ten. Don't you know how to play ping pong?"
+02/11/2022 20:06:15.253241 ./pingserver:     C150DgmSocket::write: attempting to send packet with len=52 |You said Ten. Don't you know how to play ping pong?.|
+02/11/2022 20:06:15.253313 ./pingserver:     C150DgmSocket::write: Success writing packet with len=52 |You said Ten. Don't you know how to play ping pong?.|

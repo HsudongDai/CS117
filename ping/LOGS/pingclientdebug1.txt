@@ -1,0 +1,75 @@
+02/11/2022 19:55:23.450144 ./pingclient2: Creating C150DgmSocket
+02/11/2022 19:55:25.589160 ./pingclient2: ./pingclient2: Writing message: "One"
+02/11/2022 19:55:25.589192 ./pingclient2: C150DgmSocket::write: attempting to send packet with len=4 |One.|
+02/11/2022 19:55:25.589254 ./pingclient2: C150DgmSocket::write: Success writing packet with len=4 |One.|
+02/11/2022 19:55:25.589274 ./pingclient2: ./pingclient2: Returned from write, doing read()
+02/11/2022 19:55:25.589773 ./pingclient2: C150DgmSocket::read: successful read with len=52 |You said One. Don't you know how to play ping pong?.|
+02/11/2022 19:55:25.589793 ./pingclient2: PRINTING RESPONSE: Response received is "You said One. Don't you know how to play ping pong?"
+
+02/11/2022 19:55:27.424066 ./pingclient2: ./pingclient2: Writing message: "Two"
+02/11/2022 19:55:27.424094 ./pingclient2: C150DgmSocket::write: attempting to send packet with len=4 |Two.|
+02/11/2022 19:55:27.424145 ./pingclient2: C150DgmSocket::write: Success writing packet with len=4 |Two.|
+02/11/2022 19:55:27.424164 ./pingclient2: ./pingclient2: Returned from write, doing read()
+02/11/2022 19:55:27.424629 ./pingclient2: C150DgmSocket::read: successful read with len=52 |You said Two. Don't you know how to play ping pong?.|
+02/11/2022 19:55:27.424649 ./pingclient2: PRINTING RESPONSE: Response received is "You said Two. Don't you know how to play ping pong?"
+
+02/11/2022 19:55:29.594252 ./pingclient2: ./pingclient2: Writing message: "Three"
+02/11/2022 19:55:29.594293 ./pingclient2: C150DgmSocket::write: attempting to send packet with len=6 |Three.|
+02/11/2022 19:55:29.594357 ./pingclient2: C150DgmSocket::write: Success writing packet with len=6 |Three.|
+02/11/2022 19:55:29.594384 ./pingclient2: ./pingclient2: Returned from write, doing read()
+02/11/2022 19:55:32.593783 ./pingclient2: C150DgmSocket::read: returning timeout to application
+02/11/2022 19:55:32.593811 ./pingclient2: C150DgmSocket::write: attempting to send packet with len=6 |Three.|
+02/11/2022 19:55:32.593884 ./pingclient2: C150DgmSocket::write: Success writing packet with len=6 |Three.|
+02/11/2022 19:55:32.593904 ./pingclient2: ./pingclient2: Returned from write. 1 time(s) timeout retry. Resending now.
+02/11/2022 19:55:32.594334 ./pingclient2: C150DgmSocket::read: successful read with len=54 |You said Three. Don't you know how to play ping pong?.|
+02/11/2022 19:55:32.594354 ./pingclient2: PRINTING RESPONSE: Response received is "You said Three. Don't you know how to play ping pong?"
+
+02/11/2022 19:55:34.457946 ./pingclient2: ./pingclient2: Writing message: "Four"
+02/11/2022 19:55:34.457976 ./pingclient2: C150DgmSocket::write: attempting to send packet with len=5 |Four.|
+02/11/2022 19:55:34.458026 ./pingclient2: C150DgmSocket::write: Success writing packet with len=5 |Four.|
+02/11/2022 19:55:34.458045 ./pingclient2: ./pingclient2: Returned from write, doing read()
+02/11/2022 19:55:34.458484 ./pingclient2: C150DgmSocket::read: successful read with len=53 |You said Four. Don't you know how to play ping pong?.|
+02/11/2022 19:55:34.458504 ./pingclient2: PRINTING RESPONSE: Response received is "You said Four. Don't you know how to play ping pong?"
+
+02/11/2022 19:55:36.230256 ./pingclient2: ./pingclient2: Writing message: "Five"
+02/11/2022 19:55:36.230285 ./pingclient2: C150DgmSocket::write: attempting to send packet with len=5 |Five.|
+02/11/2022 19:55:36.230334 ./pingclient2: C150DgmSocket::write: Success writing packet with len=5 |Five.|
+02/11/2022 19:55:36.230355 ./pingclient2: ./pingclient2: Returned from write, doing read()
+02/11/2022 19:55:36.230854 ./pingclient2: C150DgmSocket::read: successful read with len=53 |You said Five. Don't you know how to play ping pong?.|
+02/11/2022 19:55:36.230874 ./pingclient2: PRINTING RESPONSE: Response received is "You said Five. Don't you know how to play ping pong?"
+
+02/11/2022 19:55:37.891444 ./pingclient2: ./pingclient2: Writing message: "Six"
+02/11/2022 19:55:37.891474 ./pingclient2: C150DgmSocket::write: attempting to send packet with len=4 |Six.|
+02/11/2022 19:55:37.891525 ./pingclient2: C150DgmSocket::write: Success writing packet with len=4 |Six.|
+02/11/2022 19:55:37.891551 ./pingclient2: ./pingclient2: Returned from write, doing read()
+02/11/2022 19:55:37.891956 ./pingclient2: C150DgmSocket::read: successful read with len=52 |You said Six. Don't you know how to play ping pong?.|
+02/11/2022 19:55:37.891976 ./pingclient2: PRINTING RESPONSE: Response received is "You said Six. Don't you know how to play ping pong?"
+
+02/11/2022 19:55:39.804871 ./pingclient2: ./pingclient2: Writing message: "Seven"
+02/11/2022 19:55:39.804899 ./pingclient2: C150DgmSocket::write: attempting to send packet with len=6 |Seven.|
+02/11/2022 19:55:39.804951 ./pingclient2: C150DgmSocket::write: Success writing packet with len=6 |Seven.|
+02/11/2022 19:55:39.804970 ./pingclient2: ./pingclient2: Returned from write, doing read()
+02/11/2022 19:55:39.805499 ./pingclient2: C150DgmSocket::read: successful read with len=54 |You said Seven. Don't you know how to play ping pong?.|
+02/11/2022 19:55:39.805521 ./pingclient2: PRINTING RESPONSE: Response received is "You said Seven. Don't you know how to play ping pong?"
+
+02/11/2022 19:55:42.367343 ./pingclient2: ./pingclient2: Writing message: "Eight"
+02/11/2022 19:55:42.367371 ./pingclient2: C150DgmSocket::write: attempting to send packet with len=6 |Eight.|
+02/11/2022 19:55:42.367419 ./pingclient2: C150DgmSocket::write: Success writing packet with len=6 |Eight.|
+02/11/2022 19:55:42.367439 ./pingclient2: ./pingclient2: Returned from write, doing read()
+02/11/2022 19:55:42.367956 ./pingclient2: C150DgmSocket::read: successful read with len=54 |You said Eight. Don't you know how to play ping pong?.|
+02/11/2022 19:55:42.367978 ./pingclient2: PRINTING RESPONSE: Response received is "You said Eight. Don't you know how to play ping pong?"
+
+02/11/2022 19:55:44.293119 ./pingclient2: ./pingclient2: Writing message: "Nine"
+02/11/2022 19:55:44.293148 ./pingclient2: C150DgmSocket::write: attempting to send packet with len=5 |Nine.|
+02/11/2022 19:55:44.293208 ./pingclient2: C150DgmSocket::write: Success writing packet with len=5 |Nine.|
+02/11/2022 19:55:44.293228 ./pingclient2: ./pingclient2: Returned from write, doing read()
+02/11/2022 19:55:44.293629 ./pingclient2: C150DgmSocket::read: successful read with len=53 |You said Nine. Don't you know how to play ping pong?.|
+02/11/2022 19:55:44.293650 ./pingclient2: PRINTING RESPONSE: Response received is "You said Nine. Don't you know how to play ping pong?"
+
+02/11/2022 19:55:45.734922 ./pingclient2: ./pingclient2: Writing message: "Ten"
+02/11/2022 19:55:45.734951 ./pingclient2: C150DgmSocket::write: attempting to send packet with len=4 |Ten.|
+02/11/2022 19:55:45.735004 ./pingclient2: C150DgmSocket::write: Success writing packet with len=4 |Ten.|
+02/11/2022 19:55:45.735029 ./pingclient2: ./pingclient2: Returned from write, doing read()
+02/11/2022 19:55:45.735495 ./pingclient2: C150DgmSocket::read: successful read with len=52 |You said Ten. Don't you know how to play ping pong?.|
+02/11/2022 19:55:45.735515 ./pingclient2: PRINTING RESPONSE: Response received is "You said Ten. Don't you know how to play ping pong?"
+

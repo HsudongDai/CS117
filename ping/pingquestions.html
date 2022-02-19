@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<!-- 
+ **********************************************************
+
+             TUFTS CS 117 HOMEWORK ASSIGNMENT
+
+        Fill in your name, e-mail and answers to questions
+        in the sections provided below.
+
+          All questions are marked up: <li class="q">
+          All answers are marked up:   <li class="a">
+
+
+     PLEASE DO NOT MODIFY ANY THING OTHER THAN THE 
+     NAME, E-MAIL, AND ANSWER FIELDS (you may also add
+     css declarations in the <head> if you need them,
+     but usually you won't.
+
+ **********************************************************
+ -->
+
+
+<html lang="en">
+<head>
+<meta charset="utf-8"> 
+<title>Tufts CS 117 Assignment &#8212; Ping demonstration program</title>
+<link rel="stylesheet" type="text/css" href="https://www.cs.tufts.edu/comp/117/style/homework.css" />
+</head>
+
+<body class="homework">
+
+
+<!-- ******************************************************
+	   YOU MUST FILL IN YOUR NAME, UTLN AND EMAIL BELOW!!
+         (You may copy this from an earlier assignment
+                         if you like)
+
+     ****************************************************** -->
+
+
+<div class="student">
+<p>
+<span class="label">Student name: </span>
+Xudong Dai
+<br>
+
+<span class="label">LOGIN: </span>
+xdai03
+<br>
+
+<span class="label">E-mail: xdai03@cs.tufts.edu </span>
+<!-- DON'T FORGET UP UPDATE THE MAILTO: URI BELOW ALONG WITH
+     YOUR EMAIL IN THE ANCHOR.  IT SHOULD LOOK LIKE:
+ <a href="mailto:lady.gaga@cs.tufts.edu">lady.gaga@cs.tufts.edu</a>
+--> 
+
+<a href="mailto:YOUR-EMAIL-HERE">xdai03@cs.tufts.edu</a>
+<br>
+</p>
+</div>
+
+
+
+
+<div class="UpperLeftHeader">
+<p>Tufts CS 117 (Spring 2022):
+<br>
+Internet-scale Distributed Systems
+</p>
+</div>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - -
+		HOMEWORK TITLE
+  - -  - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+<div class="headerdiv">
+<h1>
+Tufts CS 117 Assignment<br>Ping demonstration program
+<br>
+Questions
+</h1>
+</div>
+
+<!-- ******************************************************
+
+              PLEASE ANSWER QUESTIONS IN THE SECTIONS
+	      LABELED class="a" (for answer)
+
+     ****************************************************** -->
+
+
+
+
+<div class="main">
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - -
+		QUESTION
+  - -  - - - - - - - - - - - - - - - - - - - - - - -->
+<div class="qa">
+
+<ol class="qa">
+<li class="q">Why did more client output result when you added the loop
+to read extra messages after each successful message receipt? Why
+were some messages never printed? Why were some printed late and out
+of order?</li>
+<li class="a">
+<ul>
+     <li>Most packets can be successfully delivered to the server without meeting any network fluctuation.</li>
+     <li>Some packets are dropped by the nasty socket. Since the resending mechanism would try up to 5 times, these packets cannot have a sixth chance.</li>
+     <li>The first packet was dropped by the nasty socket but the second wasn't. Hence the response to the 2nd packet would arrive first. The retry mechanism succeeded to resend the '1st' packet, so the response to it arrives at the client later. But finally, both reponses to packets could be printed out.</li>
+</ul>
+</li>
+
+<li class="q">What was confusing about this assignment or 
+programming framework that we should
+explain in more detail before proceeding to the next assignment?</li>
+<li class="a">
+I have plenty of problems about the Makefile. I never used Makefile since either the IDE would accomplish it on background, or I would use CMake to compile a Makefile since it would be a nightmare to deal with thousands of .o or .a or ELF files manually.
+</li>
+
+
+<li class="q">How much UDP (datagram) style programming did you already know before doing this assignment?</li>
+<li class="a">
+I used other languages to do some similar jobs, such as JavaScript, Python and Golang. 
+</li>
+
+</ol>
+</div>
+</div>
+</body>
+</html>
