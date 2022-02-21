@@ -79,13 +79,13 @@ main(int argc, char *argv[]) {
   //
   if (argc != 4)  {
     fprintf(stderr,"Correct syntxt is: %s <nastiness_number> <SRC dir> (TARGET dir>\n", argv[0]);
-       exit(1);
+    exit(1);
   }
 
   if (strspn(argv[1], "0123456789") != strlen(argv[1])) {
     fprintf(stderr,"Nastiness %s is not numeric\n", argv[1]);     
     fprintf(stderr,"Correct syntxt is: %s <nastiness_number> <SRC dir> (TARGET dir>\n", argv[0]);     
-     exit(4);
+    exit(4);
   }
 
   nastiness = atoi(argv[1]);   // convert command line string to integer
@@ -260,7 +260,7 @@ copyFile(string sourceDir, string fileName, string targetDir, int nastiness) {
     //
     if (lstat(sourceName.c_str(), &statbuf) != 0) {
       fprintf(stderr,"copyFile: Error stating supplied source file %s\n", sourceName.c_str());
-     exit(20);
+      exit(20);
     }
   
     //
@@ -321,9 +321,9 @@ copyFile(string sourceDir, string fileName, string targetDir, int nastiness) {
     // do an fopen on the output file
     //
     fopenretval = outputFile.fopen(targetName.c_str(), "wb");  
-                                         // wraps Unix fopen
-                                         // Note wb gives "write, binary"
-                                         // which avoids line and munging
+                                  // wraps Unix fopen
+                                  // Note wb gives "write, binary"
+                                  // which avoids line and munging
   
     //
     // Write the whole file
@@ -336,7 +336,7 @@ copyFile(string sourceDir, string fileName, string targetDir, int nastiness) {
     }
   
     if (outputFile.fclose() == 0 ) {
-       cout << "Finished writing file " << targetName <<endl;
+      cout << "Finished writing file " << targetName <<endl;
     } else {
       cerr << "Error closing output file " << targetName << 
 	      " errno=" << strerror(errno) << endl;
@@ -348,16 +348,12 @@ copyFile(string sourceDir, string fileName, string targetDir, int nastiness) {
     //
     free(buffer);
 
-
     //
     // Handle any errors thrown by the file framekwork
     //
-  }   catch (C150Exception& e) {
-       cerr << "nastyfiletest:copyfile(): Caught C150Exception: " << 
-	       e.formattedExplanation() << endl;
-    
-  }
-
-       
+  } catch (C150Exception& e) {
+      cerr << "nastyfiletest:copyfile(): Caught C150Exception: " << 
+        e.formattedExplanation() << endl;
+  }      
 }
   
