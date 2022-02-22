@@ -69,7 +69,7 @@ fileserver: fileserver.cpp
 	$(CPP) -lssl -lcrypto -o sha1.o -c sha1.cpp
 	$(CPP) -o copyfile.o -c copyfile.cpp
 	$(CPP) -o fileserver.o -c fileserver.cpp
-	$(CPP) $(CPPFLAGS) copyfile.o sha1.o fileserver.o -o fileserver $(C150AR)
+	$(CPP) $(CPPFLAGS) -lssl -lcrypto sha1.o copyfile.o  fileserver.o -o fileserver $(C150AR)
 	rm sha1.o copyfile.o fileserver.o
 
 fileclient: fileclient.cpp sha1.cpp copyfile.cpp

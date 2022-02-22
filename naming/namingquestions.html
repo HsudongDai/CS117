@@ -1,0 +1,202 @@
+<!DOCTYPE HTML>
+<!-- 
+ **********************************************************
+
+             TUFTS CS 117 HOMEWORK ASSIGNMENT
+
+        Fill in your name, e-mail and answers to questions
+        in the sections provided below.
+
+          All questions are marked up: <li class="q">
+          All answers are marked up:   <li class="a">
+
+
+     PLEASE DO NOT MODIFY ANY THING OTHER THAN THE 
+     NAME, E-MAIL, AND ANSWER FIELDS (you may also add
+     css declarations in the <head> if you need them,
+     but usually you won't.
+
+ **********************************************************
+ -->
+
+
+<html lang="en">
+<head>
+<meta charset="utf-8"> 
+<title>Questions for: Tufts CS 117 Assignment Reading Assignment &#8212; Naming (Part I)</title>
+<link rel="stylesheet" type="text/css" href="https://www.cs.tufts.edu/comp/117/style/homework.css" />
+</head>
+
+<body class="homework">
+
+
+<!-- ******************************************************
+	   YOU MUST FILL IN YOUR NAME, UTLN AND EMAIL BELOW!!
+         (You may copy this from an earlier assignment
+                         if you like)
+
+     ****************************************************** -->
+
+
+<div class="student">
+<p>
+<span class="label">Student name: </span>
+Xudong Dai
+<br>
+
+<span class="label">LOGIN: </span>
+xdai03
+<br>
+
+<span class="label">E-mail: xdai03@cs.tufts.edu</span>
+<!-- DON'T FORGET UP UPDATE THE MAILTO: URI BELOW ALONG WITH
+     YOUR EMAIL IN THE ANCHOR.  IT SHOULD LOOK LIKE:
+ <a href="mailto:lady.gaga@cs.tufts.edu">lady.gaga@cs.tufts.edu</a>
+--> 
+
+<a href="mailto:xdai03@cs.tufts.edu">xdai03@cs.tufts.edu</a>
+<br>
+</p>
+</div>
+
+
+
+
+
+<div class="UpperLeftHeader">
+<p>Tufts CS 117 (Spring 2022):
+<br>
+Internet-scale Distributed Systems
+</p>
+</div>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - -
+		HOMEWORK TITLE
+  - -  - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+<div class="headerdiv">
+<h1>
+Tufts CS 117 Assignment:<br>Naming
+<br>
+Questions - Part I
+</h1>
+</div>
+
+<!-- ******************************************************
+
+              PLEASE ANSWER QUESTIONS IN THE SECTIONS
+	      LABELED class="a" (for answer)
+
+     ****************************************************** -->
+
+
+
+<div class="main">
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - -
+		QUESTION
+  - -  - - - - - - - - - - - - - - - - - - - - - - -->
+ <div class="qa">
+<p>Please answer each of the following questions.</p>
+
+
+<ol class="qa">
+<li class="q">
+Please make a list of issues or design characteristics that one
+should consider in designing a naming system.
+List as many as you can (within reason). You should use this as an opportunity to 
+show your mastery of the naming concepts we have been discussing in the class.
+I'll start you with a couple:
+</li>
+<li class="a">
+Issues and design characteristics that should be considered when
+designing a new naming system include:
+<ul>
+<li>Universality: Any resource anywhere, if is in the same system, can be given an identifier. This identifier must be accessible at every position of the system, or the system would be separate and inconvenient for users.</li>
+<li>Global Uniqueness: The distinct identifiers used in the namespace should map to distinct resources. If an identifier is simultaneously used to refer to 2 different resources, it would lead users to confusion. However, one resource can be represented by several identifiers, like some websites can be accessed with a <strong>short</strong> URI and a full URI. The previous one could provide conveniency for users. The <strong>Global</strong> refers to a certain scope.</li>
+<li>Distributed Extensibility: Similar to the above, but to clarify, all users in the same scope could be able to create their own name for anything they want. But to avoid collision, this feature is also important.</li>
+<li>Non-ambiguity: Sometimes a full name perhaps contains a short name that is frequently used, for example, '911' is included in a 10-digit phone number. It would contribute to the misunderstanding to users. It would be better to avoid the shorter but famous strings in the identifiers.</li> 
+<li>Structure/Hierarchy: The name itself can be the combination of differnt names on differnt levels from top to bottom. The structure of identifier can organize resources in order and strenthens extensibility. With structure, the users could use relative path to locate another resource they want.</li>
+<li>Repeatablity/Consistency: The resource referred by the identifier should be always able to be read exactly the same by the identifier unless it is modified by the owner. It provides a guarantee for those users. Frequently modified data should not be encoded in the identifier.</li>
+<li>Opacity: The identifier could provide type hint for the user, but not a type guarantee. The user would better check the type of resource represented by the identifier. In this way the owner could enjoy more free space to design the identifier.</li>
+<li>Internationalization: The original identifier is designed using ASCII letters, but it is more and more necessary to support Unicode letters so that users from all over the world can use their mother tongue to compose the identifier, enriching the expressability of identifiers. At least it must provide a compatible interface for the non-ASCII characters.</li>
+<li>Uniformity: Uniform naming and interface could help users how to deal with unseen resources, saving time and mind and contributing to the <i>Universality</i>.</li>
+<li>Conveniency: The naming system itself must make the name easy to understand. Using meaningful words and phrases would help users remember and share. Sometimes the shorter name also helps since it could reduce the possibility of false copy and easier to remember. But <i>Opacity</i> is a prior requirement.</li>
+<li>Indirect Identification: An indirect link to a resource, on the one hand, can encode more detailed information of one resource. On the other hand, it would cause confusion. Careful and cautious use would make the system more user-friendly.</li>
+<li>Confidentiality: Some metadata should be encoded and encrypted but not directly encoded in identifiers. Malicious eavesdroppers could easily capture these data, like username and password to violate the benefit of users.</li>
+<li>Authority: This feature would help users and system establish trust on the access of resources represented by this identifier so that it could reduce the cost. For example, username and password can be a part of URI.</li>
+<li>Scheme: A pre-defined scheme carved into the identifier would instruct the users how to correctly access the resource. It would help reduct retrying cost.</li>
+</ul>
+				      
+</li>
+
+<li class="q">Choose an existing naming system that interests you.
+Examples include file naming in Unix/Linux systems, the phone
+numbers discussed in your reading, etc. Many good examples
+are related to computer systems, but if you prefer 
+you can choose something else. 
+<br>
+<br>
+For the system you choose, <em>explain the system you choose in sufficient detail so that someone who had never seen it before would understand the rest of your analysis</em>.
+Explain where the system is used, and what can be named, what names look like and what the rules for assigning them are, etc. Then briefly explain 
+how the system you choose does or does not deal with the issues you list above. 
+Again, <em>the goal is to show your ability to apply the principles and insights we discussed in class</em>.
+If your list above is very long, then just choose up to 8 important ones to deal with here.
+WARNING: Don't assume that <em>you</em> know how a system works. In past years we've had many students give incorrect descriptions of, e.g. what the limitations are on Linux filenames, or what can be named with such names, because students based their answers on personal experience or assumptions rather than on how Linux really works. As in all technical writing, make sure that your explanations are correct! Even for systems you use a lot, you might want to find the specifications.
+</li>
+<li class="a">
+I would like to talk about the naming system of filesystems used in Unix/Linux. Unix/Linux are widely used as the OS of servers, mobile devices like Android and iOS, etc. In this system, all the files and directories (container of files) can be and must be named. 
+
+A demo of a complete filepath in Unix/Linux is like, <br><br>
+
+<div style="text-align: center;">/home/abc/xyz.txt</div><br>
+
+The whole system is built <strong>hierarchically</strong>. We can devide it into several parts with knowing slash '/' as the separator. But the first separator has a special meaning: it marks the <i>root</i> directory. The <i>root</i> directory is the parent directory of all the other files or directories. All the other files and directories live in it. The root directory provides a mirage of unification. Even physically the files are stored on separate devices, they are in the same system logically.<br><br>
+
+The we can see that the left string is divided by the other slashes into 3 parts. The first 2 items are directories, <i>home</i> lives in the <i>root</i> directory, <i>abc</i> lives in the <i>home</i> directory. These directory forms a tree structure. <br> <br>
+
+Then the last part, 'xyz.txt' is the filename. It is the 'leaf' of the tree of file system. Through a query from root to leaf, ths OS can locate the file. We can observe <em>Universality, Global Uniqueness</em> and <em>Consistency</em> in this design.
+<br><br>
+
+It is also possible to use relative path to access another file or directory. For example, now we are at <br>
+<div style="text-align: center;">/home/efg</div><br>
+
+we can get the file mentioned above using the filepath like <br>
+
+<div style="text-align: center;">../abc/xyz.txt</div><br>
+
+Sometimes you may want to call a local executable file (like a.out), for safety, the system would search for executable files under certain trusted paths. At that time you need to specify what you want is the one under present directory, so you need to write <br>
+
+<div style="text-align: center;">./a.out</div><br>
+
+The dot '.' represents present filepath. It must be followed by a slash. This mechanism also shows <strong>Authority</strong>.
+
+Here the 2 dots mean the parent directory. This provides <strong>Conveniency</strong> since sometimes the whole filepath is too long and hard to use. At this time we can have a shortcut to jump from one node to another. In this way <i>absolute</i> and <i>relative</i> path is devided. Any filepath starting from '/' is an absolute one, or it is a relative one. <br><br>
+
+All the resources in Unix/Linux has a 'file' abstraction, no matter it is a text file, a printer or a network socket. The user could uniformly apply a file descriptor to read or write data through the 'file'. This is called <strong>Uniformity</strong>.
+
+<br><br>
+There are several general principles applied in the naming system. 
+<ul>
+     <li>All filenames are case-sensitive. <i>A.txt</i> and <i>a.txt</i> are different filenames. Each filename must be unique inside its scope, that is, the directory. However, it can be repeated in different directories, even in its parent or children directories. This shows <strong>Uniqueness</strong> but does not miss <strong>Conveniency</strong>. </li>
+     <li>Most modern Unix/Linux limit filename to 255 characters, to be specific, 255 bytes. However, some older version of Unix system may limit it to 14 bytes only.Only letters, numbers, dot "." and underscore "_" could be used in filenames. Nowadays, Unicode characters could also be applied in. It shows <strong>Internationalization</strong></li>
+     <li>Though special characters, like black space or tab, but it is hard to use and tends to cause confusion. Hence it is better to avoid them. A demo of <strong>Conveniency</strong>. </li>
+     <li>Dot '.' is not recommended to use in a filename, but you can use dot-base filename extension to identify files. However, it is not compulsory, even trustworthy. The extension can be treated as a reminder, but it is possible that the real type does not match the extension. This is so-called <strong>Opacity</strong>. The metadata of the file is encoded at the beginning of each file, sometimes called 'magic number'. </li>
+     <li>Most of the filenames encoded in filesystem do not carry variable parts. For example, under '/home' directory every user has their own home folder named by their own usernames. It is invariant. Hence it would be easier for system to track and manage files. A perfect example of <strong>Consistency</strong>.</li>
+     <li><strong>Confidentiality</strong> and <strong>Authority</strong>. The metadata of each file would not show on its name. While it encourages users to name their files showing its purpose, the authority is automatically established. The authority of each file consists of the owner and the permissions. There are 3 kinds of permissions of operations, read, write and execute. Also 3 kinds of permissions of operators, owner, users in the same group of owner, and others. A user can only operate the file with behaviors allowed by the permissions. Luckily, these are encoded in the metadata, but not directly in the name.</li>
+     <li>This system does not directly show <strong>Scheme</strong>. This is sacrificed for the <strong>Universality</strong> to show perfect unification.</li>
+     <li>Distributed Extensibility is not applied to a local filesystem.</li>
+     <!-- <li>Certain characters cannot be used since they could be used in shell, such as '>'</li> -->
+</ul>
+There are so many help documents implanted in the system. Any user could turn to these documents and fetch files through them. That is, <strong>Indirct Identification</strong> also makes sense in the file system.
+
+In conclusion, this system unifys simplicity and strictness. A perfect demonstration of those principles mentioned above.
+</li>
+</ol>
+
+</div>
+</div>
+</body>
+</html>
