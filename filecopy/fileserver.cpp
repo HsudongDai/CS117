@@ -53,11 +53,17 @@
 
 #include "c150nastydgmsocket.h"
 #include "c150debug.h"
+#include "sha1.hpp"
+#include "copyfile.hpp"
 #include <fstream>
 #include <cstdlib> 
 
 
 using namespace C150NETWORK;  // for all the comp150 utilities 
+
+const int networkNastinessArg = 1;
+const int fileNastinessArg = 2;
+const int targetDirArg = 3;
 
 void setUpDebugLogging(const char *logname, int argc, char *argv[]);
 
@@ -77,22 +83,37 @@ main(int argc, char *argv[])
     //
     ssize_t readlen;             // amount of data read from socket
     char incomingMessage[512];   // received message data
-    int nastiness;               // how aggressively do we drop packets, etc?
 
     //
     // Check command line and parse arguments
     //
-    if (argc != 2)  {
-        fprintf(stderr,"Correct syntxt is: %s <nastiness_number>\n", argv[0]);
+    if (argc != 3)  {
+        fprintf(stderr,"Correct syntxt is: %s <network_nastiness> <file_nastiness> <target_dir>\n", argv[0]);
         exit(1);
     }
     // strspn used to check whether argc is a number
-    if (strspn(argv[1], "0123456789") != strlen(argv[1])) {
-        fprintf(stderr,"Nastiness %s is not numeric\n", argv[1]);     
-        fprintf(stderr,"Correct syntxt is: %s <nastiness_number>\n", argv[0]);     
+    if (strspn(argv[networkNastinessArg], "0123456789") != strlen(argv[networkNastinessArg])) {
+        fprintf(stderr,"Network Nastiness %s is not numeric\n", argv[networkNastinessArg]);     
+        fprintf(stderr,"Correct syntxt is: %s <network_nastiness> <file_nastiness> <target_dir>\n", argv[0]);     
         exit(4);
     }
-    nastiness = atoi(argv[1]);   // convert command line string to integer
+
+     if (strspn(argv[fileNastinessArg], "0123456789") != strlen(argv[fileNastinessArg])) {
+        fprintf(stderr,"File Nastiness %s is not numeric\n", argv[fileNastinessArg]);     
+        fprintf(stderr,"Correct syntxt is: %s <network_nastiness> <file_nastiness> <target_dir>\n", argv[0]);     
+        exit(4);
+    }
+
+    int32_t networkNastiness = atoi(argv[networkNastinessArg]);
+    int32_t fileNastiness = atoi(argv[fileNastinessArg]);
+
+    if (networkNastiness < 0 || networkNastiness > 4) {
+        fprintf(stderr,"Network Nastiness %s must be between 0 and 4, while given %d\n", networkNastiness);
+    }
+
+    if (fileNastiness < 0 || fileNastiness > 5) {
+        fprintf(stderr,"File Nastiness %s must be between 0 and 5, while given %d\n", fileNastiness);
+    }
        
     //
     //  Set up debug message logging
@@ -123,14 +144,14 @@ main(int argc, char *argv[])
         // Create the socket
 	//
         c150debug->printf(C150APPLICATION,"Creating C150NastyDgmSocket(nastiness=%d)",
-                          nastiness);
-        C150DgmSocket *sock = new C150NastyDgmSocket(nastiness);
+                          networkNastiness);
+        C150DgmSocket *sock = new C150NastyDgmSocket(networkNastiness);
         c150debug->printf(C150APPLICATION,"Ready to accept messages");
 
         //
         // infinite loop processing messages
         //
-        while(1)        { 
+        while (true) { 
 
             //
             // Read a packet
@@ -153,23 +174,32 @@ main(int argc, char *argv[])
                                               // non-printing characters to .
             c150debug->printf(C150APPLICATION,"Successfully read %d bytes. Message=\"%s\"",
                               readlen, incoming.c_str());
+            const int filenameSize = incoming.size() - 17 - 20;
+            const string filename = incoming.substr(0, filenameSize);
+            const char * clientChecksum = incoming.substr(filenameSize + 17, 20).c_str();
+            
+            const string target(argv[targetDirArg], argv[targetDirArg] + strlen(argv[targetDirArg]));
 
+            const unsigned char * serverChecksum = getSHA1(makeFileName(target, filename));
+
+            const bool isMatch = strcmp(clientChecksum, (const char *) serverChecksum); 
             //
             //  create the message to return
             // 
-            string response = "You said " + incoming;
-            if (incoming=="ping" || incoming == "Ping" || incoming == "PING") 
-                response += " and I say PONG. Thank you for playing!";
-            else
-                response += ". Don't you know how to play ping pong?";
-
+            string response = "File " + filename + " is received. The checksums ";
+            if (isMatch) {
+                response += "don't match.";
+            }
+            else {
+                response += "match! Congratulations!";
+            }
             //
             // write the return message
             //
             c150debug->printf(C150APPLICATION,"Responding with message=\"%s\"",
                               response.c_str());
             sock -> write(response.c_str(), response.length()+1);
-        }
+        } 
     }
 
     catch (C150NetworkException& e) {

@@ -60,9 +60,13 @@
 
 
 #include "c150dgmsocket.h"
+#include "c150nastydgmsocket.h"
 #include "c150debug.h"
 #include "c150grading.h"
+#include "copyfile.hpp"
+#include "sha1.hpp"
 #include <fstream>
+#include <filesystem>
 
 using namespace std;          // for C++ std library
 using namespace C150NETWORK;  // for all the comp150 utilities 
@@ -83,8 +87,13 @@ void setUpDebugLogging(const char *logname, int argc, char *argv[]);
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-const int serverArg = 1;     // server name is 1st arg
-const int msgArg = 2;        // message text is 2nd arg
+const int serverArg = 1;                  // server name is 1st arg
+const int networkNastinessArg = 2;        // network nastiness is 2nd arg
+const int fileNastinessArg = 3;           // file nastiness is 3rd arg
+const int srcDirArg = 4;                  // source directory is 4th arg
+
+// const char * srcDir = "/comp/117/files/FileCopy/SRC";
+const string tgrDir = "/h/xdai03/cs117/filecopy/TARGET";  // target directory is preset
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -95,6 +104,7 @@ const int msgArg = 2;        // message text is 2nd arg
  
 int 
 main(int argc, char *argv[]) {
+    GRADEME(argc, argv);
 
     //
     // Variable declarations
@@ -110,36 +120,97 @@ main(int argc, char *argv[]) {
     //
     // Make sure command line looks right
     //
-    if (argc != 3) {
-        fprintf(stderr,"Correct syntxt is: %s <servername> <msgtxt>\n", argv[0]);
+    if (argc != 4) {
+        fprintf(stderr,"Correct syntxt is: %s <server> <network_nastiness> <filenastiness> <srcdir>\n", argv[0]);
         exit(1);
     }
+
+    if (strspn(argv[networkNastinessArg], "0123456789") != strlen(argv[1])) {
+        fprintf(stderr,"Network Nastiness %s is not numeric\n", argv[1]);     
+        fprintf(stderr,"Correct syntxt is: %s <network_nastiness> <file_nastiness> <SRC dir>\n", argv[0]);     
+        exit(4);
+    }
+
+    if (strspn(argv[fileNastinessArg], "0123456789") != strlen(argv[1])) {
+        fprintf(stderr,"File Nastiness %s is not numeric\n", argv[1]);     
+        fprintf(stderr,"Correct syntxt is: %s <network_nastiness> <file_nastiness> <SRC dir>\n", argv[0]);     
+        exit(4);
+    }
+
+    int32_t networkNastiness = atoi(argv[networkNastinessArg]);
+    int32_t fileNastiness = atoi(argv[fileNastinessArg]);
+
+    if (networkNastiness < 0 || networkNastiness > 4) {
+        fprintf(stderr,"Network Nastiness %s must be between 0 and 4, while given %d\n", networkNastiness);
+    }
+
+    if (fileNastiness < 0 || fileNastiness > 5) {
+        fprintf(stderr,"File Nastiness %s must be between 0 and 5, while given %d\n", fileNastiness);
+    }
+
+    DIR *SRC;                   // Unix descriptor for open directory
+    DIR *TARGET;                // Unix descriptor for target
+    struct dirent *sourceFile;  // Directory entry for source file
 
     //
     //
     //        Send / receive / print 
     //
     try {
-
         // Create the socket
         c150debug->printf(C150APPLICATION,"Creating C150DgmSocket");
-        C150DgmSocket *sock = new C150DgmSocket();
+        C150DgmSocket *sock = new C150NastyDgmSocket(networkNastiness);
 
         // Tell the DGMSocket which server to talk to
         sock -> setServerName(argv[serverArg]);  
 
         // Send the message to the server
-        c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"",
-                          argv[0], argv[msgArg]);
-        sock -> write(argv[msgArg], strlen(argv[msgArg])+1); // +1 includes the null
+        // c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"",
+        //                   argv[0], argv[msgArg]);
 
-        // Read the response from the server
-        c150debug->printf(C150APPLICATION,"%s: Returned from write, doing read()",
-                          argv[0]);
-        readlen = sock -> read(incomingMessage, sizeof(incomingMessage));
+        if (!checkCopyPaths(argv[srcDirArg], tgrDir.c_str())) {
+            SRC = opendir(argv[srcDirArg]);
+            // TARGET = opendir(tgrDir);
 
-        // Check and print the incoming message
-        checkAndPrintMessage(readlen, incomingMessage, sizeof(incomingMessage));
+            while ((sourceFile = readdir(SRC)) != nullptr) {
+                // skip the . and .. name, never copy . or ..
+                if ((strcmp(sourceFile->d_name, ".") == 0) 
+                || (strcmp(sourceFile->d_name, "..")  == 0 )) {
+                    continue;     
+                }     
+
+                string source(argv[srcDirArg], argv[srcDirArg] + strlen(argv[srcDirArg]));
+                string filename(sourceFile->d_name, sourceFile->d_name + sourceFile->d_namlen);
+                // do the copy -- this will check for and 
+                // skip subdirectories
+                copyFile(source, sourceFile->d_name, tgrDir, fileNastiness);
+                const unsigned char * fileChecksum = getSHA1(makeFileName(source, filename));
+
+                char * messageBuffer = new char[sourceFile->d_namlen + 37 + 1];
+                memcpy(messageBuffer, sourceFile->d_name, sourceFile->d_namlen);
+                memcpy(messageBuffer + 1, " 's checksum is: ", 17);
+                memcpy(messageBuffer + 18, fileChecksum, 20);
+                messageBuffer[sourceFile->d_namlen + 37] = '\0';
+
+                // TODO write retry 
+                sock -> write(messageBuffer, sourceFile->d_namlen + 37 + 1);
+                c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", messageBuffer);
+
+                // Read the response from the server
+                c150debug->printf(C150APPLICATION,"%s: Returned from write, doing read()", argv[0]);
+                readlen = sock -> read(incomingMessage, sizeof(incomingMessage));
+
+                // Check and print the incoming message
+                checkAndPrintMessage(readlen, incomingMessage, sizeof(incomingMessage));
+                delete[] fileChecksum;
+                delete[] messageBuffer;
+            }
+        } else {
+            c150debug->printf(C150APPLICATION,"Source or Target Directory is wrong");
+            exit(1);
+        }
+
+        // sock -> write(argv[msgArg], strlen(argv[msgArg])+1); // +1 includes the null
 
     }
 

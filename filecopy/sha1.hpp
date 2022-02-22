@@ -1,5 +1,5 @@
-#ifndef __SHA1TEST_H_INCLUDED__
-#define __SHA1TEST_H_INCLUDED__
+#ifndef __SHA1_H_INCLUDED__
+#define __SHA1_H_INCLUDED__
 
 #include <string>
 #include <cstdlib>
@@ -11,7 +11,7 @@
 using namespace std;
 
 namespace C150NETWORK {
-    const unsigned char* getSHA1(char * file);
+    const unsigned char* getSHA1(string file);
 }
 
 #endif

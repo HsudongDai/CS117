@@ -27,7 +27,7 @@ using namespace std;
 
 // Generate the SHA1 of the given file.
 // When calling it, must remember to release the SHA1 array.
-const unsigned char* getSHA1(const char *argv)
+const unsigned char* getSHA1(const string argv)
 {
 	ifstream *t;
 	stringstream *buffer;

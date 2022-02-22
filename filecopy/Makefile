@@ -39,11 +39,12 @@ CPPFLAGS = -g -Wall -Werror -I$(C150LIB)
 
 C150LIB = $(COMP117)/files/c150Utils/
 C150AR = $(C150LIB)c150ids.a
+CS117HOME = /h/xdai03/CS117/filecopy
 
 LDFLAGS = 
-INCLUDES = $(C150LIB)c150dgmsocket.h $(C150LIB)c150nastydgmsocket.h $(C150LIB)c150network.h $(C150LIB)c150exceptions.h $(C150LIB)c150debug.h $(C150LIB)c150utility.h
+INCLUDES = $(C150LIB)c150dgmsocket.h $(C150LIB)c150nastydgmsocket.h $(C150LIB)c150network.h $(C150LIB)c150exceptions.h $(C150LIB)c150debug.h $(C150LIB)c150utility.h $(CS117HOME)sha1.hpp $(CS117HOME)copyfile.hpp
 
-all: nastyfiletest makedatafile sha1test
+all: nastyfiletest makedatafile sha1test fileserver fileclient
 
 
 #
@@ -61,8 +62,14 @@ sha1test: sha1test.cpp
 #
 # Build the makedatafile 
 #
-makedatafile: makedatafile.cpp
+makedatafile: makedatafile.cpp 
 	$(CPP) -o makedatafile makedatafile.cpp 
+
+fileserver: fileserver.cpp sha1.cpp copyfile.cpp
+	$(CPP) sha1.o copyfile.o -o fileserver
+
+fileclient: fileclient.cpp sha1.cpp copyfile.cpp
+	$(CPP) sha1.o copyfile.o -o fileclient
 
 #
 # To get any .o, compile the corresponding .cpp
