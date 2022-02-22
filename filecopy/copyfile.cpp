@@ -222,7 +222,7 @@ namespace C150NETWORK {
         }      
     }
 
-    int32_t checkCopyPaths(char * srcDir, char * tgrDir) {
+    int32_t checkCopyPaths(const char * srcDir, const char * tgrDir) {
         //
         // Check the parameters of function
         //
