@@ -168,7 +168,7 @@ main(int argc, char *argv[]) {
         // c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"",
         //                   argv[0], argv[msgArg]);
 
-        if (!checkCopyPaths(argv[srcDirArg], tgrDir.c_str())) {
+        if (!checkCopyPaths(argv[srcDirArg],(char*) tgrDir.c_str())) {
             SRC = opendir(argv[srcDirArg]);
             // TARGET = opendir(tgrDir);
 
