@@ -16,7 +16,7 @@
 namespace C150NETWORK {
     string makeFileName(string dir, string name);
     void copyFile(string sourceDir, string fileName, string targetDir, int nastiness);
-    int32_t checkCopyPaths(const char * srcDir, const char * tgrDir);
+    int32_t checkCopyPaths(char * srcDir, char * tgrDir);
 }
 
 #endif
