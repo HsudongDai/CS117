@@ -87,7 +87,7 @@ main(int argc, char *argv[])
     //
     // Check command line and parse arguments
     //
-    if (argc != 3)  {
+    if (argc != 4)  {
         fprintf(stderr,"Correct syntxt is: %s <network_nastiness> <file_nastiness> <target_dir>\n", argv[0]);
         exit(1);
     }
