@@ -178,22 +178,23 @@ main(int argc, char *argv[]) {
                 || (strcmp(sourceFile->d_name, "..")  == 0 )) {
                     continue;     
                 }     
+                u_int16_t d_namlen = strlen(sourceFile->d_name);
 
                 string source(argv[srcDirArg], argv[srcDirArg] + strlen(argv[srcDirArg]));
-                string filename(sourceFile->d_name, sourceFile->d_name + sourceFile->d_namlen);
+                string filename(sourceFile->d_name, sourceFile->d_name + d_namlen);
                 // do the copy -- this will check for and 
                 // skip subdirectories
                 copyFile(source, sourceFile->d_name, tgrDir, fileNastiness);
                 const unsigned char * fileChecksum = getSHA1(makeFileName(source, filename));
 
-                char * messageBuffer = new char[sourceFile->d_namlen + 37 + 1];
-                memcpy(messageBuffer, sourceFile->d_name, sourceFile->d_namlen);
+                char * messageBuffer = new char[d_namlen + 37 + 1];
+                memcpy(messageBuffer, sourceFile->d_name, d_namlen);
                 memcpy(messageBuffer + 1, " 's checksum is: ", 17);
                 memcpy(messageBuffer + 18, fileChecksum, 20);
-                messageBuffer[sourceFile->d_namlen + 37] = '\0';
+                messageBuffer[d_namlen + 37] = '\0';
 
                 // TODO write retry 
-                sock -> write(messageBuffer, sourceFile->d_namlen + 37 + 1);
+                sock -> write(messageBuffer, d_namlen + 37 + 1);
                 c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", messageBuffer);
 
                 // Read the response from the server
