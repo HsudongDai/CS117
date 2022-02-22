@@ -27,24 +27,26 @@ using namespace std;
 
 // Generate the SHA1 of the given file.
 // When calling it, must remember to release the SHA1 array.
-const unsigned char* getSHA1(const string argv)
-{
-	ifstream *t;
-	stringstream *buffer;
+namespace C150NETWORK{
+	const unsigned char* getSHA1(const string argv) {
+		ifstream *t;
+		stringstream *buffer;
 
-	unsigned char* obuf = new unsigned char[20];
+		unsigned char* obuf = new unsigned char[20];
 
-	string res;
+		string res;
 
-	t = new ifstream(argv);
-	buffer = new stringstream;
-	*buffer << t->rdbuf();
-	SHA1((const unsigned char *)buffer->str().c_str(), 
-			(buffer->str()).length(), obuf);
-	delete t;
-	delete buffer;
-	return obuf;
+		t = new ifstream(argv);
+		buffer = new stringstream;
+		*buffer << t->rdbuf();
+		SHA1((const unsigned char *)buffer->str().c_str(), 
+				(buffer->str()).length(), obuf);
+		delete t;
+		delete buffer;
+		return obuf;
+	}
 }
+
 
 // int main(int argc, char* argv[]) {
 // 	const char * file = "nastyfiletest.cpp";
