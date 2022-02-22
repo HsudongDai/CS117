@@ -72,8 +72,12 @@ fileserver: fileserver.cpp
 	$(CPP) $(CPPFLAGS) -lssl -lcrypto sha1.o copyfile.o  fileserver.o -o fileserver $(C150AR)
 	rm sha1.o copyfile.o fileserver.o
 
-fileclient: fileclient.cpp sha1.cpp copyfile.cpp
-	$(CPP) sha1.o copyfile.o -o fileclient
+fileclient: fileclient.cpp
+	$(CPP) -lssl -lcrypto -o sha1.o -c sha1.cpp
+	$(CPP) -o copyfile.o -c copyfile.cpp
+	$(CPP) -o fileclient.o -c fileclient.cpp
+	$(CPP) $(CPPFLAGS) -lssl -lcrypto sha1.o copyfile.o  fileclient.o -o fileclient $(C150AR)
+	rm sha1.o copyfile.o fileclient.o
 
 #
 # To get any .o, compile the corresponding .cpp

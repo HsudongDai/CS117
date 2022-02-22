@@ -120,7 +120,7 @@ main(int argc, char *argv[]) {
     //
     // Make sure command line looks right
     //
-    if (argc != 4) {
+    if (argc != 5) {
         fprintf(stderr,"Correct syntxt is: %s <server> <network_nastiness> <filenastiness> <srcdir>\n", argv[0]);
         exit(1);
     }
