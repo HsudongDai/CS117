@@ -115,7 +115,7 @@ main(int argc, char *argv[]) {
     //
     //  Set up debug message logging
     //
-    setUpDebugLogging("pingclientdebug.txt",argc, argv);
+    setUpDebugLogging("copyclient_debug.txt",argc, argv);
 
     //
     // Make sure command line looks right
@@ -179,6 +179,7 @@ main(int argc, char *argv[]) {
                     continue;     
                 }     
                 u_int16_t d_namlen = strlen(sourceFile->d_name);
+                c150debug->printf(C150APPLICATION, "Filename is: %s", sourceFile->d_name);
 
                 string source(argv[srcDirArg], argv[srcDirArg] + strlen(argv[srcDirArg]));
                 string filename(sourceFile->d_name, sourceFile->d_name + d_namlen);
