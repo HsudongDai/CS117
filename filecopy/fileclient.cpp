@@ -188,14 +188,16 @@ main(int argc, char *argv[]) {
                 copyFile(source, sourceFile->d_name, tgrDir, fileNastiness);
                 const unsigned char * fileChecksum = getSHA1(makeFileName(source, filename));
 
-                char * messageBuffer = new char[d_namlen + 37 + 1];
-                memcpy(messageBuffer, sourceFile->d_name, d_namlen);
-                memcpy(messageBuffer + d_namlen, "'s checksum is: ", 16);
-                memcpy(messageBuffer + d_namlen + 16, fileChecksum, 20);
-                messageBuffer[d_namlen + 36] = '\0';
+                // 20 is the length of SHA1 checksum, 4 is the length of delimiter
+                // another one is the '\0'
+                char * messageBuffer = new char[d_namlen + 20 + 4 + 1];
+                memcpy(messageBuffer, fileChecksum, 20);
+                memcpy(messageBuffer + 20, "####", 4);
+                memcpy(messageBuffer + 24, sourceFile->d_name, d_namlen);
+                messageBuffer[d_namlen + 24] = '\0';
 
                 // TODO write retry 
-                sock -> write(messageBuffer, d_namlen + 36 + 1);
+                sock -> write(messageBuffer, d_namlen + 20 + 4 + 1);
                 c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", messageBuffer);
 
                 // Read the response from the server
