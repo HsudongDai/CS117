@@ -176,7 +176,10 @@ main(int argc, char *argv[])
                               readlen, incoming.c_str());
             const int filenameSize = incoming.size() - 25;
             const string filename = incoming.substr(24, filenameSize);
-            const char * clientChecksum = incoming.substr(0, 20).c_str();
+            char clientChecksum[20];
+            // char filename[filenameSize];
+            memcpy(clientChecksum, incomingMessage, 20);
+            // memcpy(filename, incomingMessage + 24, filenameSize);
             
             const string target(argv[targetDirArg], argv[targetDirArg] + strlen(argv[targetDirArg]));
 
