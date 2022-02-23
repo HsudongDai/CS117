@@ -174,8 +174,8 @@ main(int argc, char *argv[])
                                               // non-printing characters to .
             c150debug->printf(C150APPLICATION,"Successfully read %d bytes. Message=\"%s\"",
                               readlen, incoming.c_str());
-            const int filenameSize = incoming.size() - 25;
-            const string filename = incoming.substr(24, filenameSize);
+            const int filenameSize = readlen - 1 - 24;
+            const string filename(incomingMessage + 24, filenameSize);
             char clientChecksum[20];
             // char filename[filenameSize];
             memcpy(clientChecksum, incomingMessage, 20);
