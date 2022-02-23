@@ -121,19 +121,19 @@ main(int argc, char *argv[]) {
     // Make sure command line looks right
     //
     if (argc != 5) {
-        fprintf(stderr,"Correct syntxt is: %s <server> <network_nastiness> <filenastiness> <srcdir>\n", argv[0]);
+        fprintf(stderr,"Correct syntxt is: %s <server_name> <network_nastiness> <filenastiness> <srcdir>\n", argv[0]);
         exit(1);
     }
 
-    if (strspn(argv[networkNastinessArg], "0123456789") != strlen(argv[1])) {
-        fprintf(stderr,"Network Nastiness %s is not numeric\n", argv[1]);     
-        fprintf(stderr,"Correct syntxt is: %s <network_nastiness> <file_nastiness> <SRC dir>\n", argv[0]);     
+    if (strspn(argv[networkNastinessArg], "0123456789") != strlen(argv[networkNastinessArg])) {
+        fprintf(stderr,"Network Nastiness %s is not numeric\n", argv[networkNastinessArg]);     
+        fprintf(stderr,"Correct syntxt is: %s <server_name> <network_nastiness> <file_nastiness> <SRC dir>\n", argv[0]);     
         exit(4);
     }
 
-    if (strspn(argv[fileNastinessArg], "0123456789") != strlen(argv[1])) {
-        fprintf(stderr,"File Nastiness %s is not numeric\n", argv[1]);     
-        fprintf(stderr,"Correct syntxt is: %s <network_nastiness> <file_nastiness> <SRC dir>\n", argv[0]);     
+    if (strspn(argv[fileNastinessArg], "0123456789") != strlen(argv[fileNastinessArg])) {
+        fprintf(stderr,"File Nastiness %s is not numeric\n", argv[fileNastinessArg]);     
+        fprintf(stderr,"Correct syntxt is: %s <server_name> <network_nastiness> <file_nastiness> <SRC dir>\n", argv[0]);     
         exit(4);
     }
 
