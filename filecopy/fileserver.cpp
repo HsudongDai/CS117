@@ -184,7 +184,7 @@ main(int argc, char *argv[])
             const string target(argv[targetDirArg], argv[targetDirArg] + strlen(argv[targetDirArg]));
 
             const unsigned char * serverChecksum = getSHA1(makeFileName(target, filename));
-
+            c150debug->printf(C150APPLICATION, "Server-side SHA1 is %s", serverChecksum);
             const bool isMatch = strcmp(clientChecksum, (const char *) serverChecksum); 
             //
             //  create the message to return
