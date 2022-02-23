@@ -191,7 +191,7 @@ main(int argc, char *argv[]) {
                 char * messageBuffer = new char[d_namlen + 37 + 1];
                 memcpy(messageBuffer, sourceFile->d_name, d_namlen);
                 memcpy(messageBuffer + d_namlen, " 's checksum is: ", 17);
-                memcpy(messageBuffer + d_naml:en + 17, fileChecksum, 20);
+                memcpy(messageBuffer + d_namlen + 17, fileChecksum, 20);
                 messageBuffer[d_namlen + 37] = '\0';
 
                 // TODO write retry 
