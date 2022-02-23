@@ -174,9 +174,9 @@ main(int argc, char *argv[])
                                               // non-printing characters to .
             c150debug->printf(C150APPLICATION,"Successfully read %d bytes. Message=\"%s\"",
                               readlen, incoming.c_str());
-            const int filenameSize = incoming.size() - 17 - 20;
+            const int filenameSize = incoming.size() - 16 - 20 - 1;
             const string filename = incoming.substr(0, filenameSize);
-            const char * clientChecksum = incoming.substr(filenameSize + 17, 20).c_str();
+            const char * clientChecksum = incoming.substr(filenameSize + 16, 20).c_str();
             
             const string target(argv[targetDirArg], argv[targetDirArg] + strlen(argv[targetDirArg]));
 

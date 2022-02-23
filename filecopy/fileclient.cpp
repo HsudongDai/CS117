@@ -190,12 +190,12 @@ main(int argc, char *argv[]) {
 
                 char * messageBuffer = new char[d_namlen + 37 + 1];
                 memcpy(messageBuffer, sourceFile->d_name, d_namlen);
-                memcpy(messageBuffer + d_namlen, " 's checksum is: ", 17);
-                memcpy(messageBuffer + d_namlen + 17, fileChecksum, 20);
-                messageBuffer[d_namlen + 37] = '\0';
+                memcpy(messageBuffer + d_namlen, "'s checksum is: ", 16);
+                memcpy(messageBuffer + d_namlen + 16, fileChecksum, 20);
+                messageBuffer[d_namlen + 36] = '\0';
 
                 // TODO write retry 
-                sock -> write(messageBuffer, d_namlen + 37 + 1);
+                sock -> write(messageBuffer, d_namlen + 36 + 1);
                 c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", messageBuffer);
 
                 // Read the response from the server
