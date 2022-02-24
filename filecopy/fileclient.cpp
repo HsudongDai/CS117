@@ -115,7 +115,7 @@ main(int argc, char *argv[]) {
     //
     //  Set up debug message logging
     //
-    setUpDebugLogging("copyclient_debug.txt",argc, argv);
+    setUpDebugLogging("fileclient_debug.txt",argc, argv);
 
     //
     // Make sure command line looks right
@@ -180,12 +180,14 @@ main(int argc, char *argv[]) {
                 }     
                 u_int16_t d_namlen = strlen(sourceFile->d_name);
                 c150debug->printf(C150APPLICATION, "Filename is: %s", sourceFile->d_name);
+                *GRADING << sourceFile->d_name << " beginning transmission, attempt 1." << endl;
 
                 string source(argv[srcDirArg], argv[srcDirArg] + strlen(argv[srcDirArg]));
                 string filename(sourceFile->d_name, sourceFile->d_name + d_namlen);
                 // do the copy -- this will check for and 
                 // skip subdirectories
                 copyFile(source, sourceFile->d_name, tgrDir, fileNastiness);
+                *GRADING << sourceFile->d_name << " transmission complete, waiting for end-to-end check, attempt 1." << endl;
                 const unsigned char * fileChecksum = getSHA1(makeFileName(source, filename));
 
                 // 20 is the length of SHA1 checksum, 4 is the length of delimiter
@@ -206,6 +208,11 @@ main(int argc, char *argv[]) {
 
                 // Check and print the incoming message
                 checkAndPrintMessage(readlen, incomingMessage, sizeof(incomingMessage));
+                if (incomingMessage[sizeof(incomingMessage) - 2] == '!') {
+                    *GRADING << sourceFile->d_name << " end-to-end check succeeded, attempt 1." << endl;
+                } else {
+                    *GRADING << sourceFile->d_name << " end-to-end check failed, attempt 1." << endl;
+                }
                 delete[] fileChecksum;
                 delete[] messageBuffer;
             }

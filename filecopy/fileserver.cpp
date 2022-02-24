@@ -176,6 +176,8 @@ main(int argc, char *argv[])
                               readlen, incoming.c_str());
             const int filenameSize = readlen - 1 - 24;
             const string filename(incomingMessage + 24, filenameSize);
+            *GRADING << filename << " start to receive file." << endl;
+
             char clientChecksum[20];
             // char filename[filenameSize];
             memcpy(clientChecksum, incomingMessage, 20);
@@ -185,6 +187,7 @@ main(int argc, char *argv[])
 
             const unsigned char * serverChecksum = getSHA1(makeFileName(target, filename));
             c150debug->printf(C150APPLICATION, "Server-side SHA1 is %s", serverChecksum);
+            *GRADING << filename << " received, beginning end-to-end check." << endl;
             const bool isMatch = strcmp(clientChecksum, (const char *) serverChecksum); 
             //
             //  create the message to return
@@ -192,9 +195,11 @@ main(int argc, char *argv[])
             string response = "File " + filename + " is received. The checksums ";
             if (isMatch) {
                 response += "don't match.";
+                *GRADING << filename << " end-to-end check succeeded." << endl;
             }
             else {
                 response += "match! Congratulations!";
+                *GRADING << filename << " end-to-end check failed." << endl;
             }
             //
             // write the return message
