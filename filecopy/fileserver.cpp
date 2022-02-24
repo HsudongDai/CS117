@@ -77,7 +77,7 @@ void setUpDebugLogging(const char *logname, int argc, char *argv[]);
 int
 main(int argc, char *argv[])
 {
-
+    GRADEME(argc, argv);
     //
     // Variable declarations
     //
