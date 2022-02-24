@@ -39,10 +39,10 @@ CPPFLAGS = -g -Wall -Werror -I$(C150LIB)
 
 C150LIB = $(COMP117)/files/c150Utils/
 C150AR = $(C150LIB)c150ids.a
-CS117HOME = /h/xdai03/CS117/filecopy
+CS117HOME = /h/xdai03/CS117/filecopy/
 
 LDFLAGS = 
-INCLUDES = $(C150LIB)c150dgmsocket.h $(C150LIB)c150nastydgmsocket.h $(C150LIB)c150network.h $(C150LIB)c150exceptions.h $(C150LIB)c150debug.h $(C150LIB)c150utility.h $(CS117HOME)sha1.hpp $(CS117HOME)copyfile.hpp
+INCLUDES = $(C150LIB)c150dgmsocket.h $(C150LIB)c150nastydgmsocket.h $(C150LIB)c150network.h $(C150LIB)c150exceptions.h $(C150LIB)c150debug.h $(C150LIB)c150utility.h
 
 all: nastyfiletest makedatafile sha1test fileserver fileclient
 
@@ -91,6 +91,6 @@ fileclient: fileclient.cpp
 # for forcing complete rebuild#
 
 clean:
-	 rm -f nastyfiletest sha1test makedatafile *.o 
+	 rm -f nastyfiletest sha1test makedatafile fileclient fileserver sha1 *.o 
 
 
