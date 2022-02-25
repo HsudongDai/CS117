@@ -1,0 +1,202 @@
+<!DOCTYPE HTML>
+<!-- 
+ **********************************************************
+
+             TUFTS CS 117 HOMEWORK ASSIGNMENT
+
+        Fill in your name, e-mail and answers to questions
+        in the sections provided below.
+
+          All questions are marked up: <li class="q">
+          All answers are marked up:   <li class="a">
+
+
+     PLEASE DO NOT MODIFY ANY THING OTHER THAN THE 
+     NAME, E-MAIL, AND ANSWER FIELDS (you may also add
+     css declarations in the <head> if you need them,
+     but usually you won't.
+
+ **********************************************************
+ -->
+
+
+<html lang="en">
+<head>
+<meta charset="utf-8"> 
+<title>Questions for: Tufts CS 117 Assignment Reading Assignment &#8212; Distribution Models and HTTP</title>
+<link rel="stylesheet" type="text/css" href="https://www.cs.tufts.edu/comp/117/style/homework.css" />
+</head>
+
+<body class="homework">
+
+
+<!-- ******************************************************
+	   YOU MUST FILL IN YOUR NAME, UTLN AND EMAIL BELOW!!
+         (You may copy this from an earlier assignment
+                         if you like)
+
+     ****************************************************** -->
+
+
+<div class="student">
+<p>
+<span class="label">Student name: </span>
+Xudong Dai
+<br>
+
+<span class="label">LOGIN: </span>
+xdai03
+<br>
+
+<span class="label">E-mail: </span>
+<!-- DON'T FORGET UP UPDATE THE MAILTO: URI BELOW ALONG WITH
+     YOUR EMAIL IN THE ANCHOR.  IT SHOULD LOOK LIKE:
+ <a href="mailto:lady.gaga@cs.tufts.edu">lady.gaga@cs.tufts.edu</a>
+--> 
+
+<a href="mailto:xdai03@cs.tufts.edu">xdai03@cs.tufts.edu</a>
+<br>
+</p>
+</div>
+
+
+
+
+
+<div class="UpperLeftHeader">
+<p>Tufts CS 117 (Spring 2022):
+<br>
+Internet-scale Distributed Systems
+</p>
+</div>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - -
+		HOMEWORK TITLE
+  - -  - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+<div class="headerdiv">
+<h1>
+Tufts CS 117 Assignment:<br>Distribution Models and HTTP
+<br>
+Questions
+</h1>
+<div style="text-align:left">
+</div>
+</div>
+
+<!-- ******************************************************
+
+              PLEASE ANSWER QUESTIONS IN THE SECTIONS
+	      LABELED class="a" (for answer)
+
+     ****************************************************** -->
+
+
+
+<div class="main">
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - -
+		QUESTION
+  - -  - - - - - - - - - - - - - - - - - - - - - - -->
+ <div class="qa">
+
+<p class="hilite">Unlike many our earlier written assignmenments in which you were expected to give extensive answers and for which your analysis and writing was graded in detail, these questions are intended as a quick confirmation that you have read the material and thought about the key issues.
+</p>
+<p>
+Your answers to these questions will be graded, but this written submission counts significantly
+less than the larger ones for end-to-end, naming, etc.
+The big challenge here will not be answering the questions, each of which will take less than a minute once you know the material;
+the challenge will be to get just enough out of the reading to have a good idea what the answer is.
+As usual, you will have the opportunity
+to update your answers after class discussion, and some of these questions will be much easier to answer after that
+Do not stress about your initial submission before class...just do your best.
+
+</p>
+
+<hr/>
+<p>
+Please answer the following True/False questions, by typing T or F in the space provided (lower or uppercase T/F are both fine):
+<p>
+For the first three questions, consider an application in which the price of some stock (Microsoft's for example) is to be retrieved from a stock quote server. 
+That is, the stock's symbol (MSFT in the example) will be passed to the server, and the latest stock price is to be returned. 
+
+<ol class="qa">
+
+<li class="q">
+An implementation of the stock quote application based on RPC will typically be much slower than an implementation using REST.
+</li>
+<li class="a">
+True(T) or False(F): <span style = "text-decoration: underline;">_F_</span> 
+</li>
+
+<li class="q">
+REST gives an architecture in which it may be possible to bookmark (I.e. remember) a URI representing the query for the stock price?
+</li>
+<li class="a">
+True(T) or False(F): <span style = "text-decoration: underline;">_T_</span>   
+</li>
+
+
+<li class="q">
+If a RESTful server chooses a response format such as HTML or plain text, the same stock quote service may be usable from a Web browser as well 
+as from user-written program at the client.
+</li>
+<li class="a">
+True(T) or False(F): <span style = "text-decoration: underline;">_F_</span>   
+</li>
+
+<li class="q">
+Both REST and RPC tend to use a request/response pattern for each interaction between client and server (not just for stock quotes, but for all applications).
+</li>
+<li class="a">
+True(T) or False(F): <span style = "text-decoration: underline;">_T_</span>
+</li>
+
+<li class="q">
+Compared to RPC, REST tends to more gracefully handle transfers of documents and images.
+</li>
+<li class="a">
+True(T) or False(F): <span style = "text-decoration: underline;">_T_</span> 
+</li>
+
+<li class="q">
+Compared to RPC, REST tends to have more complete integration with programming languages at the client and the server
+</li>
+<li class="a">
+True(T) or False(F): <span style = "text-decoration: underline;">_T_</span> 
+</li>
+
+
+<li class="q">
+You will notice that just like the specification for URIs, the specification for HTTP requests and responses
+is set out using a formal grammar known as <a href="https://datatracker.ietf.org/doc/html/rfc2616#section-2.1">Augmented BNF</a> (an 
+extended form of a famous context free grammar known as BNF). We will be discussing ABNF and grammars in our session on URIs
+and RFC 3986, so this question may be easier to answer after that.
+<br>
+<br>
+Question: in the grammer for the format of an HTTP request, what is the name of the rule (sometimes called the non-terminal) that specifies the URI to be 
+accessed by the request? You might want to look at <a href="https://datatracker.ietf.org/doc/html/rfc2616#section-5.1">section 5.1</a>, which
+specifies the format of a <code>Request-Line</code> (which is the first line of an HTTP request).
+</li>
+<li class="a">
+The name of ABNF grammar rule specifying the URI to be retrieved is: <span style = "text-decoration: underline;">_Request Line_</span>   
+</li>
+
+<li class="q">
+Section <a href="https://datatracker.ietf.org/doc/html/rfc2616#section-5.1.1">5.1.1</a> of RFC 2616 introduces the Methods used on HTTP requests.
+Which of these "methods" is used in the typical request to retrieve a Web page from a server?
+</li>
+<li class="a">
+The name of the method used to retrieve a Web page is: <span style = "text-decoration: underline;">_GET_</span>   
+</li>
+
+</ol>
+
+
+
+</div>
+</div>
+</body>
+</html>
