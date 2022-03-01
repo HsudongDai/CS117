@@ -12,9 +12,11 @@
 
 // using namespace C150NETWORK;
 
-void copyFile(string sourceDir, string fileName, string targetDir, int nastiness); // fwd decl
-bool isFile(string fname);
-void checkDirectory(char *dirname);
+void C150NETWORK::copyFile(string sourceDir, string fileName, string targetDir, int nastiness); // fwd decl
+bool C150NETWORK::isFile(string fname);
+void C150NETWORK::checkDirectory(char *dirname);
+const char * C150NETWORK::safeReadFile(string sourceDir, string fileName, int nastiness);
+void C150NETWORK::safeWriteFile(string targetDir, string fileName, const char * buffer, int nastiness);
 
 namespace C150NETWORK {
     string makeFileName(string dir, string name) {
@@ -268,5 +270,120 @@ namespace C150NETWORK {
         closedir(TARGET);       // we just wanted to be sure it was there
                                 // SRC dir remains open for loop below
         return 0;
+    }
+
+    const char * safeReadFile(string sourceDir, string fileName, int nastiness) {
+        void* fopenretval;
+        size_t len1, len2;
+        string errorString;
+        char *buffer1, *buffer2;
+        struct stat statbuf;  
+        size_t sourceSize;
+
+        string sourceName = makeFileName(sourceDir, fileName);
+
+        if (!isFile(sourceName)) {
+            cerr << "Input file " << sourceName << " is a directory or other non-regular file. Skipping" << endl;
+            return;
+        }
+
+        cout << "Copying " << sourceName << endl;
+
+        try {
+            //
+            // Read whole input file 
+            //
+            if (lstat(sourceName.c_str(), &statbuf) != 0) {
+                fprintf(stderr,"copyFile: Error stating supplied source file %s\n", sourceName.c_str());
+                exit(20);
+            }
+
+            // Make an input buffer large enough for
+            // the whole file
+            //
+            sourceSize = statbuf.st_size;
+            buffer1 = new char[sourceSize];
+            buffer2 = new char[sourceSize];
+
+            NASTYFILE inputFile(nastiness); 
+
+            fopenretval = inputFile.fopen(sourceName.c_str(), "rb");  
+                                         // wraps Unix fopen
+                                         // Note rb gives "read, binary"
+                                         // which avoids line end munging
+  
+            if (fopenretval == NULL) {
+                cerr << "Error opening input file " << sourceName << 
+                    " errno=" << strerror(errno) << endl;
+                exit(12);
+            }
+            len1 = inputFile.fread(buffer1, 1, sourceSize);
+            len2 = inputFile.fread(buffer2, 1, sourceSize);
+
+            bool isSame = strcmp(buffer1, buffer2);
+
+            // make sure the buffer keeps the correct content
+            // the lengths must match, hence excludes the exception
+            while (len1 != len2 || !isSame) {
+                len1 = inputFile.fread(buffer1, 1, sourceSize);
+                len2 = inputFile.fread(buffer2, 1, sourceSize);
+
+                isSame = strcmp(buffer1, buffer2);
+            }
+
+            // close the inputfile
+            if (inputFile.fclose() != 0 ) {
+                cerr << "Error closing input file " << sourceName << 
+                    " errno=" << strerror(errno) << endl;
+                exit(16);
+            }
+
+            delete[] buffer2;
+            return (const char *) buffer1;
+        } catch (C150Exception& e) {
+            delete[] buffer1;
+            delete[] buffer2;
+
+            cerr << "nastyfiletest:copyfile(): Caught C150Exception: " << 
+            e.formattedExplanation() << endl;
+        }
+    }
+
+    void safeWriteFile(string targetDir, string fileName, const char * buffer, int nastiness) {
+        void *fopenretval;
+        size_t len1, len2;
+        size_t sourceSize = strlen(buffer);
+        string errorString;
+        struct stat statbuf;  
+
+        string targetName = makeFileName(targetDir, fileName);
+        cout << "Writing " << targetName << " to " << targetName << endl;
+
+        try {
+            NASTYFILE outputFile(nastiness); 
+            fopenretval = outputFile.fopen(targetName.c_str(), "wb");  
+
+            len1 = outputFile.fwrite(buffer, 1, sourceSize);
+            len2 = outputFile.fwrite(buffer, 1, sourceSize);
+
+            while (len1 != len2 || len1 != sourceSize || len2 != sourceSize) {
+                len1 = outputFile.fwrite(buffer, 1, sourceSize);
+                len2 = outputFile.fwrite(buffer, 1, sourceSize);
+            }
+
+            if (outputFile.fclose() == 0 ) {
+                cout << "Finished writing file " << targetName <<endl;
+                } else {
+                cerr << "Error closing output file " << targetName << 
+                    " errno=" << strerror(errno) << endl;
+                exit(16);
+            }
+
+            delete[] buffer;
+        } catch (C150Exception& e) {
+            delete[] buffer;
+            cerr << "nastyfiletest:copyfile(): Caught C150Exception: " << 
+            e.formattedExplanation() << endl;
+        }    
     }
 }
