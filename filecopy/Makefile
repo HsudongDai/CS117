@@ -66,18 +66,18 @@ makedatafile: makedatafile.cpp
 	$(CPP) -o makedatafile makedatafile.cpp 
 
 fileserver: fileserver.cpp
-	$(CPP) -lssl -lcrypto -o sha1.o -c sha1.cpp
+	$(CPP) -lssl -lcrypto -o netutility.o -c netutility.cpp
 	$(CPP) -o copyfile.o -c copyfile.cpp
 	$(CPP) -o fileserver.o -c fileserver.cpp
-	$(CPP) $(CPPFLAGS) -lssl -lcrypto sha1.o copyfile.o  fileserver.o -o fileserver $(C150AR)
-	rm sha1.o copyfile.o fileserver.o
+	$(CPP) $(CPPFLAGS) -lssl -lcrypto netutility.o copyfile.o fileserver.o -o fileserver $(C150AR)
+	rm netutility.o copyfile.o fileserver.o
 
 fileclient: fileclient.cpp
-	$(CPP) -lssl -lcrypto -o sha1.o -c sha1.cpp
+	$(CPP) -lssl -lcrypto -o netutility.o -c netutility.cpp
 	$(CPP) -o copyfile.o -c copyfile.cpp
 	$(CPP) -o fileclient.o -c fileclient.cpp
-	$(CPP) $(CPPFLAGS) -lssl -lcrypto sha1.o copyfile.o  fileclient.o -o fileclient $(C150AR)
-	rm sha1.o copyfile.o fileclient.o
+	$(CPP) $(CPPFLAGS) -lssl -lcrypto netutility.o copyfile.o fileclient.o -o fileclient $(C150AR)
+	rm netutility.o copyfile.o fileserver.o
 
 #
 # To get any .o, compile the corresponding .cpp

@@ -51,10 +51,12 @@
 //     
 // --------------------------------------------------------------
 
+#include <map>
 #include "c150nastydgmsocket.h"
 #include "c150debug.h"
 #include "sha1.hpp"
 #include "copyfile.hpp"
+#include "netutility.hpp"
 #include <fstream>
 #include <cstdlib> 
 
@@ -114,7 +116,8 @@ main(int argc, char *argv[])
     if (fileNastiness < 0 || fileNastiness > 5) {
         fprintf(stderr,"File Nastiness %s must be between 0 and 5, while given %d\n", fileNastiness);
     }
-       
+    
+    const string target(argv[targetDirArg], argv[targetDirArg] + strlen(argv[targetDirArg]));
     //
     //  Set up debug message logging
     //
@@ -135,7 +138,7 @@ main(int argc, char *argv[])
     //
     c150debug->setIndent("    ");              // if we merge client and server
     // logs, server stuff will be indented
-
+    map<string, char *> fileQueue;
     //
     // Create socket, loop receiving and responding
     //
@@ -148,65 +151,85 @@ main(int argc, char *argv[])
         C150DgmSocket *sock = new C150NastyDgmSocket(networkNastiness);
         c150debug->printf(C150APPLICATION,"Ready to accept messages");
 
+        // Packet prevPack = make_tuple(-1, -1, )
+
         //
         // infinite loop processing messages
         //
-        while (true) { 
+        while (true) {
+            string statusCode;
+            Packet prevPack = make_tuple(0, 0, "", 0, 0, nullptr);
+            // when server send message to 
+            prevPack = receiveFileBySock(sock, fileQueue, prevPack);
+
+            int messageType = get<0>(prevPack);
+            string filename = get<2>(prevPack);
+
+            if (messageType == 32) {
+                safeWriteFile(target, filename, fileQueue[filename], fileNastiness);
+                c150debug->printf(C150APPLICATION,"Successfully write file %s", filename);
+                cout << "receive: " << filename << endl;
+            }
+
+            // c150debug->printf(C150APPLICATION,"Successfully read %d bytes. Me",)
+            // if (status == "-1") {
+            //     c150debug->printf(C150APPLICATION,"Fail to load file");
+            //     exit(-1);
+            // }
 
             //
             // Read a packet
             // -1 in size below is to leave room for null
             //
-            readlen = sock -> read(incomingMessage, sizeof(incomingMessage)-1);
-            if (readlen == 0) {
-                c150debug->printf(C150APPLICATION,"Read zero length message, trying again");
-                continue;
-            }
+            // readlen = sock -> read(incomingMessage, sizeof(incomingMessage)-1);
+            // if (readlen == 0) {
+            //     c150debug->printf(C150APPLICATION,"Read zero length message, trying again");
+            //     continue;
+            // }
+
 
             //
             // Clean up the message in case it contained junk
             //
-            incomingMessage[readlen] = '\0';  // make sure null terminated
-            string incoming(incomingMessage); // Convert to C++ string ...it's slightly
-                                              // easier to work with, and cleanString
-                                              // expects it
-            cleanString(incoming);            // c150ids-supplied utility: changes
-                                              // non-printing characters to .
-            c150debug->printf(C150APPLICATION,"Successfully read %d bytes. Message=\"%s\"",
-                              readlen, incoming.c_str());
-            const int filenameSize = readlen - 1 - 24;
-            const string filename(incomingMessage + 24, filenameSize);
-            *GRADING << filename << " start to receive file." << endl;
+            // incomingMessage[readlen] = '\0';  // make sure null terminated
+            // string incoming(incomingMessage); // Convert to C++ string ...it's slightly
+            //                                   // easier to work with, and cleanString
+            //                                   // expects it
+            // cleanString(incoming);            // c150ids-supplied utility: changes
+            //                                   // non-printing characters to .
+            // c150debug->printf(C150APPLICATION,"Successfully read %d bytes. Message=\"%s\"",
+            //                   readlen, incoming.c_str());
+            // const int filenameSize = readlen - 1 - 24;
+            // const string filename(incomingMessage + 24, filenameSize);
+            // *GRADING << filename << " start to receive file." << endl;
 
-            char clientChecksum[20];
+            // char clientChecksum[20];
             // char filename[filenameSize];
-            memcpy(clientChecksum, incomingMessage, 20);
+            // memcpy(clientChecksum, incomingMessage, 20);
             // memcpy(filename, incomingMessage + 24, filenameSize);
-            
-            const string target(argv[targetDirArg], argv[targetDirArg] + strlen(argv[targetDirArg]));
 
-            const unsigned char * serverChecksum = getSHA1(makeFileName(target, filename));
-            c150debug->printf(C150APPLICATION, "Server-side SHA1 is %s", serverChecksum);
-            *GRADING << filename << " received, beginning end-to-end check." << endl;
-            const bool isMatch = strcmp(clientChecksum, (const char *) serverChecksum); 
+            // const unsigned char * serverChecksum = getSHA1(makeFileName(target, filename));
+            // c150debug->printf(C150APPLICATION, "Server-side SHA1 is %s", serverChecksum);
+            // *GRADING << filename << " received, beginning end-to-end check." << endl;
+            // const bool isMatch = strcmp(clientChecksum, (const char *) serverChecksum); 
             //
             //  create the message to return
             // 
-            string response = "File " + filename + " is received. The checksums ";
-            if (isMatch) {
-                response += "don't match.";
-                *GRADING << filename << " end-to-end check succeeded." << endl;
-            }
-            else {
-                response += "match! Congratulations!";
-                *GRADING << filename << " end-to-end check failed." << endl;
-            }
+            // string response = "File " + filename + " is received. The checksums ";
+            // if (isMatch) {
+            //     response += "don't match.";
+            //     *GRADING << filename << " end-to-end check succeeded." << endl;
+            // }
+            // else {
+            //     response += "match! Congratulations!";
+            //     *GRADING << filename << " end-to-end check failed." << endl;
+            // }
             //
             // write the return message
             //
-            c150debug->printf(C150APPLICATION,"Responding with message=\"%s\"",
-                              response.c_str());
-            sock -> write(response.c_str(), response.length()+1);
+            // c150debug->printf(C150APPLICATION,"Responding with message=\"%s\"",
+            //                   response.c_str());
+            // sock -> write(response.c_str(), response.length()+1);
         } 
     }
 

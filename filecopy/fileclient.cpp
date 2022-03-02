@@ -65,6 +65,7 @@
 #include "c150grading.h"
 #include "copyfile.hpp"
 #include "sha1.hpp"
+#include "netutility.hpp"
 #include <fstream>
 #include <filesystem>
 
@@ -163,6 +164,7 @@ main(int argc, char *argv[]) {
 
         // Tell the DGMSocket which server to talk to
         sock -> setServerName(argv[serverArg]);  
+        sock->turnOnTimeouts(100);
 
         // Send the message to the server
         // c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"",
@@ -186,35 +188,44 @@ main(int argc, char *argv[]) {
                 string filename(sourceFile->d_name, sourceFile->d_name + d_namlen);
                 // do the copy -- this will check for and 
                 // skip subdirectories
-                copyFile(source, sourceFile->d_name, tgrDir, fileNastiness);
+                // copyFile(source, sourceFile->d_name, tgrDir, fileNastiness);
+                const char * fileBuffer = safeReadFile(source, sourceFile->d_name, fileNastiness);
                 *GRADING << sourceFile->d_name << " transmission complete, waiting for end-to-end check, attempt 1." << endl;
                 const unsigned char * fileChecksum = getSHA1(makeFileName(source, filename));
 
+                int isSuccess = sendFileBySock(sock, filename, fileBuffer);
+                c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer);
+                while (isSuccess != 0) {
+                    isSuccess = sendFileBySock(sock, filename, fileBuffer);
+                    c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer);
+                }
+                cout << "send: " << filename << endl;
+
                 // 20 is the length of SHA1 checksum, 4 is the length of delimiter
                 // another one is the '\0'
-                char * messageBuffer = new char[d_namlen + 20 + 4 + 1];
-                memcpy(messageBuffer, fileChecksum, 20);
-                memcpy(messageBuffer + 20, "####", 4);
-                memcpy(messageBuffer + 24, sourceFile->d_name, d_namlen);
-                messageBuffer[d_namlen + 24] = '\0';
+                // char * messageBuffer = new char[d_namlen + 20 + 4 + 1];
+                // memcpy(messageBuffer, fileChecksum, 20);
+                // memcpy(messageBuffer + 20, "####", 4);
+                // memcpy(messageBuffer + 24, sourceFile->d_name, d_namlen);
+                // messageBuffer[d_namlen + 24] = '\0';
 
                 // TODO write retry 
-                sock -> write(messageBuffer, d_namlen + 20 + 4 + 1);
-                c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", messageBuffer);
+                // sock -> write(messageBuffer, d_namlen + 20 + 4 + 1);
+                // c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", messageBuffer);
 
                 // Read the response from the server
-                c150debug->printf(C150APPLICATION,"%s: Returned from write, doing read()", argv[0]);
-                readlen = sock -> read(incomingMessage, sizeof(incomingMessage));
+                // c150debug->printf(C150APPLICATION,"%s: Returned from write, doing read()", argv[0]);
+                // readlen = sock -> read(incomingMessage, sizeof(incomingMessage));
 
                 // Check and print the incoming message
-                checkAndPrintMessage(readlen, incomingMessage, sizeof(incomingMessage));
-                if (incomingMessage[sizeof(incomingMessage) - 2] == '!') {
-                    *GRADING << sourceFile->d_name << " end-to-end check succeeded, attempt 1." << endl;
-                } else {
-                    *GRADING << sourceFile->d_name << " end-to-end check failed, attempt 1." << endl;
-                }
-                delete[] fileChecksum;
-                delete[] messageBuffer;
+                // checkAndPrintMessage(readlen, incomingMessage, sizeof(incomingMessage));
+                // if (incomingMessage[sizeof(incomingMessage) - 2] == '!') {
+                //     *GRADING << sourceFile->d_name << " end-to-end check succeeded, attempt 1." << endl;
+                // } else {
+                //     *GRADING << sourceFile->d_name << " end-to-end check failed, attempt 1." << endl;
+                // }
+                // delete[] fileChecksum;
+                // delete[] messageBuffer;
             }
         } else {
             c150debug->printf(C150APPLICATION,"Source or Target Directory is wrong");
