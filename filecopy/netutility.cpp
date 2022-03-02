@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <map>
 #include <openssl/sha.h>
 #include "c150dgmsocket.h"
 #include "c150nastydgmsocket.h"
@@ -170,17 +171,17 @@ namespace C150NETWORK {
                 responsePacket = arrayToPacket(response);          
             }
             // step 2: send the fileBuffer
-            int leftLen = fileBuffer;
+            int leftLen = fileBufferLen;
             int sendLen = secLen;
             char* fileCopier = fileBuffer;
-            for (int i = 0; i < packets; i++) {
+            for (int i = 1; i <= packets; i++) {
                 leftLen -= secLen;
                 sendLen = (leftLen < secLen) ? leftLen : secLen;
-                response = sendMessage(sock, 4, filename, 0, i, sendLen, fileCopier, 1);
+                response = sendMessage(sock, 4, filename, i, sendLen, fileCopier, 1);
                 responsePacket = arrayToPacket(response);
 
                 while (!checkCarryload(responsePacket, cPacket)) {
-                    response = sendMessage(sock, 4, filename, 0, sendLen, cPacket, 1);
+                    response = sendMessage(sock, 4, filename, i, sendLen, cPacket, 1);
                     responsePacket = arrayToPacket(response);  
                     delete[] response;        
                 }
@@ -190,8 +191,8 @@ namespace C150NETWORK {
             // step 3: send the checksum
             char checksum[20];
             SHA1((const unsigned char *) fileBuffer, fileBufferLen, checksum);
-            const char * response = sendMessage(sock, 16, filename, 0, 20, checksum, 1);
-            Packet responsePacket = arrayToPacket(response);
+            response = sendMessage(sock, 16, filename, packets + 1, 20, checksum, 1);
+            responsePacket = arrayToPacket(response);
             delete[] response;
 
             int breakTime = 0;  // If the checksum does not match after 3 times
@@ -200,7 +201,7 @@ namespace C150NETWORK {
                     return -1;
                 }
                 ++breakTime;
-                response = sendMessage(sock, 1, filename, 0, 4, 20, checksum, 1);
+                response = sendMessage(sock, 1, filename, 0, 20, checksum, 1);
                 responsePacket = arrayToPacket(response);          
             } while (!checkCarryload(responsePacket, checksum));
         } catch (C150Exception& e) {
@@ -208,7 +209,7 @@ namespace C150NETWORK {
             c150debug->printf(C150ALWAYSLOG,"Caught C150NetworkException: %s\n",
                         e.formattedExplanation().c_str());
             // In case we're logging to a file, write to the console too
-            cerr << fileName << ": caught C150NetworkException: " << e.formattedExplanation()\
+            cerr << filename << ": caught C150NetworkException: " << e.formattedExplanation()\
                         << endl;
         }
         return 0;
@@ -220,12 +221,14 @@ namespace C150NETWORK {
         int messageType = get<0>(header);
         string filename = get<2>(header);
         int packetID = get<3>(header);
-        int carryloadLen = get<4>(content);
+        int carryloadLen = get<4>(header);
         vector<char> carry = get<5>(header);
 
         int prevMessageType = get<0>(prevPack);
         string prevFilename = get<2>(prevPack);
         int prevPacketID = get<3>(prevPack);
+
+        const char *resp;
 
         if (messageType == prevMessageType && prevFilename == filename && packetID == prevPacketID) {
             return header;
@@ -235,36 +238,34 @@ namespace C150NETWORK {
             int packets, bufferLen;
             char cPackets[4], cBufferLen[4];
             strncpy(cPackets, carry.data(), 4);
-            strncpy(cBufferLen, carry.data() + 4; 4);
+            strncpy(cBufferLen, carry.data() + 4, 4);
             sscanf(cPackets, "%d", packets);
             sscanf(cBufferLen, "%d", bufferLen);
 
             char* fileBuffer = new char[bufferLen];
             fileQueue[filename] = fileBuffer;
-            const char *resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
-            delete[] resp;
+            resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
         }
 
         else if (messageType == 4) {
-            const char * fileBuffer = fileQueue[filename];
+            char * fileBuffer = fileQueue[filename];
 
             const char * carryload = get<5>(content).data();
             memcpy(fileBuffer + packetID * secLen, carryload, carryloadLen);
-            const char* resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
-            delete[] resp;
+            resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
         }
 
         else if (messageType == 16) {
-            char checksum[20];
+            unsigned char checksum[20];
             const char * fileBuffer = fileQueue[filename];
             SHA1((const unsigned char *) fileBuffer, strlen(fileBuffer), checksum);
             
             const char * carryload = get<5>(content).data();
             int isSame = strcmp(carryload, checksum);
-            const char *resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, checksum), 0;
-            delete[] resp;
+            resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, checksum), 0;
         }
+        delete[] resp;
 
-        return Packet;
+        return header;
     }
 }
