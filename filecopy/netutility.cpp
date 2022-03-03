@@ -124,7 +124,7 @@ namespace C150NETWORK {
         }
         vector<char> recData(recBuffer, recBuffer + 512);
         // }
-        return recBuffer;
+        return recData;
     }
 
     // receive the data from sock then pack it into a Packet
@@ -172,9 +172,8 @@ namespace C150NETWORK {
             char cPacket[8];
             memcpy(cPacket, &packets, sizeof(int));
             memcpy(cPacket + sizeof(int), &fileBufferLen, sizeof(int));
-            const char * response = sendMessage(sock, 1, filename, 0, 4, cPacket, 1);
+            vector<char> response = sendMessage(sock, 1, filename, 0, 4, cPacket, 1);
             Packet responsePacket = arrayToPacket(response);
-            delete[] response;
 
             while (!checkCarryload(responsePacket, cPacket)) {
                 response = sendMessage(sock, 1, filename, 0, 4, cPacket, 1);
@@ -194,7 +193,6 @@ namespace C150NETWORK {
                     response = sendMessage(sock, 4, filename, i, sendLen, cPacket, 1);
 
                     responsePacket = arrayToPacket();  
-                    delete[] response;        
                 }
                 fileCopier += sendLen;
             }
@@ -204,7 +202,6 @@ namespace C150NETWORK {
             SHA1((const unsigned char *) fileBuffer, fileBufferLen, checksum);
             response = sendMessage(sock, 16, filename, packets + 1, 20, (const char *)checksum, 1);
             responsePacket = arrayToPacket(response);
-            delete[] response;
 
             int breakTime = 0;  // If the checksum does not match after 3 times
             do {
@@ -275,7 +272,6 @@ namespace C150NETWORK {
             int isSame = strcmp(carryload, (const char *) checksum);
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, (const char *)checksum, 0);
         }
-        delete[] resp;
 
         return header;
     }
