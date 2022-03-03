@@ -138,7 +138,7 @@ main(int argc, char *argv[])
     //
     c150debug->setIndent("    ");              // if we merge client and server
     // logs, server stuff will be indented
-    map<string, char*> fileQueue;
+    map<string, vector<char>> fileQueue;
     //
     // Create socket, loop receiving and responding
     //
