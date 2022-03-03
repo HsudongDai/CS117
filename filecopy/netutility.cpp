@@ -20,7 +20,7 @@ namespace C150NETWORK {
     // return the response
     Packet arrayToPacket(vector<char>& recBuffer) {
 
-//        cout << "RecBuffer is " ;
+        // cout << "RecBuffer is " ;
         cout << "RecBuffer len is: " << recBuffer.size() << endl;
         char lenBuffer[4];  // used to buffer all the 4-byte length
 
@@ -28,37 +28,37 @@ namespace C150NETWORK {
         memcpy(lenBuffer, recBuffer.data(), 4);
         int messageType = charArrayToInt(lenBuffer);
 
-  //      cout << "extract message type is " << messageType << endl;
+        // cout << "extract message type is " << messageType << endl;
 
         // get the length of filename
         memcpy(lenBuffer, recBuffer.data() + 4, 4);
         int filenameLen = charArrayToInt(lenBuffer);
-    //    cout << "extract filename len: " << filenameLen << endl;
+        // cout << "extract filename len: " << filenameLen << endl;
 
         // read filename
         char* cFilename = new char[filenameLen];
         memcpy(cFilename, recBuffer.data() + 8, filenameLen);
         string filename(cFilename, cFilename + filenameLen);
 
-    //    cout << "extract filename: " << filename << endl;
+        // cout << "extract filename: " << filename << endl;
         delete[] cFilename;
 
         // read packet_id
         memcpy(lenBuffer, recBuffer.data() + 8 + filenameLen, 4);
         int packetID = charArrayToInt(lenBuffer);
-        cout << "extract packetID: " << packetID << endl;
+        // cout << "extract packetID: " << packetID << endl;
 
         // read carryload length
         memcpy(lenBuffer, recBuffer.data() + 12 + filenameLen, 4);
         int carryloadLen = charArrayToInt(lenBuffer);
-      //  cout << "extract carryload len: " << carryloadLen << endl;
+        //  cout << "extract carryload len: " << carryloadLen << endl;
         if (carryloadLen < 0) {
-       //     carryloadLen = recBuffer.size() - 12 - filenameLen;
+        // carryloadLen = recBuffer.size() - 12 - filenameLen;
               carryloadLen =secLen;
         }
         // read carryload 
         vector<char> carryload(recBuffer.data() + 16 + filenameLen, recBuffer.data() + 16 + filenameLen + carryloadLen);
-        cout << "extract carryload: " << carryload.size() << endl;
+        // cout << "extract carryload: " << carryload.size() << endl;
 
         // pack data into 
         Packet packet = make_tuple(messageType, filenameLen, filename, packetID, carryloadLen, carryload);
@@ -242,9 +242,7 @@ namespace C150NETWORK {
         string filename = get<2>(header);
         int packetID = get<3>(header);
         int carryloadLen = get<4>(header);
-        vector<char> carry = get<5>(header);
-
-        cout << messageType << " " << filename << " " << packetID << " " << carryloadLen << " " << carry.data() << endl;
+        vector<char> carry = get<5>(header);    
 
         int prevMessageType = get<0>(prevPack);
         string prevFilename = get<2>(prevPack);
@@ -255,6 +253,7 @@ namespace C150NETWORK {
         if (messageType == prevMessageType && prevFilename == filename && packetID == prevPacketID) {
             return header;
         }
+        cout << messageType << " " << filename << " " << packetID << " " << carryloadLen << " " << carry.data() << endl;
 
         if (messageType == 1) {
             int packets;
@@ -264,8 +263,8 @@ namespace C150NETWORK {
             memcpy(cBufferLen, carry.data() + 4, 4);
             packets = charArrayToInt(cPackets);
             bufferLen = charArrayToInt(cBufferLen);
-            //cout << "Packets: " << packets << endl;
-            //cout << "BufferLen: " << bufferLen << endl;
+            cout << "Packets: " << packets << endl;
+            cout << "BufferLen: " << bufferLen << endl;
             
             vector<char> fileBuffer(carryloadLen);
             fileQueue[filename] = fileBuffer;
@@ -274,6 +273,7 @@ namespace C150NETWORK {
 
         else if (messageType == 4) {
             vector<char>& data = fileQueue[filename];
+            cout << data == nullptr << endl;
 
             const char * carryload = get<5>(header).data();
             string arrived(carryload, carryload + carry.size());
