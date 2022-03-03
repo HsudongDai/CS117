@@ -24,8 +24,7 @@ namespace C150NETWORK {
 
         // get the message type
         memcpy(lenBuffer, recBuffer.data(), 4);
-        int messageType;
-        sscanf(lenBuffer, "%d", &messageType);
+        int messageType = charArrayToInt(lenBuffer);
 
         cout << "extract message type is " << messageType << endl;
 
@@ -84,7 +83,7 @@ namespace C150NETWORK {
 	cout << "sendMessage, filenameLen: " << fileNameLen << endl;
         const char * cFileName = fileName.c_str();  // c-style string, easier to copy into array
 
-        memcpy(buffer, &messageType, sizeof(int));
+        memcpy(buffer, intToCharArray(messageType).data(), sizeof(int));
         memcpy(buffer + sizeof(int), &fileNameLen, sizeof(int));
         memcpy(buffer + sizeof(int) * 2, cFileName, fileNameLen);
         memcpy(buffer + sizeof(int) * 2 + fileNameLen, &packetID, sizeof(int));
@@ -92,9 +91,8 @@ namespace C150NETWORK {
         memcpy(buffer + sizeof(int) * 4 + fileNameLen, fileBuffer, carryloadLen);
         buffer[sizeof(int) * 4 + fileNameLen + carryloadLen] = '\0';
         cout << "Write buffer size " << sizeof(buffer) << endl;
-        for (int i = 0; i < 512; i++)
-                printf("%02x", recBuffer[i]);
-                
+        printf("%02x", buffer);
+
         try {
             c150debug->printf(C150APPLICATION, "Send Message: %s. Try time 0.", buffer);
             sock->write(buffer, sizeof(buffer));
@@ -143,7 +141,7 @@ namespace C150NETWORK {
             } while (len == 0);
             cout << "receive message len " << len << endl;
             for (int i = 0; i < 512; i++)
-                printf("%02x", recBuffer[i]);
+                printf("%02x", recBuffer);
 
             vector<char> recData(recBuffer, recBuffer + 512);
             
@@ -279,5 +277,25 @@ namespace C150NETWORK {
         }
 
         return header;
+    }
+
+    vector<char> intToCharArray(int a) {
+        vector<char> arr(4, 0);
+        arr[0] = a & 0xFF;
+        arr[1] = (a >> 8) & 0xFF;
+        arr[2] = (a >> 16) & 0xFF;
+        arr[3] = (a >> 24) & 0xFF;
+
+        return arr;
+    }
+
+    int charArrayToInt(char * ptr) {
+        int a = 0;
+        a |= *ptr;
+        a |= (*(ptr + 1)) << 8;
+        a |= (*(ptr + 2)) << 16;
+        a |= (*(ptr + 3)) << 24;
+
+        return a;
     }
 }
