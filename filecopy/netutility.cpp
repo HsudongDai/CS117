@@ -20,7 +20,7 @@ namespace C150NETWORK {
     // return the response
     Packet arrayToPacket(vector<char>& recBuffer) {
 
-        cout << "RecBuffer is " ;
+//        cout << "RecBuffer is " ;
         cout << "RecBuffer len is: " << recBuffer.size() << endl;
         char lenBuffer[4];  // used to buffer all the 4-byte length
 
@@ -28,19 +28,19 @@ namespace C150NETWORK {
         memcpy(lenBuffer, recBuffer.data(), 4);
         int messageType = charArrayToInt(lenBuffer);
 
-        cout << "extract message type is " << messageType << endl;
+  //      cout << "extract message type is " << messageType << endl;
 
         // get the length of filename
         memcpy(lenBuffer, recBuffer.data() + 4, 4);
         int filenameLen = charArrayToInt(lenBuffer);
-        cout << "extract filename len: " << filenameLen << endl;
+    //    cout << "extract filename len: " << filenameLen << endl;
 
         // read filename
         char* cFilename = new char[filenameLen];
         memcpy(cFilename, recBuffer.data() + 8, filenameLen);
         string filename(cFilename, cFilename + filenameLen);
 
-        cout << "extract filename: " << filename << endl;
+    //    cout << "extract filename: " << filename << endl;
         delete[] cFilename;
 
         // read packet_id
@@ -51,7 +51,7 @@ namespace C150NETWORK {
         // read carryload length
         memcpy(lenBuffer, recBuffer.data() + 12 + filenameLen, 4);
         int carryloadLen = charArrayToInt(lenBuffer);
-        cout << "extract carryload len: " << carryloadLen << endl;
+      //  cout << "extract carryload len: " << carryloadLen << endl;
         if (carryloadLen < 0) {
        //     carryloadLen = recBuffer.size() - 12 - filenameLen;
               carryloadLen =secLen;
