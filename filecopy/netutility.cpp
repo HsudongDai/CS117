@@ -32,7 +32,7 @@ namespace C150NETWORK {
 
         // get the length of filename
         memcpy(lenBuffer, recBuffer.data() + 4, 4);
-        int filenameLen charArrayToInt(lenBuffer);
+        int filenameLen = charArrayToInt(lenBuffer);
         cout << "extract filename len: " << filenameLen << endl;
 
         // read filename
@@ -55,7 +55,7 @@ namespace C150NETWORK {
 
         // read carryload 
         vector<char> carryload(recBuffer.data() + 16 + filenameLen, recBuffer.data() + 16 + filenameLen + carryloadLen);
-        cout << "extract carryload: " << carryload.data() << endl;
+        cout << "extract carryload: " << carryload.size() << endl;
 
         // pack data into 
         Packet packet = make_tuple(messageType, filenameLen, filename, packetID, carryloadLen, carryload);
@@ -145,7 +145,7 @@ namespace C150NETWORK {
                 printf("%02x", recBuffer);
 
             vector<char> recData(recBuffer, recBuffer + 512);
-            
+
             return arrayToPacket(recData);
 
         }  catch (C150NetworkException& e) {
@@ -174,8 +174,8 @@ namespace C150NETWORK {
         }
         try {
             char cPacket[8];
-            memcpy(cPacket, &packets, sizeof(int));
-            memcpy(cPacket + sizeof(int), &fileBufferLen, sizeof(int));
+            memcpy(cPacket, intToCharArray(packets).data(), sizeof(int));
+            memcpy(cPacket + sizeof(int), intToCharArray(fileBufferLen).data(), sizeof(int));
             vector<char> response = sendMessage(sock, 1, filename, 0, 4, cPacket, 1);
             Packet responsePacket = arrayToPacket(response);
 
@@ -230,15 +230,21 @@ namespace C150NETWORK {
     // if any error occurs, throw 
     Packet receiveFileBySock(C150DgmSocket* sock, map<string, char*>& fileQueue, Packet& prevPack) {
         Packet header = receiveMessage(sock);
+        cout << "Packet received";
+
         int messageType = get<0>(header);
         string filename = get<2>(header);
         int packetID = get<3>(header);
         int carryloadLen = get<4>(header);
         vector<char> carry = get<5>(header);
 
+        cout << messageType << " " << filename << " " << packetID << " " << carryloadLen << endl;
+
         int prevMessageType = get<0>(prevPack);
         string prevFilename = get<2>(prevPack);
         int prevPacketID = get<3>(prevPack);
+
+
 
         vector<char> resp;
 
@@ -249,10 +255,10 @@ namespace C150NETWORK {
         if (messageType == 1) {
             int packets, bufferLen;
             char cPackets[4], cBufferLen[4];
-            strncpy(cPackets, carry.data(), 4);
-            strncpy(cBufferLen, carry.data() + 4, 4);
-            sscanf(cPackets, "%d", packets);
-            sscanf(cBufferLen, "%d", bufferLen);
+            memcpy(cPackets, carry.data(), 4);
+            memcpy(cBufferLen, carry.data() + 4, 4);
+            packets = charArrayToInt(cPackets);
+            bufferLen = charArrayToInt(cBufferLen);
 
             char* fileBuffer = new char[bufferLen];
             fileQueue[filename] = fileBuffer;
