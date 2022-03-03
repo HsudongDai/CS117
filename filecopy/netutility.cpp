@@ -267,7 +267,7 @@ namespace C150NETWORK {
             //cout << "Packets: " << packets << endl;
             //cout << "BufferLen: " << bufferLen << endl;
             
-            vector<char> fileBuffer(fileBufferLen);
+            vector<char> fileBuffer(carryloadLen);
             fileQueue[filename] = fileBuffer;
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
         }
@@ -287,7 +287,7 @@ namespace C150NETWORK {
 
         else if (messageType == 16) {
             unsigned char checksum[20];
-            const char * fileBuffer = fileQueue[filename];
+            const char * fileBuffer = fileQueue[filename].data();
             SHA1((const unsigned char *) fileBuffer, strlen(fileBuffer), checksum);
             
             const char * carryload = get<5>(header).data();
