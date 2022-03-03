@@ -345,6 +345,7 @@ namespace C150NETWORK {
             e.formattedExplanation() << endl;
         }
         delete[] buffer2;
+        cout << "Read File " << fileName << "'s content is: " << buffer1 << endl;
         return (const char *) buffer1;
     }
 
@@ -377,7 +378,7 @@ namespace C150NETWORK {
                     " errno=" << strerror(errno) << endl;
                 exit(16);
             }
-
+            cout << "Write File " << fileName << "'s content is: " << buffer << endl;
             delete[] buffer;
         } catch (C150Exception& e) {
             delete[] buffer;
