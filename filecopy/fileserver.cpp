@@ -158,7 +158,10 @@ main(int argc, char *argv[])
         //
         while (true) {
             string statusCode;
-            Packet prevPack = make_tuple(0, 0, "", 0, 0, nullptr);
+
+            string emptyFilename;
+            vector<char> emptyData;
+            Packet prevPack = make_tuple(0, 0, emptyFilename, 0, 0, emptyData);
             // when server send message to 
             prevPack = receiveFileBySock(sock, fileQueue, prevPack);
 

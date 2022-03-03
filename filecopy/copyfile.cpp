@@ -337,9 +337,6 @@ namespace C150NETWORK {
                     " errno=" << strerror(errno) << endl;
                 exit(16);
             }
-
-            delete[] buffer2;
-            return (const char *) buffer1;
         } catch (C150Exception& e) {
             delete[] buffer1;
             delete[] buffer2;
@@ -347,6 +344,8 @@ namespace C150NETWORK {
             cerr << "nastyfiletest:copyfile(): Caught C150Exception: " << 
             e.formattedExplanation() << endl;
         }
+        delete[] buffer2;
+        return (const char *) buffer1;
     }
 
     void safeWriteFile(string targetDir, string fileName, const char * buffer, int nastiness) {
