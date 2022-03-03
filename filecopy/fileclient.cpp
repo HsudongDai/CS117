@@ -191,7 +191,7 @@ main(int argc, char *argv[]) {
                 // copyFile(source, sourceFile->d_name, tgrDir, fileNastiness);
                 const char * fileBuffer = safeReadFile(source, sourceFile->d_name, fileNastiness);
                 *GRADING << sourceFile->d_name << " transmission complete, waiting for end-to-end check, attempt 1." << endl;
-                const unsigned char * fileChecksum = getSHA1(makeFileName(source, filename));
+                //const unsigned char * fileChecksum = getSHA1(makeFileName(source, filename));
 
                 int isSuccess = sendFileBySock(sock, filename, fileBuffer);
                 c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer);

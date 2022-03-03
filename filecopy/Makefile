@@ -77,7 +77,7 @@ fileclient: fileclient.cpp
 	$(CPP) -o copyfile.o -c copyfile.cpp
 	$(CPP) -o fileclient.o -c fileclient.cpp
 	$(CPP) $(CPPFLAGS) -lssl -lcrypto netutility.o copyfile.o fileclient.o -o fileclient $(C150AR)
-	rm netutility.o copyfile.o fileserver.o
+	rm netutility.o copyfile.o fileclient.o
 
 #
 # To get any .o, compile the corresponding .cpp
