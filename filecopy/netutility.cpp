@@ -192,7 +192,7 @@ namespace C150NETWORK {
                 while (!checkCarryload(responsePacket, cPacket)) {
                     response = sendMessage(sock, 4, filename, i, sendLen, cPacket, 1);
 
-                    responsePacket = arrayToPacket();  
+                    responsePacket = arrayToPacket(response);  
                 }
                 fileCopier += sendLen;
             }
