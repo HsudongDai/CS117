@@ -38,7 +38,7 @@ namespace C150NETWORK {
         // read filename
         char* cFilename = new char[filenameLen];
         memcpy(cFilename, recBuffer.data() + 8, filenameLen);
-        string filename(cFilename);
+        string filename(cFilename, cFilename + filenameLen);
 
         cout << "extract filename: " << filename << endl;
         delete[] cFilename;
@@ -79,7 +79,7 @@ namespace C150NETWORK {
         char buffer[512];
         char recBuffer[512];  // buffer is used to send message, recBuffer is used to receive response
         int fileNameLen = fileName.size();
-	    cout << "sendMessage, filenameLen: " << fileNameLen << endl;
+	    //cout << "sendMessage, filenameLen: " << fileNameLen << endl;
         const char * cFileName = fileName.c_str();  // c-style string, easier to copy into array
 
         memcpy(buffer, intToCharArray(messageType).data(), sizeof(int));
@@ -89,7 +89,7 @@ namespace C150NETWORK {
         memcpy(buffer + sizeof(int) * 3 + fileNameLen, intToCharArray(carryloadLen).data(), sizeof(int));
         memcpy(buffer + sizeof(int) * 4 + fileNameLen, fileBuffer, carryloadLen);
         buffer[sizeof(int) * 4 + fileNameLen + carryloadLen] = '\0';
-        cout << "Write buffer size " << sizeof(buffer) << endl;
+        //cout << "Write buffer size " << sizeof(buffer) << endl;
 
         try {
             c150debug->printf(C150APPLICATION, "Send Message: %s. Try time 0.", buffer);
@@ -110,7 +110,7 @@ namespace C150NETWORK {
                 sock->write(buffer, sizeof(buffer));
             }
            
-            c150debug->printf(C150APPLICATION, "Receive Message: %s. Try time(s). %d", recBuffer, retryCnt + 1);
+//            c150debug->printf(C150APPLICATION, "Receive Message: %s. Try time(s). %d", recBuffer, retryCnt + 1);
 
         } catch (C150Exception& e) {
             // Write to debug log
@@ -153,10 +153,6 @@ namespace C150NETWORK {
         return strcmp(packCarryload.data(), carryLoad) == 0;
     }
 
-    bool checkSamePackets(Packet& p1, Packey& p2) {
-
-    }
-
     // The next to do is the 6 steps of sending a file
     // The returned value is the status code
     // if not 0, call the function again to send the file
@@ -170,11 +166,13 @@ namespace C150NETWORK {
         if (fileBufferLen % secLen != 1) {
             ++packets;
         }
+        cout << "Packets: " << packets << endl;
+        cout << "FileBufferLen: " << fileBufferLen << endl; 
         try {
             char cPacket[8];
             memcpy(cPacket, intToCharArray(packets).data(), sizeof(int));
             memcpy(cPacket + sizeof(int), intToCharArray(fileBufferLen).data(), sizeof(int));
-            int status = sendMessage(sock, 1, filename, 0, 4, cPacket, 1);
+            int status = sendMessage(sock, 1, filename, 0, sizeof(cPacket), cPacket, 1);
             // Packet responsePacket = ;
 
             // while (!checkCarryload(responsePacket, cPacket)) {
@@ -183,24 +181,21 @@ namespace C150NETWORK {
             // }
             cout << "step 1 done" << endl;
             // step 2: send the fileBuffer
-            int sendLen = secLen;
-            int haveSent = 0;
             const char* fileCopier = fileBuffer.data();
-            for (int i = 1; i <= packets; i++) {
-                sendLen = (fileBufferLen - haveSent < secLen) ? fileBufferLen - haveSent : secLen;
-                status = sendMessage(sock, 4, filename, i, sendLen, fileCopier, 1);
-                // responsePacket = arrayToPacket(response);
 
-                // while (!checkCarryload(responsePacket, cPacket)) {
-                //     response = sendMessage(sock, 4, filename, i, sendLen, fileCopier, 1);
-
-                //     responsePacket = arrayToPacket(response);  
-                // }
-                haveSent += sendLen;
-                fileCopier += sendLen;
-            }
-
-            // step 3: send the checksum
+            int index = fileBufferLen;
+            int packetCount = 0;
+            while (index < fileBufferLen) {
+                if (index + secLen < fileBufferLen) {
+                    status = sendMessage(sock, 4, filename, packetCount, secLen, fileCopier, 1);
+                    index += secLen;
+                    fileCopier += secLen;
+                } else {
+                    status = sendMessage(sock, 4, filename, packetCount, fileBufferLen - index, fileCopier, 1);
+                    index = fileBufferLen;
+                }
+                ++packetCount;
+            }  // step 3: send the checksum
             unsigned char checksum[20];
             SHA1((const unsigned char *) fileBuffer.data(), fileBufferLen, checksum);
             status = sendMessage(sock, 16, filename, packets + 1, 20, (const char *)checksum, 1);
@@ -243,22 +238,23 @@ namespace C150NETWORK {
         string prevFilename = get<2>(prevPack);
         int prevPacketID = get<3>(prevPack);
 
-
-
-        vector<char> resp;
+        int resp;
 
         if (messageType == prevMessageType && prevFilename == filename && packetID == prevPacketID) {
             return header;
         }
 
         if (messageType == 1) {
-            int packets, bufferLen;
+            int packets;
+            unsigned bufferLen;
             char cPackets[4], cBufferLen[4];
             memcpy(cPackets, carry.data(), 4);
             memcpy(cBufferLen, carry.data() + 4, 4);
             packets = charArrayToInt(cPackets);
             bufferLen = charArrayToInt(cBufferLen);
-
+            cout << "Packets: " << packets << endl;
+            cout << "BufferLen: " << bufferLen << endl;
+            
             char* fileBuffer = new char[bufferLen];
             fileQueue[filename] = fileBuffer;
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
@@ -268,7 +264,7 @@ namespace C150NETWORK {
             char * fileBuffer = fileQueue[filename];
 
             const char * carryload = get<5>(header).data();
-            memcpy(fileBuffer + (packetID - 1) * secLen, carryload, carryloadLen);
+            memcpy(fileBuffer + packetID * secLen, carryload, carryloadLen);
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
         }
 

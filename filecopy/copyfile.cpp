@@ -347,7 +347,7 @@ namespace C150NETWORK {
             e.formattedExplanation() << endl;
         }
         delete[] buffer2;
-        cout << "Read File " << fileName << "'s content is: " << buffer1 << endl;
+        //cout << "Read File " << fileName << "'s content is: " << buffer1 << endl;
         return vector<char>(buffer1, buffer1 + sourceSize);
     }
 
@@ -381,9 +381,9 @@ namespace C150NETWORK {
                 exit(16);
             }
             cout << "Write File " << fileName << "'s content is: " << buffer << endl;
-            delete[] buffer;
+        //    delete[] buffer;
         } catch (C150Exception& e) {
-            delete[] buffer;
+          //  delete[] buffer;
             cerr << "nastyfiletest:copyfile(): Caught C150Exception: " << 
             e.formattedExplanation() << endl;
         }    

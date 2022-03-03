@@ -3,3 +3,8 @@ TARGET/
 SRC/
 *.o
 .DS_Store
+makedatafile
+fileserver
+fileclient
+nastyfiletest
+comp117/

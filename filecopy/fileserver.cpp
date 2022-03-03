@@ -168,7 +168,7 @@ main(int argc, char *argv[])
             int messageType = get<0>(prevPack);
             string filename = get<2>(prevPack);
 
-            if (messageType == 32) {
+            if (messageType == 16) {
                 safeWriteFile(target, filename, fileQueue[filename], fileNastiness);
                 c150debug->printf(C150APPLICATION,"Successfully write file %s", filename);
                 cout << "receive: " << filename << endl;

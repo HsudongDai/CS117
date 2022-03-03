@@ -15,7 +15,7 @@
 namespace C150NETWORK {
     typedef std::tuple<int, int, std::string, int, int, std::vector<char>> Packet;
 
-    vector<char> sendMessage(C150DgmSocket* sock, int messageType, const string fileName, int packetID, int carryloadLen, const char* fileBuffer, int isClient);
+    int sendMessage(C150DgmSocket* sock, int messageType, const string fileName, int packetID, int carryloadLen, const char* fileBuffer, int isClient);
 
     Packet receiveMessage(C150DgmSocket* sock);
 

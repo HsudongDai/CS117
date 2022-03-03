@@ -194,10 +194,10 @@ main(int argc, char *argv[]) {
                 //const unsigned char * fileChecksum = getSHA1(makeFileName(source, filename));
 
                 int isSuccess = sendFileBySock(sock, filename, fileBuffer);
-                c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer);
+                c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer.data());
                 while (isSuccess != 0) {
                     isSuccess = sendFileBySock(sock, filename, fileBuffer);
-                    c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer);
+                    c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer.data());
                 }
                 cout << "send: " << filename << endl;
 
