@@ -12,6 +12,7 @@
 #include <cstring>               // for strerro
 #include <iostream>               // for cout
 #include <fstream>                // for input files
+#include <vector>
 
 namespace C150NETWORK {
     string makeFileName(string dir, string name);

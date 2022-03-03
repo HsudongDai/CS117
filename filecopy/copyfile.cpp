@@ -1,4 +1,5 @@
 #include "c150nastyfile.h"        // for c150nastyfile & framework
+#include <vector>
 #include "c150grading.h"
 #include <dirent.h>
 #include <sys/types.h>
@@ -284,7 +285,8 @@ namespace C150NETWORK {
 
         if (!isFile(sourceName)) {
             cerr << "Input file " << sourceName << " is a directory or other non-regular file. Skipping" << endl;
-            return nullptr;
+            vector<char> nothing;
+            return nothing;
         }
 
         cout << "Copying " << sourceName << endl;

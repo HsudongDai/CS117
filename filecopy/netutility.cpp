@@ -199,7 +199,7 @@ namespace C150NETWORK {
 
             // step 3: send the checksum
             unsigned char checksum[20];
-            SHA1((const unsigned char *) fileBuffer, fileBufferLen, checksum);
+            SHA1((const unsigned char *) fileBuffer.data(), fileBufferLen, checksum);
             response = sendMessage(sock, 16, filename, packets + 1, 20, (const char *)checksum, 1);
             responsePacket = arrayToPacket(response);
 
