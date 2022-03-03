@@ -17,44 +17,46 @@ namespace C150NETWORK {
     // send a message
     // return the response
     Packet arrayToPacket(const char * recBuffer) {
+        cout << "RecBuffer is " ;
+        cout << "RecBuffer len is: " << strlen(recBuffer) << endl;
         char lenBuffer[4];  // used to buffer all the 4-byte length
 
         // get the message type
-        strncpy(lenBuffer, recBuffer, 4);
+        memcpy(lenBuffer, recBuffer, 4);
         int messageType;
         sscanf(lenBuffer, "%d", &messageType);
 
         cout << "extract message type is " << messageType << endl;
 
         // get the length of filename
-        strncpy(lenBuffer, recBuffer + 4, 4);
+        memcpy(lenBuffer, recBuffer + 4, 4);
         int filenameLen;
         sscanf(lenBuffer, "%d", &filenameLen);
         cout << "extract filename len: " << filenameLen << endl;
 
         // read filename
         char* cFilename = new char[filenameLen];
-        strncpy(cFilename, recBuffer + 8, filenameLen);
+        memcpy(cFilename, recBuffer + 8, filenameLen);
         string filename(cFilename);
 
         cout << "extract filename: " << filename << endl;
         delete[] cFilename;
 
         // read packet_id
-        strncpy(lenBuffer, recBuffer + 8 + filenameLen, 4);
+        memcpy(lenBuffer, recBuffer + 8 + filenameLen, 4);
         int packetID;
-        cout << "extract packetID: " << packet ID << endl;
+        cout << "extract packetID: " << packetID << endl;
         sscanf(lenBuffer, "%d", &packetID);
 
         // read carryload length
-        strncpy(lenBuffer, recBuffer + 12 + filenameLen, 4);
+        memcpy(lenBuffer, recBuffer + 12 + filenameLen, 4);
         int carryloadLen;
         cout << "extract carryload len: " << carryloadLen << endl;
         sscanf(lenBuffer, "%d", &carryloadLen);
 
         // read carryload 
         vector<char> carryload(recBuffer + 16 + filenameLen, recBuffer + 16 + filenameLen + carryloadLen);
-        cout << "extract carryload: " << carryload << endl;
+        cout << "extract carryload: " << carryload.data() << endl;
 
         // pack data into 
         Packet packet = make_tuple(messageType, filenameLen, filename, packetID, carryloadLen, carryload);
@@ -75,16 +77,8 @@ namespace C150NETWORK {
         char buffer[512];
         char* recBuffer = new char[512];  // buffer is used to send message, recBuffer is used to receive response
         int fileNameLen = fileName.size();
+	cout << "sendMessage, filenameLen: " << fileNameLen << endl;
         const char * cFileName = fileName.c_str();  // c-style string, easier to copy into array
-        // int maxSecLen = 512 - fileNameLen - 4 * 4 - 1;  // 2 4-byte delimiter length, 4-byte packet ID, 1 is the null char
-        // int bufferLen = strlen(fileBuffer);
-
-
-        // char delimiters[4] = {delimiter, delimiter, delimiter, delimiter};
-
-        // for (int i = 0; i < bufferLen; i += maxSecLen) {
-            // int carryloadLen = (i + maxSecLen > bufferLen) ? bufferLen - i: maxSecLen;
-            // int packetID = i / maxSecLen;
 
         memcpy(buffer, &messageType, sizeof(int));
         memcpy(buffer + sizeof(int), &fileNameLen, sizeof(int));
