@@ -12,11 +12,11 @@
 
 // using namespace C150NETWORK;
 
-void C150NETWORK::copyFile(string sourceDir, string fileName, string targetDir, int nastiness); // fwd decl
-bool C150NETWORK::isFile(string fname);
-void C150NETWORK::checkDirectory(char *dirname);
-const char * C150NETWORK::safeReadFile(string sourceDir, string fileName, int nastiness);
-void C150NETWORK::safeWriteFile(string targetDir, string fileName, const char * buffer, int nastiness);
+// void copyFile(string sourceDir, string fileName, string targetDir, int nastiness); // fwd decl
+// bool C150NETWORK::isFile(string fname);
+// void C150NETWORK::checkDirectory(char *dirname);
+// const char * C150NETWORK::safeReadFile(string sourceDir, string fileName, int nastiness);
+// void C150NETWORK::safeWriteFile(string targetDir, string fileName, const char * buffer, int nastiness);
 
 namespace C150NETWORK {
     string makeFileName(string dir, string name) {
@@ -284,7 +284,7 @@ namespace C150NETWORK {
 
         if (!isFile(sourceName)) {
             cerr << "Input file " << sourceName << " is a directory or other non-regular file. Skipping" << endl;
-            return;
+            return nullptr;
         }
 
         cout << "Copying " << sourceName << endl;
