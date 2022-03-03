@@ -19,7 +19,7 @@ namespace C150NETWORK {
 
     Packet receiveMessage(C150DgmSocket* sock);
 
-    Packet receiveFileBySock(C150DgmSocket* sock, map<string, string>& fileQueue, Packet& prevPack);
+    Packet receiveFileBySock(C150DgmSocket* sock, map<string, char*>& fileQueue, Packet& prevPack);
 
     int sendFileBySock(C150DgmSocket* sock, string filename, vector<char>& fileBuffer);
 
