@@ -14,6 +14,8 @@ using namespace std;
 
 namespace C150NETWORK {
     const int secLen = 400;
+    vector<char> intToCharArray(int a);
+    int charArrayToInt(char * ptr);
     // send a message
     // return the response
     Packet arrayToPacket(vector<char>& recBuffer) {
@@ -30,8 +32,7 @@ namespace C150NETWORK {
 
         // get the length of filename
         memcpy(lenBuffer, recBuffer.data() + 4, 4);
-        int filenameLen;
-        sscanf(lenBuffer, "%d", &filenameLen);
+        int filenameLen charArrayToInt(lenBuffer);
         cout << "extract filename len: " << filenameLen << endl;
 
         // read filename
@@ -44,15 +45,13 @@ namespace C150NETWORK {
 
         // read packet_id
         memcpy(lenBuffer, recBuffer.data() + 8 + filenameLen, 4);
-        int packetID;
+        int packetID = charArrayToInt(lenBuffer);
         cout << "extract packetID: " << packetID << endl;
-        sscanf(lenBuffer, "%d", &packetID);
 
         // read carryload length
         memcpy(lenBuffer, recBuffer.data() + 12 + filenameLen, 4);
-        int carryloadLen;
+        int carryloadLen = charArrayToInt(lenBuffer);
         cout << "extract carryload len: " << carryloadLen << endl;
-        sscanf(lenBuffer, "%d", &carryloadLen);
 
         // read carryload 
         vector<char> carryload(recBuffer.data() + 16 + filenameLen, recBuffer.data() + 16 + filenameLen + carryloadLen);
@@ -84,14 +83,16 @@ namespace C150NETWORK {
         const char * cFileName = fileName.c_str();  // c-style string, easier to copy into array
 
         memcpy(buffer, intToCharArray(messageType).data(), sizeof(int));
-        memcpy(buffer + sizeof(int), &fileNameLen, sizeof(int));
+        memcpy(buffer + sizeof(int), intToCharArray(fileNameLen).data(), sizeof(int));
         memcpy(buffer + sizeof(int) * 2, cFileName, fileNameLen);
-        memcpy(buffer + sizeof(int) * 2 + fileNameLen, &packetID, sizeof(int));
-        memcpy(buffer + sizeof(int) * 3 + fileNameLen, &carryloadLen, sizeof(int));
+        memcpy(buffer + sizeof(int) * 2 + fileNameLen, intToCharArray(packetID).data(), sizeof(int));
+        memcpy(buffer + sizeof(int) * 3 + fileNameLen, intToCharArray(carryloadLen).data(), sizeof(int));
         memcpy(buffer + sizeof(int) * 4 + fileNameLen, fileBuffer, carryloadLen);
         buffer[sizeof(int) * 4 + fileNameLen + carryloadLen] = '\0';
         cout << "Write buffer size " << sizeof(buffer) << endl;
-        printf("%02x", buffer);
+        for (int i = 0; i < 512; i++) {
+            printf("%02x", buffer[i]);
+        }
 
         try {
             c150debug->printf(C150APPLICATION, "Send Message: %s. Try time 0.", buffer);
