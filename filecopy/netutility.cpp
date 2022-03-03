@@ -55,18 +55,18 @@ namespace C150NETWORK {
         sscanf(lenBuffer, "%d", &carryloadLen);
 
         // read carryload 
-        vector<char> carryload(recBuffer.data() + 16 + filenameLen, recBuffer + 16 + filenameLen + carryloadLen);
+        vector<char> carryload(recBuffer.data() + 16 + filenameLen, recBuffer.data() + 16 + filenameLen + carryloadLen);
         cout << "extract carryload: " << carryload.data() << endl;
 
         // pack data into 
         Packet packet = make_tuple(messageType, filenameLen, filename, packetID, carryloadLen, carryload);
 
         // release the memory
-        delete[] recBuffer;
+        // delete[] recBuffer;
         return packet;
     }
 
-    const char * sendMessage(C150DgmSocket* sock, int messageType, const string fileName, int packetID, int carryloadLen, const char* fileBuffer, const int isClient) {
+    vector<char> sendMessage(C150DgmSocket* sock, int messageType, const string fileName, int packetID, int carryloadLen, const char* fileBuffer, const int isClient) {
         if (sock == nullptr) {
             cerr << "Error DgmSocket:" << "  errno=" << strerror(errno) << endl;
             exit(16);
@@ -78,7 +78,7 @@ namespace C150NETWORK {
         } 
 
         char buffer[512];
-        char* recBuffer = new char[512];  // buffer is used to send message, recBuffer is used to receive response
+        char recBuffer[512];  // buffer is used to send message, recBuffer is used to receive response
         int fileNameLen = fileName.size();
 	cout << "sendMessage, filenameLen: " << fileNameLen << endl;
         const char * cFileName = fileName.c_str();  // c-style string, easier to copy into array
@@ -122,6 +122,7 @@ namespace C150NETWORK {
             cerr << fileName << ": caught C150NetworkException: " << e.formattedExplanation()\
                         << endl;
         }
+        vector<char> recData(recBuffer, recBuffer + 512);
         // }
         return recBuffer;
     }
@@ -159,7 +160,7 @@ namespace C150NETWORK {
     // if not 0, call the function again to send the file
     int sendFileBySock(C150DgmSocket* sock, string filename, const char* fileBuffer) {
         // step 1: compute the packets of the data
-        const int maxAvailableSpace = 512 - 16 - 1 - filename.size();
+        // const int maxAvailableSpace = 512 - 16 - 1 - filename.size();
         // const int secLen = maxAvailableSpace > 400 ? 400 : maxAvailableSpace;
 
         const int fileBufferLen = sizeof(fileBuffer);
@@ -191,7 +192,8 @@ namespace C150NETWORK {
 
                 while (!checkCarryload(responsePacket, cPacket)) {
                     response = sendMessage(sock, 4, filename, i, sendLen, cPacket, 1);
-                    responsePacket = arrayToPacket(response);  
+
+                    responsePacket = arrayToPacket();  
                     delete[] response;        
                 }
                 fileCopier += sendLen;
@@ -237,7 +239,7 @@ namespace C150NETWORK {
         string prevFilename = get<2>(prevPack);
         int prevPacketID = get<3>(prevPack);
 
-        const char *resp;
+        vector<char> resp;
 
         if (messageType == prevMessageType && prevFilename == filename && packetID == prevPacketID) {
             return header;
