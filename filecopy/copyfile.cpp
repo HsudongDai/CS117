@@ -272,7 +272,7 @@ namespace C150NETWORK {
         return 0;
     }
 
-    const char * safeReadFile(string sourceDir, string fileName, int nastiness) {
+    vector<char> safeReadFile(string sourceDir, string fileName, int nastiness) {
         void* fopenretval;
         size_t len1, len2;
         string errorString;
@@ -346,7 +346,7 @@ namespace C150NETWORK {
         }
         delete[] buffer2;
         cout << "Read File " << fileName << "'s content is: " << buffer1 << endl;
-        return (const char *) buffer1;
+        return vector<char>(buffer1, buffer1 + sourceSize);
     }
 
     void safeWriteFile(string targetDir, string fileName, const char * buffer, int nastiness) {

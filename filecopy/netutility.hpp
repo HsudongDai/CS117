@@ -21,7 +21,7 @@ namespace C150NETWORK {
 
     Packet receiveFileBySock(C150DgmSocket* sock, map<string, char*>& fileQueue, Packet& prevPack);
 
-    int sendFileBySock(C150DgmSocket* sock, string filename, const char* fileBuffer);
+    int sendFileBySock(C150DgmSocket* sock, string filename, vector<char>& fileBuffer);
 
     Packet arrayToPacket(vector<char>& array);
 }

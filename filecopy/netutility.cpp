@@ -79,7 +79,7 @@ namespace C150NETWORK {
         char buffer[512];
         char recBuffer[512];  // buffer is used to send message, recBuffer is used to receive response
         int fileNameLen = fileName.size();
-	cout << "sendMessage, filenameLen: " << fileNameLen << endl;
+	    cout << "sendMessage, filenameLen: " << fileNameLen << endl;
         const char * cFileName = fileName.c_str();  // c-style string, easier to copy into array
 
         memcpy(buffer, intToCharArray(messageType).data(), sizeof(int));
@@ -157,12 +157,12 @@ namespace C150NETWORK {
     // The next to do is the 6 steps of sending a file
     // The returned value is the status code
     // if not 0, call the function again to send the file
-    int sendFileBySock(C150DgmSocket* sock, string filename, const char* fileBuffer) {
+    int sendFileBySock(C150DgmSocket* sock, string filename, vector<char>& fileBuffer) {
         // step 1: compute the packets of the data
         // const int maxAvailableSpace = 512 - 16 - 1 - filename.size();
         // const int secLen = maxAvailableSpace > 400 ? 400 : maxAvailableSpace;
 
-        const int fileBufferLen = sizeof(fileBuffer);
+        const int fileBufferLen = fileBuffer.size();
         int packets = fileBufferLen / secLen;
         if (fileBufferLen % secLen != 1) {
             ++packets;
@@ -182,7 +182,7 @@ namespace C150NETWORK {
             // step 2: send the fileBuffer
             int leftLen = fileBufferLen;
             int sendLen = secLen;
-            const char* fileCopier = fileBuffer;
+            const char* fileCopier = fileBuffer.data();
             for (int i = 1; i <= packets; i++) {
                 leftLen -= secLen;
                 sendLen = (leftLen < secLen) ? leftLen : secLen;
@@ -190,7 +190,7 @@ namespace C150NETWORK {
                 responsePacket = arrayToPacket(response);
 
                 while (!checkCarryload(responsePacket, cPacket)) {
-                    response = sendMessage(sock, 4, filename, i, sendLen, cPacket, 1);
+                    response = sendMessage(sock, 4, filename, i, sendLen, fileCopier, 1);
 
                     responsePacket = arrayToPacket(response);  
                 }
