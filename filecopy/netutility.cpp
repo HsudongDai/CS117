@@ -222,7 +222,7 @@ namespace C150NETWORK {
     }
 
     // if any error occurs, throw 
-    Packet receiveFileBySock(C150DgmSocket* sock, map<string, char*>& fileQueue, Packet& prevPack) {
+    Packet receiveFileBySock(C150DgmSocket* sock, map<string, string>& fileQueue, Packet& prevPack) {
         Packet header = receiveMessage(sock);
         cout << "Packet received";
 
@@ -255,16 +255,17 @@ namespace C150NETWORK {
             cout << "Packets: " << packets << endl;
             cout << "BufferLen: " << bufferLen << endl;
             
-            char* fileBuffer = new char[bufferLen];
+            string fileBuffer;
             fileQueue[filename] = fileBuffer;
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
         }
 
         else if (messageType == 4) {
-            char * fileBuffer = fileQueue[filename];
+            fileQueue[filename];
 
             const char * carryload = get<5>(header).data();
-            memcpy(fileBuffer + packetID * secLen, carryload, carryloadLen);
+            string arrived(carryload, carryload + carryloadLen);
+            fileQueue[filename] += arrived;
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
         }
 

@@ -360,6 +360,7 @@ namespace C150NETWORK {
 
         string targetName = makeFileName(targetDir, fileName);
         cout << "Writing " << targetName << " to " << targetName << endl;
+        cout << "Writing length: " << sourceSize << endl;
 
         try {
             NASTYFILE outputFile(nastiness); 

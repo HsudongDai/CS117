@@ -169,6 +169,7 @@ main(int argc, char *argv[])
             string filename = get<2>(prevPack);
 
             if (messageType == 16) {
+                cout << "Got buffer size: " << strlen(fileQueue[filename]) << endl;
                 safeWriteFile(target, filename, fileQueue[filename], fileNastiness);
                 c150debug->printf(C150APPLICATION,"Successfully write file %s", filename);
                 cout << "receive: " << filename << endl;
