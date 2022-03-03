@@ -46,7 +46,7 @@ INCLUDES = $(C150LIB)c150dgmsocket.h $(C150LIB)c150nastydgmsocket.h $(C150LIB)c1
 
 all: nastyfiletest makedatafile sha1test fileserver fileclient
 
-
+both: fileserver fileclient
 #
 # Build the nastyfiletest sample
 #
