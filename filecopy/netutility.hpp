@@ -23,7 +23,7 @@ namespace C150NETWORK {
 
     int sendFileBySock(C150DgmSocket* sock, string filename, const char* fileBuffer);
 
-    Packet arrayToPacket(const char * array);
+    Packet arrayToPacket(vector<char> array);
 }
 
 #endif

@@ -16,46 +16,46 @@ namespace C150NETWORK {
     const int secLen = 400;
     // send a message
     // return the response
-    Packet arrayToPacket(const char * recBuffer) {
+    Packet arrayToPacket(vector<char>& recBuffer) {
         cout << "RecBuffer is " ;
-        cout << "RecBuffer len is: " << sizeof(recBuffer) << endl;
+        cout << "RecBuffer len is: " << recBuffer.size() << endl;
         char lenBuffer[4];  // used to buffer all the 4-byte length
 
         // get the message type
-        memcpy(lenBuffer, recBuffer, 4);
+        memcpy(lenBuffer, recBuffer.data(), 4);
         int messageType;
         sscanf(lenBuffer, "%d", &messageType);
 
         cout << "extract message type is " << messageType << endl;
 
         // get the length of filename
-        memcpy(lenBuffer, recBuffer + 4, 4);
+        memcpy(lenBuffer, recBuffer.data() + 4, 4);
         int filenameLen;
         sscanf(lenBuffer, "%d", &filenameLen);
         cout << "extract filename len: " << filenameLen << endl;
 
         // read filename
         char* cFilename = new char[filenameLen];
-        memcpy(cFilename, recBuffer + 8, filenameLen);
+        memcpy(cFilename, recBuffer.data() + 8, filenameLen);
         string filename(cFilename);
 
         cout << "extract filename: " << filename << endl;
         delete[] cFilename;
 
         // read packet_id
-        memcpy(lenBuffer, recBuffer + 8 + filenameLen, 4);
+        memcpy(lenBuffer, recBuffer.data() + 8 + filenameLen, 4);
         int packetID;
         cout << "extract packetID: " << packetID << endl;
         sscanf(lenBuffer, "%d", &packetID);
 
         // read carryload length
-        memcpy(lenBuffer, recBuffer + 12 + filenameLen, 4);
+        memcpy(lenBuffer, recBuffer.data() + 12 + filenameLen, 4);
         int carryloadLen;
         cout << "extract carryload len: " << carryloadLen << endl;
         sscanf(lenBuffer, "%d", &carryloadLen);
 
         // read carryload 
-        vector<char> carryload(recBuffer + 16 + filenameLen, recBuffer + 16 + filenameLen + carryloadLen);
+        vector<char> carryload(recBuffer.data() + 16 + filenameLen, recBuffer + 16 + filenameLen + carryloadLen);
         cout << "extract carryload: " << carryload.data() << endl;
 
         // pack data into 
@@ -130,7 +130,7 @@ namespace C150NETWORK {
     // more complex logic is packed
     Packet receiveMessage(C150DgmSocket* sock) {
         try {
-            char * recBuffer = new char[512];
+            char recBuffer[512];
             int len = 0;
 
             // read one message from buffer then break
@@ -138,8 +138,10 @@ namespace C150NETWORK {
                 len = sock->read(recBuffer, sizeof(recBuffer));
             } while (len == 0);
             cout << "receive message len " << len << endl;
+
+            vector<char> recData(recBuffer, recBuffer + 512);
             
-            return arrayToPacket(recBuffer);
+            return arrayToPacket(recData);
 
         }  catch (C150NetworkException& e) {
             throw e;
