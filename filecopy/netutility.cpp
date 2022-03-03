@@ -92,8 +92,9 @@ namespace C150NETWORK {
         memcpy(buffer + sizeof(int) * 4 + fileNameLen, fileBuffer, carryloadLen);
         buffer[sizeof(int) * 4 + fileNameLen + carryloadLen] = '\0';
         cout << "Write buffer size " << sizeof(buffer) << endl;
-        printf("%02x", buffer);
-
+        for (int i = 0; i < 512; i++)
+                printf("%02x", recBuffer[i]);
+                
         try {
             c150debug->printf(C150APPLICATION, "Send Message: %s. Try time 0.", buffer);
             sock->write(buffer, sizeof(buffer));
@@ -141,7 +142,8 @@ namespace C150NETWORK {
                 len = sock->read(recBuffer, sizeof(recBuffer));
             } while (len == 0);
             cout << "receive message len " << len << endl;
-            printf("%02x", recBuffer);
+            for (int i = 0; i < 512; i++)
+                printf("%02x", recBuffer[i]);
 
             vector<char> recData(recBuffer, recBuffer + 512);
             
