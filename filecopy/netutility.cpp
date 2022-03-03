@@ -148,7 +148,7 @@ namespace C150NETWORK {
     // The next to do is the 6 steps of sending a file
     // The returned value is the status code
     // if not 0, call the function again to send the file
-    int sendFileBySock(C150DgmSocket* sock, string filename, char* fileBuffer) {
+    int sendFileBySock(C150DgmSocket* sock, string filename, const char* fileBuffer) {
         // step 1: compute the packets of the data
         const int maxAvailableSpace = 512 - 16 - 1 - filename.size();
         // const int secLen = maxAvailableSpace > 400 ? 400 : maxAvailableSpace;

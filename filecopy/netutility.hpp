@@ -1,6 +1,7 @@
 #ifndef __NETUTILITY_H_INCLUDED__
 #define __NETUTILITY_H_INCLUDED__
 
+#include <map>
 #include <tuple>
 #include <string>
 #include <vector>
@@ -20,7 +21,7 @@ namespace C150NETWORK {
 
     Packet receiveFileBySock(C150DgmSocket* sock, map<string, char*>& fileQueue, Packet& prevPack);
 
-    int sendFileBySock(C150DgmSocket* sock, string filename, char* fileBuffer);
+    int sendFileBySock(C150DgmSocket* sock, string filename, const char* fileBuffer);
 
     Packet arrayToPacket(const char * array);
 }
