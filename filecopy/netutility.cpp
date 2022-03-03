@@ -180,12 +180,11 @@ namespace C150NETWORK {
             }
             cout << "step 1 done" << endl;
             // step 2: send the fileBuffer
-            int leftLen = fileBufferLen;
             int sendLen = secLen;
+            int haveSent = 0;
             const char* fileCopier = fileBuffer.data();
             for (int i = 1; i <= packets; i++) {
-                leftLen -= secLen;
-                sendLen = (leftLen < secLen) ? leftLen : secLen;
+                sendLen = (fileBufferLen - haveSent < secLen) ? fileBufferLen - haveSent : secLen;
                 response = sendMessage(sock, 4, filename, i, sendLen, fileCopier, 1);
                 responsePacket = arrayToPacket(response);
 
@@ -194,6 +193,7 @@ namespace C150NETWORK {
 
                     responsePacket = arrayToPacket(response);  
                 }
+                haveSent += sendLen;
                 fileCopier += sendLen;
             }
 
