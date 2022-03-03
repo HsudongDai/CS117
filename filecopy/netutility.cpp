@@ -24,29 +24,37 @@ namespace C150NETWORK {
         int messageType;
         sscanf(lenBuffer, "%d", &messageType);
 
+        cout << "extract message type is " << messageType << endl;
+
         // get the length of filename
         strncpy(lenBuffer, recBuffer + 4, 4);
         int filenameLen;
         sscanf(lenBuffer, "%d", &filenameLen);
+        cout << "extract filename len: " << filenameLen << endl;
 
         // read filename
         char* cFilename = new char[filenameLen];
         strncpy(cFilename, recBuffer + 8, filenameLen);
         string filename(cFilename);
+
+        cout << "extract filename: " << filename << endl;
         delete[] cFilename;
 
         // read packet_id
         strncpy(lenBuffer, recBuffer + 8 + filenameLen, 4);
         int packetID;
+        cout << "extract packetID: " << packet ID << endl;
         sscanf(lenBuffer, "%d", &packetID);
 
         // read carryload length
         strncpy(lenBuffer, recBuffer + 12 + filenameLen, 4);
         int carryloadLen;
+        cout << "extract carryload len: " << carryloadLen << endl;
         sscanf(lenBuffer, "%d", &carryloadLen);
 
         // read carryload 
         vector<char> carryload(recBuffer + 16 + filenameLen, recBuffer + 16 + filenameLen + carryloadLen);
+        cout << "extract carryload: " << carryload << endl;
 
         // pack data into 
         Packet packet = make_tuple(messageType, filenameLen, filename, packetID, carryloadLen, carryload);

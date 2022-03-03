@@ -116,7 +116,7 @@ main(int argc, char *argv[]) {
     //
     //  Set up debug message logging
     //
-    setUpDebugLogging("fileclient_debug.txt",argc, argv);
+    setUpDebugLogging("fileclient_debug.txt", argc, argv);
 
     //
     // Make sure command line looks right
