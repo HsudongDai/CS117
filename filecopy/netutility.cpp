@@ -191,7 +191,7 @@ namespace C150NETWORK {
             // step 3: send the checksum
             unsigned char checksum[20];
             SHA1((const unsigned char *) fileBuffer, fileBufferLen, checksum);
-            response = sendMessage(sock, 16, filename, packets + 1, 20, checksum, 1);
+            response = sendMessage(sock, 16, filename, packets + 1, 20, (const char *)checksum, 1);
             responsePacket = arrayToPacket(response);
             delete[] response;
 
@@ -201,9 +201,9 @@ namespace C150NETWORK {
                     return -1;
                 }
                 ++breakTime;
-                response = sendMessage(sock, 1, filename, 0, 20, checksum, 1);
+                response = sendMessage(sock, 1, filename, 0, 20, (const char *) checksum, 1);
                 responsePacket = arrayToPacket(response);          
-            } while (!checkCarryload(responsePacket, checksum));
+            } while (!checkCarryload(responsePacket, (char *)checksum));
         } catch (C150Exception& e) {
             // Write to debug log
             c150debug->printf(C150ALWAYSLOG,"Caught C150NetworkException: %s\n",
@@ -250,7 +250,7 @@ namespace C150NETWORK {
         else if (messageType == 4) {
             char * fileBuffer = fileQueue[filename];
 
-            const char * carryload = get<5>(content).data();
+            const char * carryload = get<5>(header).data();
             memcpy(fileBuffer + packetID * secLen, carryload, carryloadLen);
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
         }
@@ -262,7 +262,7 @@ namespace C150NETWORK {
             
             const char * carryload = get<5>(header).data();
             int isSame = strcmp(carryload, (const char *) checksum);
-            resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, checksum, 0);
+            resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, (const char *)checksum, 0);
         }
         delete[] resp;
 
