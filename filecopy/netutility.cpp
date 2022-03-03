@@ -65,7 +65,7 @@ namespace C150NETWORK {
         return packet;
     }
 
-    vector<char> sendMessage(C150DgmSocket* sock, int messageType, const string fileName, int packetID, int carryloadLen, const char* fileBuffer, const int isClient) {
+    int sendMessage(C150DgmSocket* sock, int messageType, const string fileName, int packetID, int carryloadLen, const char* fileBuffer, const int isClient) {
         if (sock == nullptr) {
             cerr << "Error DgmSocket:" << "  errno=" << strerror(errno) << endl;
             exit(16);
@@ -94,25 +94,24 @@ namespace C150NETWORK {
         try {
             c150debug->printf(C150APPLICATION, "Send Message: %s. Try time 0.", buffer);
             sock->write(buffer, sizeof(buffer));
-
-            sock->read(recBuffer, sizeof(recBuffer));
             
-            int retryCnt = 0;
+            // int retryCnt = 0;
             // if called in client, it must ensure the server has received this packet
-            if (isClient == 1) {
-                while (sock->timedout()) {
-                    ++retryCnt;
-                    c150debug->printf(C150APPLICATION, "Send Message: %s. Try time %d.", buffer, retryCnt);
-                    sock->write(buffer, sizeof(buffer));
-                    sock->read(recBuffer, sizeof(recBuffer));
-                }
-            } else {  // otherwise, do it best to ensure the client could receive
-                for (int i = 0; i < 4; i++) {
-                    sock->write(buffer, sizeof(buffer));
-                }
+            // if (isClient == 1) {
+            //     sock->read(recBuffer, sizeof(recBuffer));
+            //     while (sock->timedout()) {
+            //         ++retryCnt;
+            //         c150debug->printf(C150APPLICATION, "Send Message: %s. Try time %d.", buffer, retryCnt);
+            //         sock->write(buffer, sizeof(buffer));
+            //         // sock->read(recBuffer, sizeof(recBuffer));
+            //     }
+            // } else {  // otherwise, do it best to ensure the client could receive
+            for (int i = 0; i < 4; i++) {
+                sock->write(buffer, sizeof(buffer));
             }
            
             c150debug->printf(C150APPLICATION, "Receive Message: %s. Try time(s). %d", recBuffer, retryCnt + 1);
+
         } catch (C150Exception& e) {
             // Write to debug log
             c150debug->printf(C150ALWAYSLOG,"Caught C150NetworkException: %s\n",
@@ -121,9 +120,9 @@ namespace C150NETWORK {
             cerr << fileName << ": caught C150NetworkException: " << e.formattedExplanation()\
                         << endl;
         }
-        vector<char> recData(recBuffer, recBuffer + 512);
+        // vector<char> recData(recBuffer, recBuffer + 512);
         // }
-        return recData;
+        return 0;
     }
 
     // receive the data from sock then pack it into a Packet
@@ -154,6 +153,10 @@ namespace C150NETWORK {
         return strcmp(packCarryload.data(), carryLoad) == 0;
     }
 
+    bool checkSamePackets(Packet& p1, Packey& p2) {
+
+    }
+
     // The next to do is the 6 steps of sending a file
     // The returned value is the status code
     // if not 0, call the function again to send the file
@@ -171,13 +174,13 @@ namespace C150NETWORK {
             char cPacket[8];
             memcpy(cPacket, intToCharArray(packets).data(), sizeof(int));
             memcpy(cPacket + sizeof(int), intToCharArray(fileBufferLen).data(), sizeof(int));
-            vector<char> response = sendMessage(sock, 1, filename, 0, 4, cPacket, 1);
-            Packet responsePacket = arrayToPacket(response);
+            int status = sendMessage(sock, 1, filename, 0, 4, cPacket, 1);
+            // Packet responsePacket = ;
 
-            while (!checkCarryload(responsePacket, cPacket)) {
-                response = sendMessage(sock, 1, filename, 0, 4, cPacket, 1);
-                responsePacket = arrayToPacket(response);          
-            }
+            // while (!checkCarryload(responsePacket, cPacket)) {
+            //     response = sendMessage(sock, 1, filename, 0, 4, cPacket, 1);
+            //     responsePacket = arrayToPacket(response);          
+            // }
             cout << "step 1 done" << endl;
             // step 2: send the fileBuffer
             int sendLen = secLen;
@@ -185,14 +188,14 @@ namespace C150NETWORK {
             const char* fileCopier = fileBuffer.data();
             for (int i = 1; i <= packets; i++) {
                 sendLen = (fileBufferLen - haveSent < secLen) ? fileBufferLen - haveSent : secLen;
-                response = sendMessage(sock, 4, filename, i, sendLen, fileCopier, 1);
-                responsePacket = arrayToPacket(response);
+                status = sendMessage(sock, 4, filename, i, sendLen, fileCopier, 1);
+                // responsePacket = arrayToPacket(response);
 
-                while (!checkCarryload(responsePacket, cPacket)) {
-                    response = sendMessage(sock, 4, filename, i, sendLen, fileCopier, 1);
+                // while (!checkCarryload(responsePacket, cPacket)) {
+                //     response = sendMessage(sock, 4, filename, i, sendLen, fileCopier, 1);
 
-                    responsePacket = arrayToPacket(response);  
-                }
+                //     responsePacket = arrayToPacket(response);  
+                // }
                 haveSent += sendLen;
                 fileCopier += sendLen;
             }
@@ -200,18 +203,18 @@ namespace C150NETWORK {
             // step 3: send the checksum
             unsigned char checksum[20];
             SHA1((const unsigned char *) fileBuffer.data(), fileBufferLen, checksum);
-            response = sendMessage(sock, 16, filename, packets + 1, 20, (const char *)checksum, 1);
-            responsePacket = arrayToPacket(response);
+            status = sendMessage(sock, 16, filename, packets + 1, 20, (const char *)checksum, 1);
+            // responsePacket = arrayToPacket(response);
 
-            int breakTime = 0;  // If the checksum does not match after 3 times
-            do {
-                if (breakTime == 3) {
-                    return -1;
-                }
-                ++breakTime;
-                response = sendMessage(sock, 1, filename, 0, 20, (const char *) checksum, 1);
-                responsePacket = arrayToPacket(response);          
-            } while (!checkCarryload(responsePacket, (char *)checksum));
+            // int breakTime = 0;  // If the checksum does not match after 3 times
+            // do {
+            //     if (breakTime == 3) {
+            //         return -1;
+            //     }
+            //     ++breakTime;
+            //     response = sendMessage(sock, 1, filename, 0, 20, (const char *) checksum, 1);
+            //     responsePacket = arrayToPacket(response);          
+            // } while (!checkCarryload(responsePacket, (char *)checksum));
         } catch (C150Exception& e) {
             // Write to debug log
             c150debug->printf(C150ALWAYSLOG,"Caught C150NetworkException: %s\n",
@@ -265,14 +268,14 @@ namespace C150NETWORK {
             char * fileBuffer = fileQueue[filename];
 
             const char * carryload = get<5>(header).data();
-            memcpy(fileBuffer + packetID * secLen, carryload, carryloadLen);
+            memcpy(fileBuffer + (packetID - 1) * secLen, carryload, carryloadLen);
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
         }
 
         else if (messageType == 16) {
             unsigned char checksum[20];
             const char * fileBuffer = fileQueue[filename];
-            SHA1((const unsigned char *) fileBuffer, strlen(fileBuffer), checksum);
+            SHA1((const unsigned char *) fileBuffer, string(fileBuffer).size(), checksum);
             
             const char * carryload = get<5>(header).data();
             int isSame = strcmp(carryload, (const char *) checksum);
