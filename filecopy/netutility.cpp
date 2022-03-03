@@ -60,6 +60,9 @@ namespace C150NETWORK {
 
         // pack data into 
         Packet packet = make_tuple(messageType, filenameLen, filename, packetID, carryloadLen, carryload);
+
+        // release the memory
+        delete[] recBuffer;
         return packet;
     }
 
@@ -127,14 +130,15 @@ namespace C150NETWORK {
     // more complex logic is packed
     Packet receiveMessage(C150DgmSocket* sock) {
         try {
-            char recBuffer[512];
+            char * recBuffer = new char[512];
             int len = 0;
 
             // read one message from buffer then break
             do {
                 len = sock->read(recBuffer, sizeof(recBuffer));
             } while (len == 0);
-            cout << "receive message len " << len << endl;            
+            cout << "receive message len " << len << endl;
+            
             return arrayToPacket(recBuffer);
 
         }  catch (C150NetworkException& e) {
