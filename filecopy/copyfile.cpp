@@ -355,7 +355,7 @@ namespace C150NETWORK {
     }
 
     void safeWriteFile(string targetDir, string fileName, vector<char>& buffer, int nastiness) {
-        void *fopenretval;
+        void *fopenretval, *bfopenretval;
         size_t len1, len2;
         // size_t sourceSize = buffer.size();
         string errorString;
@@ -368,6 +368,7 @@ namespace C150NETWORK {
         }
 */
         string targetName = makeFileName(targetDir, fileName);
+        string backupName = targetName + '_backup';
         cout << "Writing " << targetName << " to " << targetName << endl;
         cout << "Writing length: " << buffer.size() << endl;
 
@@ -375,20 +376,29 @@ namespace C150NETWORK {
             NASTYFILE outputFile(nastiness); 
             fopenretval = outputFile.fopen(targetName.c_str(), "wb");  
 
+            NASTYFILE backupFile(nastiness);
+            bfopenretval = outputFile.fopen(backupName.c_str(), "wb");
+
             len1 = outputFile.fwrite(buffer.data(), 1, buffer.size());
-            // len2 = outputFile.fwrite(buffer.data(), 1, sourceSize);
+            len2 = backupFile.fwrite(buffer.data(), 1, buffer.size());
 
-            // while (len1 != len2 || len1 != sourceSize || len2 != sourceSize) {
-            //     len1 = outputFile.fwrite(buffer.data(), 1, sourceSize);
-            //     len2 = outputFile.fwrite(buffer.data(), 1, sourceSize);
-            // }
+            while (len1 != len2 || len1 != buffer.size() || len2 != buffer.size()) {
+                len1 = outputFile.fwrite(buffer.data(), 1, buffer.size());
+                len2 = outputFile.fwrite(buffer.data(), 1, buffer.size());
+            }
 
-            if (outputFile.fclose() == 0 ) {
+            if (outputFile.fclose() == 0 && backupFile.fclose() == 0) {
                 cout << "Finished writing file " << targetName <<endl;
             } else {
                 cerr << "Error closing output file " << targetName << 
                     " errno=" << strerror(errno) << endl;
                 exit(16);
+            }
+            int rc = remove(backupName.c_str()); 
+            if (rc) {
+                cerr << "Error removing backup output file " << backupName << 
+                    " errno=" << strerror(errno) << endl;
+                exit(32);   
             }
             //cout << "Write File " << fileName << "'s content is: " << buffer.data() << endl;
         //    delete[] buffer;
