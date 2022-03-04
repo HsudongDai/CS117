@@ -348,7 +348,7 @@ namespace C150NETWORK {
             */
             // const char * carryload = get<5>(header).data();
             cout << "rcv data length: " << fullFileBuffer.size() << endl;
-            int isSame = strcmp(rcvData, (const char *) checksum);
+            int isSame = strcmp(fullFileBuffer.data(), (const char *) checksum);
             resp = sendMessage(sock, messageType << 1, filename, packetID, 20, (const char *)checksum, 0);
         }
 

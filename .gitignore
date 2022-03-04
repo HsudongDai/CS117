@@ -8,3 +8,9 @@ fileserver
 fileclient
 nastyfiletest
 comp117/
+sha1test
+core*
+GRADE*
+test.cpp
+test
+*_debug.txt
