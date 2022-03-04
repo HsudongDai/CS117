@@ -82,7 +82,7 @@ namespace C150NETWORK {
         char buffer[512];
         char recBuffer[512];  // buffer is used to send message, recBuffer is used to receive response
         int fileNameLen = fileName.size();
-	    //cout << "sendMessage, filenameLen: " << fileNameLen << endl;
+	//cout << "sendMessage, filenameLen: " << fileNameLen << endl;
         const char * cFileName = fileName.c_str();  // c-style string, easier to copy into array
 
         memcpy(buffer, intToCharArray(messageType).data(), sizeof(int));
@@ -96,9 +96,10 @@ namespace C150NETWORK {
 //cout << "Write buffer size " << sizeof(buffer) << endl;
 
         try {
+            struct timespec req = {0, 5000}, rem;
             c150debug->printf(C150APPLICATION, "Send Message: %s. Try time 0.", buffer);
-            sock->write(buffer, sizeof(buffer));
-            
+            // sock->write(buffer, sizeof(buffer));
+            // nanosleep(&req, &rem);
             // int retryCnt = 0;
             // if called in client, it must ensure the server has received this packet
             // if (isClient == 1) {
@@ -110,9 +111,10 @@ namespace C150NETWORK {
             //         // sock->read(recBuffer, sizeof(recBuffer));
             //     }
             // } else {  // otherwise, do it best to ensure the client could receive
-            /*for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 sock->write(buffer, sizeof(buffer));
-            }*/
+                nanosleep(&req, &rem);
+            }
            
 //            c150debug->printf(C150APPLICATION, "Receive Message: %s. Try time(s). %d", recBuffer, retryCnt + 1);
 
@@ -191,7 +193,7 @@ namespace C150NETWORK {
             int index = 0;
             int packetCount = 0;
             while (index < fileBufferLen) {
-                cout << filename << " " << packetCount << endl;
+                //cout << filename << " " << packetCount << endl;
                 if (index + secLen < fileBufferLen) {
                     status = sendMessage(sock, 4, filename, packetCount, secLen, fileCopier, 1);
 
@@ -207,8 +209,8 @@ namespace C150NETWORK {
                     // cout << "send content " << filename << " packet count: " << packetCount << endl;
                 }
                 //if (packetCount % 10 == 0) {
-                    struct timespec req = {0, 100}, rem;
-                    nanosleep(&req, &rem);
+                    //struct timespec req = {0, 500}, rem;
+                    //nanosleep(&req, &rem);
                 //}
                 //cout << "Current index is " << index << endl;
                 ++packetCount;
@@ -285,10 +287,10 @@ namespace C150NETWORK {
 
         unsigned int packets;
         unsigned int bufferLen;
-/*
+
         if (messageType == prevMessageType && prevFilename == filename && packetID == prevPacketID) {
             return header;
-        }*/
+        }
         // cout << messageType << " " << filename << " " << packetID << " " << carryloadLen << " " << carry.data() << endl;
 
         if (messageType == 1) {
