@@ -19,7 +19,7 @@ namespace C150NETWORK {
     void copyFile(string sourceDir, string fileName, string targetDir, int nastiness);
     int32_t checkCopyPaths(char * srcDir, char * tgrDir);
     vector<char> safeReadFile(string sourceDir, string fileName, int nastiness);
-    void safeWriteFile(string targetDir, string fileName, const char * buffer, int nastiness);
+    void safeWriteFile(string targetDir, string fileName, vector<char>& buffer, int nastiness);
 }
 
 #endif

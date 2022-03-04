@@ -109,9 +109,9 @@ namespace C150NETWORK {
             //         // sock->read(recBuffer, sizeof(recBuffer));
             //     }
             // } else {  // otherwise, do it best to ensure the client could receive
-            for (int i = 0; i < 4; i++) {
-                sock->write(buffer, sizeof(buffer));
-            }
+            // for (int i = 0; i < 4; i++) {
+            //     sock->write(buffer, sizeof(buffer));
+            // }
            
 //            c150debug->printf(C150APPLICATION, "Receive Message: %s. Try time(s). %d", recBuffer, retryCnt + 1);
 
@@ -172,7 +172,7 @@ namespace C150NETWORK {
         cout << "Packets: " << packets << endl;
         cout << "FileBufferLen: " << fileBufferLen << endl; 
         try {
-            char* cPacket = new char[4];
+            char cPacket[4];
             memcpy(cPacket, intToCharArray(packets).data(), sizeof(int));
             // memcpy(cPacket + sizeof(int), intToCharArray(fileBufferLen).data(), sizeof(int));
             // delete[] cPacket;
@@ -256,13 +256,8 @@ namespace C150NETWORK {
 
         if (messageType == 1) {
             int packets;
-<<<<<<< HEAD
             // unsigned bufferLen;
-            // char cPackets[4], cBufferLen[4];
-=======
-            int bufferLen;
-            char cPackets[4], cBufferLen[4];
->>>>>>> 5226d241df809ccf8dc1bbd5780263faba4ca953
+            char cPackets[4]; //cBufferLen[4];
             memcpy(cPackets, carry.data(), 4);
             // memcpy(cBufferLen, carry.data() + 4, 4);
             packets = charArrayToInt(cPackets);
@@ -270,19 +265,16 @@ namespace C150NETWORK {
             cout << "Packets: " << packets << endl;
             // cout << "BufferLen: " << bufferLen << endl;
             
-<<<<<<< HEAD
             vector<char> fileBuffer(packets * secLen);
             fileQueue[filename] = fileBuffer;
-=======
             if (packets < 0 || bufferLen > 10000000) {
                 return prevPack;
             }
    
             if (fileQueue.count(filename) == 0) {
-		vector<char> fileBuffer(packets * secLen);
+		        vector<char> fileBuffer(packets * secLen);
                 fileQueue[filename] = fileBuffer;
             }
->>>>>>> 5226d241df809ccf8dc1bbd5780263faba4ca953
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
         }
 

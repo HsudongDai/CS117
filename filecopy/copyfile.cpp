@@ -354,10 +354,10 @@ namespace C150NETWORK {
         return res;
     }
 
-    void safeWriteFile(string targetDir, string fileName, const char * buffer, int nastiness) {
+    void safeWriteFile(string targetDir, string fileName, vector<char>& buffer, int nastiness) {
         void *fopenretval;
         size_t len1, len2;
-        size_t sourceSize = strlen(buffer);
+        size_t sourceSize = buffer.size();
         string errorString;
         struct stat statbuf;  
 
@@ -369,12 +369,12 @@ namespace C150NETWORK {
             NASTYFILE outputFile(nastiness); 
             fopenretval = outputFile.fopen(targetName.c_str(), "wb");  
 
-            len1 = outputFile.fwrite(buffer, 1, sourceSize);
-            len2 = outputFile.fwrite(buffer, 1, sourceSize);
+            len1 = outputFile.fwrite(buffer.data(), 1, sourceSize);
+            len2 = outputFile.fwrite(buffer.data(), 1, sourceSize);
 
             while (len1 != len2 || len1 != sourceSize || len2 != sourceSize) {
-                len1 = outputFile.fwrite(buffer, 1, sourceSize);
-                len2 = outputFile.fwrite(buffer, 1, sourceSize);
+                len1 = outputFile.fwrite(buffer.data(), 1, sourceSize);
+                len2 = outputFile.fwrite(buffer.data(), 1, sourceSize);
             }
 
             if (outputFile.fclose() == 0 ) {
@@ -384,7 +384,7 @@ namespace C150NETWORK {
                     " errno=" << strerror(errno) << endl;
                 exit(16);
             }
-            cout << "Write File " << fileName << "'s content is: " << buffer << endl;
+            cout << "Write File " << fileName << "'s content is: " << buffer.data() << endl;
         //    delete[] buffer;
         } catch (C150Exception& e) {
           //  delete[] buffer;
