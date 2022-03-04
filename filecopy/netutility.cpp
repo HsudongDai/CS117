@@ -172,9 +172,9 @@ namespace C150NETWORK {
         cout << "Packets: " << packets << endl;
         cout << "FileBufferLen: " << fileBufferLen << endl; 
         try {
-            char cPacket[4];
+            char cPacket[8];
             memcpy(cPacket, intToCharArray(packets).data(), sizeof(int));
-            // memcpy(cPacket + sizeof(int), intToCharArray(fileBufferLen).data(), sizeof(int));
+            memcpy(cPacket + sizeof(int), intToCharArray(fileBufferLen).data(), sizeof(int));
             // delete[] cPacket;
             int status = sendMessage(sock, 1, filename, 0, sizeof(cPacket), cPacket, 1);
             // Packet responsePacket = ;
@@ -274,19 +274,20 @@ namespace C150NETWORK {
 
         int resp;
 
+        unsigned int packets;
+        unsigned int bufferLen;
+
         if (messageType == prevMessageType && prevFilename == filename && packetID == prevPacketID) {
             return header;
         }
         cout << messageType << " " << filename << " " << packetID << " " << carryloadLen << " " << carry.data() << endl;
 
         if (messageType == 1) {
-            int packets;
-            // unsigned bufferLen;
-            unsigned char cPackets[4]; //cBufferLen[4];
+            unsigned char cPackets[4], cBufferLen[4];
             memcpy(cPackets, carry.data(), 4);
-            // memcpy(cBufferLen, carry.data() + 4, 4);
+            memcpy(cBufferLen, carry.data() + 4, 4);
             packets = charArrayToInt(cPackets);
-            // bufferLen = charArrayToInt(cBufferLen);
+            bufferLen = charArrayToInt(cBufferLen);
             cout << "Packets: " << packets << endl;
             // cout << "BufferLen: " << bufferLen << endl;
             
@@ -320,14 +321,16 @@ namespace C150NETWORK {
         else if (messageType == 16) {
             unsigned char checksum[20];
             vector<char> rcvPacket = fileQueue[filename];
-            vector<char>::iterator it;
-            it = find(rcvPacket.begin(), rcvPacket.end(), '\0');
-            if (it != rcvPacket.end()) {
-                it = rcvPacket.erase(it, rcvPacket.end());
-            }
+            // vector<char>::iterator it;
+            // it = find(rcvPacket.begin(), rcvPacket.end(), '\0');
+            // if (it != rcvPacket.end()) {
+            //     it = rcvPacket.erase(it, rcvPacket.end());
+            // }
             
             const char * fileBuffer = rcvPacket.data();
-            SHA1((const unsigned char *) fileBuffer, rcvPacket.size(), checksum);
+            vector<char> cleaned(fileBuffer, fileBuffer + bufferLen);
+            fileQueue[filename] = cleaned;
+            SHA1((const unsigned char *) fileBuffer, bufferLen, checksum);
             cout << rcvPacket.size() << " " << strlen(fileBuffer) << endl;
             for (int i = 0; i < 20; i++) {
                 printf("%02x", checksum[i]);

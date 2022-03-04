@@ -361,14 +361,14 @@ namespace C150NETWORK {
         string errorString;
         struct stat statbuf;  
 
-        vector<char>::iterator it;
-        it = find(buffer.begin(), buffer.end(), '\0');
-        if (it != buffer.end()) {
-            it = buffer.erase(it, buffer.end());
-        }
+        // vector<char>::iterator it;
+        // it = find(buffer.begin(), buffer.end(), '\0');
+        // if (it != buffer.end()) {
+        //     it = buffer.erase(it, buffer.end());
+        // }
 
         string targetName = makeFileName(targetDir, fileName);
-        cout << "Writing " << targetName << " to " << targetName << endl;
+        cout << "Writing " << targetName << endl;
         cout << "Writing length: " << buffer.size() << endl;
 
         try {
