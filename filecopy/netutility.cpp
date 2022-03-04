@@ -306,8 +306,18 @@ namespace C150NETWORK {
 
         else if (messageType == 16) {
             unsigned char checksum[20];
-            const char * fileBuffer = fileQueue[filename].data();
+            vector<char> rcvPacket = fileQueue[filename];
+            vector<char>::iterator it;
+            it = find(rcvPacket.begin(), rcvPacket.end(), '\0');
+            if (it != rcvPacket.end()) {
+                it = rcvPacket.erase(it + 1, rcvPacket.end());
+            }
+            
+            const char * fileBuffer = rcvPacket.data();
             SHA1((const unsigned char *) fileBuffer, strlen(fileBuffer), checksum);
+            for (int i = 0; i < 20; i++) {
+                printf("%02x", checksum[i]);
+            }
             
             const char * carryload = get<5>(header).data();
             int isSame = strcmp(carryload, (const char *) checksum);
