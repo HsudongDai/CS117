@@ -357,9 +357,15 @@ namespace C150NETWORK {
     void safeWriteFile(string targetDir, string fileName, vector<char>& buffer, int nastiness) {
         void *fopenretval;
         size_t len1, len2;
-        size_t sourceSize = buffer.size();
+        // size_t sourceSize = buffer.size();
         string errorString;
         struct stat statbuf;  
+
+        vector<char>::iterator it;
+        it = find(buffer.begin(), buffer.end(), '\0');
+        if (it != buffer.end()) {
+            it = buffer.erase(it, buffer.end());
+        }
 
         string targetName = makeFileName(targetDir, fileName);
         cout << "Writing " << targetName << " to " << targetName << endl;

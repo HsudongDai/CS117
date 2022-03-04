@@ -219,8 +219,15 @@ namespace C150NETWORK {
                 rcvFilename = get<2>(header);
             }
             vector<char> rcvChecksum = get<5>(header);
-            int isSame = strcmp(rcvChecksum.data(), (const char *) checksum);
-            if (isSame != 0) {
+            bool isSame = true;
+            for (int i = 0; i < 20; i++) {
+                if ((unsigned char)rcvChecksum[i] != checksum[i]) {
+                    isSame = false;
+                    break;
+                }
+            }
+            
+            if (!isSame) {
                 return -1;
             }
 
@@ -310,7 +317,7 @@ namespace C150NETWORK {
             vector<char>::iterator it;
             it = find(rcvPacket.begin(), rcvPacket.end(), '\0');
             if (it != rcvPacket.end()) {
-                it = rcvPacket.erase(it + 1, rcvPacket.end());
+                it = rcvPacket.erase(it, rcvPacket.end());
             }
             
             const char * fileBuffer = rcvPacket.data();
