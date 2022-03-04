@@ -193,16 +193,16 @@ namespace C150NETWORK {
                 if (index + secLen < fileBufferLen) {
                     status = sendMessage(sock, 4, filename, packetCount, secLen, fileCopier, 1);
 
-           //         cout << "send content " << filename << " packet count: " << packetCount << endl;
+                    // cout << "send content " << filename << " packet count: " << packetCount << endl;
                     index += secLen;
                     fileCopier += secLen;
                 } else {
                     status = sendMessage(sock, 4, filename, packetCount, fileBufferLen - index, fileCopier, 1);
                     
                     cout << "left len: " << fileBufferLen - index << endl;
-	            index = fileBufferLen;
+	                index = fileBufferLen;
                     
-             //       cout << "send content " << filename << " packet count: " << packetCount << endl;
+                    // cout << "send content " << filename << " packet count: " << packetCount << endl;
                 }
                 //cout << "Current index is " << index << endl;
                 ++packetCount;
@@ -210,17 +210,24 @@ namespace C150NETWORK {
             unsigned char checksum[20];
             SHA1((const unsigned char *) fileBuffer.data(), fileBufferLen, checksum);
             status = sendMessage(sock, 16, filename, packets + 1, 20, (const char *)checksum, 1);
-            // responsePacket = arrayToPacket(response);
+            Packet header = receiveMessage(sock);
+            int messageType = get<0>(header);
+            string rcvFilename = get<2>(header);
+            while (messageType != 32 || filename != rcvFilename) {
+                responsePacket = receiveMessage(sock);
+                messageType = get<0>(header);
+                rcvFilename = get<2>(header);
+            }
 
-            // int breakTime = 0;  // If the checksum does not match after 3 times
-            // do {
-            //     if (breakTime == 3) {
-            //         return -1;
-            //     }
-            //     ++breakTime;
-            //     response = sendMessage(sock, 1, filename, 0, 20, (const char *) checksum, 1);
-            //     responsePacket = arrayToPacket(response);          
-            // } while (!checkCarryload(responsePacket, (char *)checksum));
+            int breakTime = 0;  // If the checksum does not match after 3 times
+            do {
+                if (breakTime == 3) {
+                    return -1;
+                }
+                ++breakTime;
+                response = sendMessage(sock, 1, filename, 0, 20, (const char *) checksum, 1);
+                responsePacket = arrayToPacket(response);          
+            } while (!checkCarryload(responsePacket, (char *)checksum));
         } catch (C150Exception& e) {
             // Write to debug log
             c150debug->printf(C150ALWAYSLOG,"Caught C150NetworkException: %s\n",

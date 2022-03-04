@@ -370,16 +370,16 @@ namespace C150NETWORK {
             fopenretval = outputFile.fopen(targetName.c_str(), "wb");  
 
             len1 = outputFile.fwrite(buffer.data(), 1, sourceSize);
-            len2 = outputFile.fwrite(buffer.data(), 1, sourceSize);
+            // len2 = outputFile.fwrite(buffer.data(), 1, sourceSize);
 
-            while (len1 != len2 || len1 != sourceSize || len2 != sourceSize) {
-                len1 = outputFile.fwrite(buffer.data(), 1, sourceSize);
-                len2 = outputFile.fwrite(buffer.data(), 1, sourceSize);
-            }
+            // while (len1 != len2 || len1 != sourceSize || len2 != sourceSize) {
+            //     len1 = outputFile.fwrite(buffer.data(), 1, sourceSize);
+            //     len2 = outputFile.fwrite(buffer.data(), 1, sourceSize);
+            // }
 
             if (outputFile.fclose() == 0 ) {
                 cout << "Finished writing file " << targetName <<endl;
-                } else {
+            } else {
                 cerr << "Error closing output file " << targetName << 
                     " errno=" << strerror(errno) << endl;
                 exit(16);
