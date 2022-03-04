@@ -9,6 +9,7 @@
 #include "c150debug.h"
 #include "c150grading.h"
 #include "netutility.hpp"
+#include "time.h"
 
 using namespace std;
 
@@ -109,9 +110,9 @@ namespace C150NETWORK {
             //         // sock->read(recBuffer, sizeof(recBuffer));
             //     }
             // } else {  // otherwise, do it best to ensure the client could receive
-            // for (int i = 0; i < 4; i++) {
-            //     sock->write(buffer, sizeof(buffer));
-            // }
+            /*for (int i = 0; i < 4; i++) {
+                sock->write(buffer, sizeof(buffer));
+            }*/
            
 //            c150debug->printf(C150APPLICATION, "Receive Message: %s. Try time(s). %d", recBuffer, retryCnt + 1);
 
@@ -190,6 +191,7 @@ namespace C150NETWORK {
             int index = 0;
             int packetCount = 0;
             while (index < fileBufferLen) {
+                cout << filename << " " << packetCount << endl;
                 if (index + secLen < fileBufferLen) {
                     status = sendMessage(sock, 4, filename, packetCount, secLen, fileCopier, 1);
 
@@ -204,6 +206,10 @@ namespace C150NETWORK {
                     
                     // cout << "send content " << filename << " packet count: " << packetCount << endl;
                 }
+                //if (packetCount % 10 == 0) {
+                    struct timespec req = {0, 100}, rem;
+                    nanosleep(&req, &rem);
+                //}
                 //cout << "Current index is " << index << endl;
                 ++packetCount;
             }  // step 3: send the checksum
@@ -225,12 +231,9 @@ namespace C150NETWORK {
                 printf("%02x", (unsigned char)rcvChecksum[i]);
             }
             bool isSame = true;
-            for (int i = 0; i < 20; i++) {
-                printf("%02x", checksum[i]);
-            }
             cout << endl;
             for (int i = 0; i < 20; i++) {
-                printf("%02x", (unsigned char)rcvChecksum[i]);
+                printf("%02x", checksum[i]);
             }
             cout << endl;
             for (int i = 0; i < 20; i++) {
@@ -282,10 +285,10 @@ namespace C150NETWORK {
 
         unsigned int packets;
         unsigned int bufferLen;
-
+/*
         if (messageType == prevMessageType && prevFilename == filename && packetID == prevPacketID) {
             return header;
-        }
+        }*/
         // cout << messageType << " " << filename << " " << packetID << " " << carryloadLen << " " << carry.data() << endl;
 
         if (messageType == 1) {
@@ -308,7 +311,7 @@ namespace C150NETWORK {
 
             // do not create the buffer twice
             if (fileQueue.count(filename) == 0) {
-		        vector<char> fileBuffer(bufferLen);
+	        vector<char> fileBuffer(bufferLen);
                 fileQueue[filename] = fileBuffer;
             }
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
@@ -321,7 +324,7 @@ namespace C150NETWORK {
             // const char * carryload = get<5>(header).data();
             //string arrived(carryload, carryload + carry.size());
             //cout << "arrived: " << arrived << endl;
-            
+            cout << filename << " " << packetID << endl;    
             for (int i = 0; i < carry.size(); i++) {
                 data[packetID * secLen + i] = carry[i];
             }
