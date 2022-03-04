@@ -360,22 +360,22 @@ namespace C150NETWORK {
         // size_t sourceSize = buffer.size();
         string errorString;
         struct stat statbuf;  
-
+/*
         vector<char>::iterator it;
         it = find(buffer.begin(), buffer.end(), '\0');
         if (it != buffer.end()) {
             it = buffer.erase(it, buffer.end());
         }
-
+*/
         string targetName = makeFileName(targetDir, fileName);
         cout << "Writing " << targetName << " to " << targetName << endl;
-        cout << "Writing length: " << sourceSize << endl;
+        cout << "Writing length: " << buffer.size() << endl;
 
         try {
             NASTYFILE outputFile(nastiness); 
             fopenretval = outputFile.fopen(targetName.c_str(), "wb");  
 
-            len1 = outputFile.fwrite(buffer.data(), 1, sourceSize);
+            len1 = outputFile.fwrite(buffer.data(), 1, buffer.size());
             // len2 = outputFile.fwrite(buffer.data(), 1, sourceSize);
 
             // while (len1 != len2 || len1 != sourceSize || len2 != sourceSize) {
@@ -390,7 +390,7 @@ namespace C150NETWORK {
                     " errno=" << strerror(errno) << endl;
                 exit(16);
             }
-            cout << "Write File " << fileName << "'s content is: " << buffer.data() << endl;
+            //cout << "Write File " << fileName << "'s content is: " << buffer.data() << endl;
         //    delete[] buffer;
         } catch (C150Exception& e) {
           //  delete[] buffer;
