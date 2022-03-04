@@ -214,11 +214,18 @@ namespace C150NETWORK {
             int messageType = get<0>(header);
             string rcvFilename = get<2>(header);
             while (messageType != 32 || filename != rcvFilename) {
-                responsePacket = receiveMessage(sock);
+                header = receiveMessage(sock);
                 messageType = get<0>(header);
                 rcvFilename = get<2>(header);
             }
             vector<char> rcvChecksum = get<5>(header);
+            cout << "Received checksum len: " << rcvChecksum.size() << endl;
+            cout << "local checksum len: " << sizeof(checksum) << endl;
+            for (int i = 0; i < 20; i++) {
+                printf("%02x", (unsigned char)rcvChecksum[i]);
+            }
+            cout << endl;
+            for (int i = 0; i < 20; i++) printf("%02x", checksum[i]);
             bool isSame = true;
             for (int i = 0; i < 20; i++) {
                 if ((unsigned char)rcvChecksum[i] != checksum[i]) {
@@ -230,7 +237,6 @@ namespace C150NETWORK {
             if (!isSame) {
                 return -1;
             }
-
             // int breakTime = 0;  // If the checksum does not match after 3 times
             // do {
             //     if (breakTime == 3) {
@@ -321,14 +327,15 @@ namespace C150NETWORK {
             }
             
             const char * fileBuffer = rcvPacket.data();
-            SHA1((const unsigned char *) fileBuffer, strlen(fileBuffer), checksum);
+            SHA1((const unsigned char *) fileBuffer, rcvPacket.size(), checksum);
+            cout << rcvPacket.size() << " " << strlen(fileBuffer) << endl;
             for (int i = 0; i < 20; i++) {
                 printf("%02x", checksum[i]);
             }
             
             const char * carryload = get<5>(header).data();
             int isSame = strcmp(carryload, (const char *) checksum);
-            resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, (const char *)checksum, 0);
+            resp = sendMessage(sock, messageType << 1, filename, packetID, 20, (const char *)checksum, 0);
         }
 
         return header;
