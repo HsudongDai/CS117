@@ -152,16 +152,15 @@ main(int argc, char *argv[])
         c150debug->printf(C150APPLICATION,"Ready to accept messages");
 
         // Packet prevPack = make_tuple(-1, -1, )
-
+        string emptyFilename;
+        vector<char> emptyData;
+        Packet prevPack = make_tuple(0, 0, emptyFilename, 0, 0, emptyData);
         //
         // infinite loop processing messages
         //
         while (true) {
             string statusCode;
 
-            string emptyFilename;
-            vector<char> emptyData;
-            Packet prevPack = make_tuple(0, 0, emptyFilename, 0, 0, emptyData);
             // when server send message to 
             prevPack = receiveFileBySock(sock, fileQueue, prevPack);
 

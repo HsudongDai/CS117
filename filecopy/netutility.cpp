@@ -326,7 +326,7 @@ namespace C150NETWORK {
             // }
             cout << "new size of rcv packet: " << rcvPacket.size() << endl; 
             const char * fileBuffer = rcvPacket.data();
-            SHA1((const unsigned char *) fileBuffer, rcvPacket.size(), checksum);
+            SHA1((const unsigned char *) fileBuffer, fileQueue[filename].size(), checksum);
             /*for (int i = 0; i < 20; i++) {
                 printf("%02x", checksum[i]);
             }
