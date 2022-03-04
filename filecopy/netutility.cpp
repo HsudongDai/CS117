@@ -36,12 +36,11 @@ namespace C150NETWORK {
         // cout << "extract filename len: " << filenameLen << endl;
 
         // read filename
-        char* cFilename = new char[filenameLen];
+        char cFilename[filenameLen];
         memcpy(cFilename, recBuffer.data() + 8, filenameLen);
         string filename(cFilename, cFilename + filenameLen);
 
         // cout << "extract filename: " << filename << endl;
-        delete[] cFilename;
 
         // read packet_id
         memcpy(lenBuffer, recBuffer.data() + 8 + filenameLen, 4);
@@ -173,10 +172,10 @@ namespace C150NETWORK {
         cout << "Packets: " << packets << endl;
         cout << "FileBufferLen: " << fileBufferLen << endl; 
         try {
-            char* cPacket = new char[8];
+            char cPacket[8];
             memcpy(cPacket, intToCharArray(packets).data(), sizeof(int));
             memcpy(cPacket + sizeof(int), intToCharArray(fileBufferLen).data(), sizeof(int));
-            delete[] cPacket;
+            //delete[] cPacket;
             int status = sendMessage(sock, 1, filename, 0, sizeof(cPacket), cPacket, 1);
             // Packet responsePacket = ;
 
@@ -257,7 +256,7 @@ namespace C150NETWORK {
 
         if (messageType == 1) {
             int packets;
-            unsigned bufferLen;
+            int bufferLen;
             char cPackets[4], cBufferLen[4];
             memcpy(cPackets, carry.data(), 4);
             memcpy(cBufferLen, carry.data() + 4, 4);
@@ -266,20 +265,26 @@ namespace C150NETWORK {
             cout << "Packets: " << packets << endl;
             cout << "BufferLen: " << bufferLen << endl;
             
-            vector<char> fileBuffer(carryloadLen);
-            fileQueue[filename] = fileBuffer;
+            if (packets < 0 || bufferLen > 10000000) {
+                return prevPack;
+            }
+   
+            if (fileQueue.count(filename) == 0) {
+		vector<char> fileBuffer(packets * secLen);
+                fileQueue[filename] = fileBuffer;
+            }
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
         }
 
         else if (messageType == 4) {
             vector<char>& data = fileQueue[filename];
-            cout << data == nullptr << endl;
+            cout << "Is data null: " << (data.size()) << endl;
 
             const char * carryload = get<5>(header).data();
             string arrived(carryload, carryload + carry.size());
             cout << "arrived: " << arrived << endl;
             
-            for (int i = 0; i < carryloadLen; i++) {
+            for (int i = 0; i < carry.size(); i++) {
                 data[packetID * secLen + i] = carry[i];
             }
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
