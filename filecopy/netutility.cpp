@@ -218,16 +218,21 @@ namespace C150NETWORK {
                 messageType = get<0>(header);
                 rcvFilename = get<2>(header);
             }
+            vector<char> rcvChecksum = get<5>(header);
+            int isSame = strcmp(rcvChecksum.data(), (const char *) checksum);
+            if (isSame != 0) {
+                return -1;
+            }
 
-            int breakTime = 0;  // If the checksum does not match after 3 times
-            do {
-                if (breakTime == 3) {
-                    return -1;
-                }
-                ++breakTime;
-                response = sendMessage(sock, 1, filename, 0, 20, (const char *) checksum, 1);
-                responsePacket = arrayToPacket(response);          
-            } while (!checkCarryload(responsePacket, (char *)checksum));
+            // int breakTime = 0;  // If the checksum does not match after 3 times
+            // do {
+            //     if (breakTime == 3) {
+            //         return -1;
+            //     }
+            //     ++breakTime;
+            //     response = sendMessage(sock, 1, filename, 0, 20, (const char *) checksum, 1);
+            //     responsePacket = arrayToPacket(response);          
+            // } while (!checkCarryload(responsePacket, (char *)checksum));
         } catch (C150Exception& e) {
             // Write to debug log
             c150debug->printf(C150ALWAYSLOG,"Caught C150NetworkException: %s\n",
