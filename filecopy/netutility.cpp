@@ -13,16 +13,16 @@
 using namespace std;
 
 namespace C150NETWORK {
-    const int secLen = 200;
-    vector<char> intToCharArray(int a);
-    int charArrayToInt(char * ptr);
+    const int secLen = 300;
+    vector<unsigned char> intToCharArray(int a);
+    int charArrayToInt(unsigned char * ptr);
     // send a message
     // return the response
     Packet arrayToPacket(vector<char>& recBuffer) {
 
         // cout << "RecBuffer is " ;
         cout << "RecBuffer len is: " << recBuffer.size() << endl;
-        char lenBuffer[4];  // used to buffer all the 4-byte length
+        unsigned char lenBuffer[4];  // used to buffer all the 4-byte length
 
         // get the message type
         memcpy(lenBuffer, recBuffer.data(), 4);
@@ -257,7 +257,7 @@ namespace C150NETWORK {
         if (messageType == 1) {
             int packets;
             // unsigned bufferLen;
-            char cPackets[4]; //cBufferLen[4];
+            unsigned char cPackets[4]; //cBufferLen[4];
             memcpy(cPackets, carry.data(), 4);
             // memcpy(cBufferLen, carry.data() + 4, 4);
             packets = charArrayToInt(cPackets);
@@ -267,7 +267,7 @@ namespace C150NETWORK {
             
             vector<char> fileBuffer(packets * secLen);
             fileQueue[filename] = fileBuffer;
-            if (packets < 0 || bufferLen > 10000000) {
+            if (packets < 0 ) {
                 return prevPack;
             }
    
@@ -305,22 +305,22 @@ namespace C150NETWORK {
         return header;
     }
 
-    vector<char> intToCharArray(int a) {
-        vector<char> arr(4, 0);
+    vector<unsigned char> intToCharArray(int a) {
+        vector<unsigned char> arr(4, 0);
+        int b = a, c = a, d = a;
+        arr[3] = (d & 0xFF000000) >> 24 ;
+        arr[2] = (c & 0xFF0000) >> 16;
+        arr[1] = (b & 0xFF00) >> 8;
         arr[0] = a & 0xFF;
-        arr[1] = (a >> 8) & 0xFF;
-        arr[2] = (a >> 16) & 0xFF;
-        arr[3] = (a >> 24) & 0xFF;
-
         return arr;
     }
 
-    int charArrayToInt(char * ptr) {
+    int charArrayToInt(unsigned char * ptr) {
         int a = 0;
-        a |= *ptr;
-        a |= (*(ptr + 1)) << 8;
-        a |= (*(ptr + 2)) << 16;
-        a |= (*(ptr + 3)) << 24;
+        a = *ptr;
+        a += (*(ptr + 1)) << 8;
+        a += (*(ptr + 2)) << 16;
+        a += (*(ptr + 3)) << 24;
 
         return a;
     }
