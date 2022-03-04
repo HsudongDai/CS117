@@ -346,9 +346,12 @@ namespace C150NETWORK {
             cerr << "nastyfiletest:copyfile(): Caught C150Exception: " << 
             e.formattedExplanation() << endl;
         }
+        vector<char> res (buffer1, buffer1 + sourceSize);
+
+        delete[] buffer1;
         delete[] buffer2;
         //cout << "Read File " << fileName << "'s content is: " << buffer1 << endl;
-        return vector<char>(buffer1, buffer1 + sourceSize);
+        return res;
     }
 
     void safeWriteFile(string targetDir, string fileName, const char * buffer, int nastiness) {

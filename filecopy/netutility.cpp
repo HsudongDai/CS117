@@ -173,10 +173,10 @@ namespace C150NETWORK {
         cout << "Packets: " << packets << endl;
         cout << "FileBufferLen: " << fileBufferLen << endl; 
         try {
-            char* cPacket = new char[8];
+            char* cPacket = new char[4];
             memcpy(cPacket, intToCharArray(packets).data(), sizeof(int));
-            memcpy(cPacket + sizeof(int), intToCharArray(fileBufferLen).data(), sizeof(int));
-            delete[] cPacket;
+            // memcpy(cPacket + sizeof(int), intToCharArray(fileBufferLen).data(), sizeof(int));
+            // delete[] cPacket;
             int status = sendMessage(sock, 1, filename, 0, sizeof(cPacket), cPacket, 1);
             // Packet responsePacket = ;
 
@@ -257,16 +257,16 @@ namespace C150NETWORK {
 
         if (messageType == 1) {
             int packets;
-            unsigned bufferLen;
-            char cPackets[4], cBufferLen[4];
+            // unsigned bufferLen;
+            // char cPackets[4], cBufferLen[4];
             memcpy(cPackets, carry.data(), 4);
-            memcpy(cBufferLen, carry.data() + 4, 4);
+            // memcpy(cBufferLen, carry.data() + 4, 4);
             packets = charArrayToInt(cPackets);
-            bufferLen = charArrayToInt(cBufferLen);
+            // bufferLen = charArrayToInt(cBufferLen);
             cout << "Packets: " << packets << endl;
-            cout << "BufferLen: " << bufferLen << endl;
+            // cout << "BufferLen: " << bufferLen << endl;
             
-            vector<char> fileBuffer(carryloadLen);
+            vector<char> fileBuffer(packets * secLen);
             fileQueue[filename] = fileBuffer;
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
         }
