@@ -213,7 +213,8 @@ When we try to write back file from buffer to disk, the file has beem verified t
 
 <h3>Analysis of my code</h3>
 <h4>Content in the Grading log</h4>
-We try to put the required logs into the GRADELOG. Nothing special. To help the user have an interactive experience of copying files, some log information would be directly printed in the console.
+We try to put the required logs into the GRADELOG. Nothing special. To help the user have an interactive experience of copying files, some log information would be directly printed in the console. <br>
+However, since we believe end-to-end could be done simply on the client side, though the server would compare the checksums, it cannot directly send a message asking for retransmission. Only the client would detect the mismatch and start a new transmission.
 
 <h4>Problems and tricks of sending big files</h4>
 The main failure case would be the multiple retransmission of large files. Even one missed packet would lead to a retransmission of the whole big file. <br>

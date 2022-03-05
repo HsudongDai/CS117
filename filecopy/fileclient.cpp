@@ -182,7 +182,6 @@ main(int argc, char *argv[]) {
                 }     
                 u_int16_t d_namlen = strlen(sourceFile->d_name);
                 c150debug->printf(C150APPLICATION, "Filename is: %s", sourceFile->d_name);
-                *GRADING << sourceFile->d_name << " beginning transmission, attempt 1." << endl;
 
                 string source(argv[srcDirArg], argv[srcDirArg] + strlen(argv[srcDirArg]));
                 string filename(sourceFile->d_name, sourceFile->d_name + d_namlen);
@@ -190,15 +189,21 @@ main(int argc, char *argv[]) {
                 // skip subdirectories
                 // copyFile(source, sourceFile->d_name, tgrDir, fileNastiness);
                 vector<char> fileBuffer = safeReadFile(source, sourceFile->d_name, fileNastiness);
-                *GRADING << sourceFile->d_name << " transmission complete, waiting for end-to-end check, attempt 1." << endl;
+                *GRADING << sourceFile->d_name << " beginning transmission, attempt 1." << endl;
                 //const unsigned char * fileChecksum = getSHA1(makeFileName(source, filename));
 
                 int isSuccess = sendFileBySock(sock, filename, fileBuffer);
+                *GRADING << sourceFile->d_name << " transmission complete, waiting for end-to-end check, attempt 1." << endl;
+
                 c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer.data());
+                int retry = 1;
                 while (isSuccess != 0) {
+                    *GRADING << sourceFile->d_name << " end-to-end check failed, attempt " << retry << endl;
+                    ++retry;
                     isSuccess = sendFileBySock(sock, filename, fileBuffer);
                     c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer.data());
                 }
+                *GRADING << sourceFile->d_name << " end-to-end check succeeded, attempt " << retry << endl;
                 cout << "send: " << filename << endl;
 
                 // 20 is the length of SHA1 checksum, 4 is the length of delimiter
