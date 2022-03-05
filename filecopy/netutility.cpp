@@ -205,13 +205,14 @@ namespace C150NETWORK {
                     
                     cout << "left len: " << fileBufferLen - index << endl;
 	                index = fileBufferLen;
+
                     
                     // cout << "send content " << filename << " packet count: " << packetCount << endl;
                 }
-                //if (packetCount % 10 == 0) {
-                    //struct timespec req = {0, 500}, rem;
-                    //nanosleep(&req, &rem);
-                //}
+                if (packetCount % 10 == 0) {
+                    struct timespec req = {0, 1000}, rem;
+                    nanosleep(&req, &rem);
+                }
                 //cout << "Current index is " << index << endl;
                 ++packetCount;
             }  // step 3: send the checksum
@@ -330,6 +331,7 @@ namespace C150NETWORK {
             for (int i = 0; i < carry.size(); i++) {
                 data[packetID * secLen + i] = carry[i];
             }
+            cout << filename << " " << packetID << endl;
             resp = sendMessage(sock, messageType << 1, filename, packetID, carryloadLen, carry.data(), 0);
         }
 

@@ -41,37 +41,37 @@
 <div class="student">
 <p>
 <span class="label">Student1 name: </span>
-YOUR-NAME-HERE
+Xudong Dai
 <br>
 
 <span class="label">UTLN: </span>
-YOUR-UTLN-HERE
+xdai03
 <br>
 
-<span class="label">E-mail: </span>
+<span class="label">E-mail: xdai03@cs.tufts.edu</span>
 <!-- DON'T FORGET UP UPDATE THE MAILTO: URI BELOW ALONG WITH
      YOUR EMAIL IN THE ANCHOR.  IT SHOULD LOOK LIKE:
  <a href="mailto:lady.gaga@cs.tufts.edu">lady.gaga@cs.tufts.edu</a>
 --> 
 
-<a href="mailto:YOUR-EMAIL-HERE">YOUR-EMAIL-HERE</a>
+<a href="mailto:xdai03@cs.tufts.edu">xdai03@cs.tufts.edu</a>
 <br>
 <br>
 <br>
 <span class="label">Student2 name: </span>
-YOUR-NAME-HERE
+Erli Cai
 <br>
 <span class="label">UTLN: </span>
-YOUR-UTLN-HERE
+ecai01
 <br>
 
-<span class="label">E-mail: </span>
+<span class="label">E-mail: caierli123@gmail.com</span>
 <!-- DON'T FORGET UP UPDATE THE MAILTO: URI BELOW ALONG WITH
      YOUR EMAIL IN THE ANCHOR.  IT SHOULD LOOK LIKE:
  <a href="mailto:lady.gaga@cs.tufts.edu">lady.gaga@cs.tufts.edu</a>
 --> 
 
-<a href="mailto:YOUR-EMAIL-HERE">YOUR-EMAIL-HERE</a>
+<a href="mailto:caierli123@gmail.com">caierli123@gmail.com</a>
 
 <br>
 </p>
@@ -125,25 +125,26 @@ on both the client and the server; if all you got working
 was the end-to-end check, then please tell us how to test your work. <em>Also: if high network nastiness messes up your ability to deal with file nastiness, you can give us two pairs: e.g. Test my client and server with networknastiness=4 and filenastiness=1 or networknastiness=0 and filenastiness=3)</em></li>
 <li class="a">
 <!-- replace XX and YY with the actual values -->
-Please test my client and server with: networknastiness=XX and filenastiness=YY.
+Please test my client and server with: networknastiness=03/04 and filenastiness=05.
 </li>
 
 <li class="q">Is there anything else we should
 know about testing your code, or what you expect it to do
 (beyond what's explained in your report below)?</li>
 <li class="a">
-...your answer here...
+My code is insensitive to filenastiness, but may behave strangely when using high networknastiness like 3 or 4. At this time, my client may cause error when delivering big files at the first time, like <i>data10000</i> or <i>warandpeace.txt</i>. But they can be delivered finally by restarting the client. <br>
+We believe this phenomenon is caused by drop-out the flow-in packets. The sending process is so fast, while reading and processing packets is relatively slow. The later-coming packets will overlap the earlier packets even the earlier ones are not processed due to limit packets buffer of the network card.
 </li>
 
 <li class="q">Did you get help from anyone other than your teammate? If "yes", then briefly explain who helped you and how.</li>
 <li class="a">
-...your answer here...
+No, I finished this project with my teammate alone.
 </li>
 
 
 <li class="q">(optional) Do you have any other comments on this assignment (e.g. was it worthwhile, what did you learn from it, do you have suggestions for improvment if the course is offered again)?</li>
 <li class="a">
-...your answer here...
+The project is inspring and innovative. By implementing the low-level protocol by ourselves, we have a better understanding of our modern network.
 </li>
 
 </ol>
@@ -158,8 +159,84 @@ know about testing your code, or what you expect it to do
      and replace it with your report. (Do NOT
      keep the color:grey styling on your report! :-) -->
 
-<p style="color:grey">Replace this text with the body of your report. You can use &lt;h3>,  &lt;h4> and other HTML tags to format your report. A guide to what goes in this report is available in the <a href="filecopyassignment#report">preparing your report</a> section of the <a href="filecopyassignment">File Copy assignment page</a>. </p>
+<!-- <p style="color:grey">Replace this text with the body of your report. You can use &lt;h3>,  &lt;h4> and other HTML tags to format your report. A guide to what goes in this report is available in the <a href="filecopyassignment#report">preparing your report</a> section of the <a href="filecopyassignment">File Copy assignment page</a>. </p> -->
 
+<h3>Definition of our network protocol</h3>
+We devide the file-copying protocol into 3 parts: handshaking, data-sending and end-to-end checking. For each part, the client would send the packet carrying data to the server, then the server would respond with a confirmation packet.
+
+<h4>Format of packets</h4>
+We define a general format for all packets but change a filed in the header to indicate message type, and use message body to transmit data. <br>
+The general data format is: <br>
+<span> <code style="text-align: center;">  &lt;message_type = 4&gt; &lt;filename_length = 4&gt; &lt;filename&gt; &lt;packet_id = 4&gt; &lt;carryload_length = 4&gt; &lt;carry_load&gt; </code></span><br>
+The length of filename and carry_load is variable indicated by filename_length and carry_load_length. The maximum length of carry_load is 300, since the largest packet length is 512, 16 bytes are reserved for header and we hope our packet can be compatible with very long filename. <br>
+
+Here we list the format of carry load for each packet. <br>
+<ul>
+     <li>Handshaking request: 4-byte, length of the sent file</li>
+     <li>Handshaking response: 4-byte, length of the sent file</li>
+     <li>Data Packet request: 0~300 bytes, a segment of the sent file</li>
+     <li>Data Packet response: 0~300 bytes, the received segment of the sent file</li>
+     <li>Checksum Request: 20-byte, the SHA1 checksum calculated by the client</li>
+     <li>Checksum Request: 20-byte, the SHA1 checksum calculated by the server</li>
+</ul>
+The message types of these 6 kinds of packets are 1, 2, 4, 8, 16, 32, respectively.
+
+<h4>Flow of the file-copying process</h4>
+Here is the process for each single file.
+<ol>
+     <li>The client would read the file, get the size of file, then send it to the server.</li>
+     <li>The server would allocate a buffer of the received length for this file.</li>
+     <li>The client would send the segements of the file one by one.</li>
+     <li>The server would copy the received segment to its buffer, the offset is from the multiplication of packetID and secLen.</li>
+     <li>The client would send the checksum of the file to the server.</li>
+     <li>The checksum packet would trigger the server to send the checksum of received file.</li>
+     <li>The client would check whether local and received checksums match. If not, go back to the 1 step; else, go to the next file.</li>
+</ol>
+
+<h4>Anti-network-nastiness methods</h4>
+For simplicity and speed of copying files, in fact we omit the check of each single packet. We simply do the check at the end of receiving files. Hence there is no difference of sequence in normal cases or recovery cases. <br>
+But lost packets would cause potentially infinite resending. To deal with it, we do 2 things.
+<ul>
+     <li>For each packet, we would send it 5 times. The server would check each packet and drop out the duplicates. It is brute-force, but would not harm copying speed obviously.</li>
+     <li>We would wait for a very short period between each sending step. It would help the server get enough time to read the packet before it is wiped out by the newer packets.</li>
+</ul>
+Of course these not the best methods to ensure the robustness of our program, but <i>timeout and error retransmission</i> would cause serious coupling in my code. That is, the "sendFileBySock" function would need to read and write the socket simultaneously. Meanwhile these 2 methods could almost solve the problem in this situation. Hence we pick up the simpler methods. 
+
+<h3>Methods to solve file nastiness</h3>
+Generally, it is not a thorny problem. We solve it by repetitive reading or writing assisted by length checking.
+
+<h4>Reading</h4>
+We initialize 2 buffer arrays. Each time, the file descriptor would read data into these 2 buffers separately. Then, the 2 arrays are compared to each other and their lengths are separately compared to the source size. Only when 3 of them match can we ensure that the correct data is read into the memory.
+
+<h4>Writing</h4>
+When we try to write back file from buffer to disk, the file has beem verified through the checksum. The length of the buffer is fixed. Then we try to write back the file again and agin till the returned length is the same with the buffer length.
+
+<h3>Analysis of my code</h3>
+<h4>Content in the Grading log</h4>
+We try to put the required logs into the GRADELOG. Nothing special. To help the user have an interactive experience of copying files, some log information would be directly printed in the console.
+
+<h4>Problems and tricks of sending big files</h4>
+The main failure case would be the multiple retransmission of large files. Even one missed packet would lead to a retransmission of the whole big file. <br>
+Our program can detect it easily by the verification of checksums. Our program will not give up till the checksums finally match. <br>
+In this situation, an effective method is to kill and restart the client. The server would always keep a buffer of the file and next time the missed packets could be fit easily. <br>
+This phenomenon hardly shows on short files, shorter than 100 packets / 300, 000 bytes. <br>
+This phenomenon would hardly show when the network nastiness is set to 0 or 1.
+
+<h4>Try the best to deliver files</h4>
+To keep the process transparent, we would not suppress any error. That is, our program would not give up sending a file. We do so for simplicity. However, files in SRC directory, except data10000 and warandpeace.txt, can always be transmitted fluently no matter both of the nastinesses are.
+
+<h4>Establishment of Confidence</h4>
+The confidence is built on a chain.
+<ol>
+     <li>The file reading is reliable due to double check.</li>
+     <li>The transmission is reliable due to SHA1 verification on the client side.</li>
+     <li>The file writing is reliable due to double length check.</li>
+</ol>
+
+<h4>What I learned from the assignment</h4>
+It is my very first time to do a low-level protocol job. I learned a lot not only the basic grammar knowledge of C++, but also the software engineering skills. I learned how to define reasonable interfaces and program interface-orientedly. It's much better than programm first then modify the interface again and again.<br>
+Besides, I learned how to efficiently express my idea by UMLs or other support documents. <br>
+More important, it trained my patience while analyzing core dumps to better manage memory space.
 </div>
 </div>
 </body>
