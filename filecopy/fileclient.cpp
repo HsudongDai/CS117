@@ -1,62 +1,7 @@
-// --------------------------------------------------------------
-//
-//                        pingclient.cpp
-//
-//        Author: Noah Mendelsohn         
-//   
-//
-//        This is a simple client, designed to illustrate use of:
-//
-//            * The C150DgmSocket class, which provides 
-//              a convenient wrapper for sending and receiving
-//              UDP packets in a client/server model
-//
-//            * The c150debug interface, which provides a framework for
-//              generating a timestamped log of debugging messages.
-//              Note that the socket classes described above will
-//              write to these same logs, providing information
-//              about things like when UDP packets are sent and received.
-//              See comments section below for more information on 
-//              these logging classes and what they can do.
-//
-//
-//        COMMAND LINE
-//
-//              pingclient <servername> <msgtxt>
-//
-//
-//        OPERATION
-//
-//              pingclient will send a single UDP packet
-//              to the named server, and will wait (forever)
-//              for a single UDP packet response. The contents
-//              of the packet sent will be the msgtxt, including
-//              a terminating null. The response message
-//              is checked to ensure that it's null terminated.
-//              For safety, this application will use a routine 
-//              to clean up any garbage characters the server
-//              sent us, (so a malicious server can't crash us), and
-//              then print the result.
-//
-//              Note that the C150DgmSocket class will select a UDP
-//              port automatically based on the user's login, so this
-//              will (typically) work only on the test machines at Tufts
-//              and for COMP 150-IDS who are registered. See documention
-//              for the comp150ids getUserPort routine if you are 
-//              curious, but you shouldn't have to worry about it.
-//              The framework automatically runs on a separate port
-//              for each user, as long as you are registerd in the
-//              the student port mapping table (ask Noah or the TAs if
-//              the program dies because you don't have a port).
-//
-//        LIMITATIONS
-//
-//              This version does not timeout or retry when packets are lost.
-//
-//
-//       Copyright: 2012 Noah Mendelsohn
-//     
-// --------------------------------------------------------------
+// modified from pingclient
+// Author: Xudong Dai
+// Date: 2022-02-26
+// execute the function of a file-sending server
 
 
 #include "c150dgmsocket.h"
@@ -209,40 +154,7 @@ main(int argc, char *argv[]) {
             }
             *GRADING << sourceFile->d_name << " end-to-end check succeeded, attempt " << retry << endl;
             cout << "send: " << filename << endl;
-
-                // 20 is the length of SHA1 checksum, 4 is the length of delimiter
-                // another one is the '\0'
-                // char * messageBuffer = new char[d_namlen + 20 + 4 + 1];
-                // memcpy(messageBuffer, fileChecksum, 20);
-                // memcpy(messageBuffer + 20, "####", 4);
-                // memcpy(messageBuffer + 24, sourceFile->d_name, d_namlen);
-                // messageBuffer[d_namlen + 24] = '\0';
-
-                // TODO write retry 
-                // sock -> write(messageBuffer, d_namlen + 20 + 4 + 1);
-                // c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", messageBuffer);
-
-                // Read the response from the server
-                // c150debug->printf(C150APPLICATION,"%s: Returned from write, doing read()", argv[0]);
-                // readlen = sock -> read(incomingMessage, sizeof(incomingMessage));
-
-                // Check and print the incoming message
-                // checkAndPrintMessage(readlen, incomingMessage, sizeof(incomingMessage));
-                // if (incomingMessage[sizeof(incomingMessage) - 2] == '!') {
-                //     *GRADING << sourceFile->d_name << " end-to-end check succeeded, attempt 1." << endl;
-                // } else {
-                //     *GRADING << sourceFile->d_name << " end-to-end check failed, attempt 1." << endl;
-                // }
-                // delete[] fileChecksum;
-                // delete[] messageBuffer;
-            }
-        // } else {
-        //     c150debug->printf(C150APPLICATION,"Source or Target Directory is wrong");
-        //     exit(1);
-        // }
-
-        // sock -> write(argv[msgArg], strlen(argv[msgArg])+1); // +1 includes the null
-
+        }
     }
 
     //

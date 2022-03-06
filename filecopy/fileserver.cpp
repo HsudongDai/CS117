@@ -1,55 +1,7 @@
-// --------------------------------------------------------------
-//
-//                        pingserver.cpp
-//
-//        Author: Noah Mendelsohn         
-//   
-//
-//        This is a simple server, designed to illustrate use of:
-//
-//            * The C150DgmSocket class, which provides 
-//              a convenient wrapper for sending and receiving
-//              UDP packets in a client/server model
-//
-//            * The C150NastyDgmSocket class, which is a variant
-//              of the socket class described above. The nasty version
-//              takes an integer on its constructor, selecting a degree
-//              of nastiness. Any nastiness > 0 tells the system
-//              to occasionally drop, delay, reorder, duplicate or
-//              damage incoming packets. Higher nastiness levels tend
-//              to be more aggressive about causing trouble
-//
-//            * The c150debug interface, which provides a framework for
-//              generating a timestamped log of debugging messages.
-//              Note that the socket classes described above will
-//              write to these same logs, providing information
-//              about things like when UDP packets are sent and received.
-//              See comments section below for more information on 
-//              these logging classes and what they can do.
-//
-//
-//        COMMAND LINE
-//
-//              pingserver <nastiness_number>
-//
-//
-//        OPERATION
-//
-//              pingserver will loop receiving UDP packets from
-//              any client. The data in each packet should be a null-
-//              terminated string. If it is then the server
-//              responds with a text message of its own.
-//
-//              Note that the C150DgmSocket class will select a UDP
-//              port automatically based on the users login, so this
-//              will (typically) work only on the test machines at Tufts
-//              and for COMP 150-IDS who are registered. See documention
-//              for getUserPort.
-//
-//
-//       Copyright: 2012 Noah Mendelsohn
-//     
-// --------------------------------------------------------------
+// modified from pingserver
+// Author: Xudong Dai
+// Date: 2022-02-26
+// execute the function of a file-receiving server
 
 #include <map>
 #include "c150nastydgmsocket.h"
@@ -62,6 +14,8 @@
 
 
 using namespace C150NETWORK;  // for all the comp150 utilities 
+
+// 
 
 const int networkNastinessArg = 1;
 const int fileNastinessArg = 2;
@@ -117,6 +71,7 @@ main(int argc, char *argv[])
         fprintf(stderr,"File Nastiness %s must be between 0 and 5, while given %d\n", fileNastiness);
     }
     
+    // convert the target directory into a string object 
     const string target(argv[targetDirArg], argv[targetDirArg] + strlen(argv[targetDirArg]));
     //
     //  Set up debug message logging
@@ -145,13 +100,14 @@ main(int argc, char *argv[])
     try {
         //
         // Create the socket
-	//
+	    //
         c150debug->printf(C150APPLICATION,"Creating C150NastyDgmSocket(nastiness=%d)",
                           networkNastiness);
         C150DgmSocket *sock = new C150NastyDgmSocket(networkNastiness);
         c150debug->printf(C150APPLICATION,"Ready to accept messages");
 
-        // Packet prevPack = make_tuple(-1, -1, )
+        // create an empty packet as the initializer
+        // hence the following packet can compare to it
         string emptyFilename;
         vector<char> emptyData;
         Packet prevPack = make_tuple(0, 0, emptyFilename, 0, 0, emptyData);
@@ -170,7 +126,8 @@ main(int argc, char *argv[])
             if (messageType == 1) {
                 *GRADING << filename << " starting to receive file." << endl;
             }
-
+            // when message type is 16, it means the file-sending process is finished
+            // the server can write back the file now
             if (messageType == 16) {
                 cout << "Got buffer size: " << fileQueue[filename].size()<< endl;
                 *GRADING << filename << " received, beginning end-to-end check." << endl;
@@ -178,66 +135,6 @@ main(int argc, char *argv[])
                 c150debug->printf(C150APPLICATION,"Successfully write file %s", filename);
                 cout << "receive: " << filename << endl;
             }
-
-            // c150debug->printf(C150APPLICATION,"Successfully read %d bytes. Me",)
-            // if (status == "-1") {
-            //     c150debug->printf(C150APPLICATION,"Fail to load file");
-            //     exit(-1);
-            // }
-
-            //
-            // Read a packet
-            // -1 in size below is to leave room for null
-            //
-            // readlen = sock -> read(incomingMessage, sizeof(incomingMessage)-1);
-            // if (readlen == 0) {
-            //     c150debug->printf(C150APPLICATION,"Read zero length message, trying again");
-            //     continue;
-            // }
-
-
-            //
-            // Clean up the message in case it contained junk
-            //
-            // incomingMessage[readlen] = '\0';  // make sure null terminated
-            // string incoming(incomingMessage); // Convert to C++ string ...it's slightly
-            //                                   // easier to work with, and cleanString
-            //                                   // expects it
-            // cleanString(incoming);            // c150ids-supplied utility: changes
-            //                                   // non-printing characters to .
-            // c150debug->printf(C150APPLICATION,"Successfully read %d bytes. Message=\"%s\"",
-            //                   readlen, incoming.c_str());
-            // const int filenameSize = readlen - 1 - 24;
-            // const string filename(incomingMessage + 24, filenameSize);
-            // *GRADING << filename << " start to receive file." << endl;
-
-            // char clientChecksum[20];
-            // char filename[filenameSize];
-            // memcpy(clientChecksum, incomingMessage, 20);
-            // memcpy(filename, incomingMessage + 24, filenameSize);
-
-            // const unsigned char * serverChecksum = getSHA1(makeFileName(target, filename));
-            // c150debug->printf(C150APPLICATION, "Server-side SHA1 is %s", serverChecksum);
-            // *GRADING << filename << " received, beginning end-to-end check." << endl;
-            // const bool isMatch = strcmp(clientChecksum, (const char *) serverChecksum); 
-            //
-            //  create the message to return
-            // 
-            // string response = "File " + filename + " is received. The checksums ";
-            // if (isMatch) {
-            //     response += "don't match.";
-            //     *GRADING << filename << " end-to-end check succeeded." << endl;
-            // }
-            // else {
-            //     response += "match! Congratulations!";
-            //     *GRADING << filename << " end-to-end check failed." << endl;
-            // }
-            //
-            // write the return message
-            //
-            // c150debug->printf(C150APPLICATION,"Responding with message=\"%s\"",
-            //                   response.c_str());
-            // sock -> write(response.c_str(), response.length()+1);
         } 
     }
 
