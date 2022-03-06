@@ -94,7 +94,7 @@ const int fileNastinessArg = 3;           // file nastiness is 3rd arg
 const int srcDirArg = 4;                  // source directory is 4th arg
 
 // const char * srcDir = "/comp/117/files/FileCopy/SRC";
-const string tgrDir = "/h/xdai03/cs117/filecopy/TARGET";  // target directory is preset
+// const string tgrDir = "/h/xdai03/cs117/filecopy/TARGET";  // target directory is preset
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -150,7 +150,7 @@ main(int argc, char *argv[]) {
     }
 
     DIR *SRC;                   // Unix descriptor for open directory
-    DIR *TARGET;                // Unix descriptor for target
+    // DIR *TARGET;                // Unix descriptor for target
     struct dirent *sourceFile;  // Directory entry for source file
 
     //
@@ -170,41 +170,43 @@ main(int argc, char *argv[]) {
         // c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"",
         //                   argv[0], argv[msgArg]);
 
-        if (!checkCopyPaths(argv[srcDirArg],(char*) tgrDir.c_str())) {
-            SRC = opendir(argv[srcDirArg]);
-            // TARGET = opendir(tgrDir);
+        // if (!checkCopyPaths(argv[srcDirArg],(char*) tgrDir.c_str())) {
+        checkDirectory(argv[srcDirArg]);
+        SRC = opendir(argv[srcDirArg]);
+        
+        // TARGET = opendir(tgrDir);
 
-            while ((sourceFile = readdir(SRC)) != nullptr) {
-                // skip the . and .. name, never copy . or ..
-                if ((strcmp(sourceFile->d_name, ".") == 0) 
-                || (strcmp(sourceFile->d_name, "..")  == 0 )) {
-                    continue;     
-                }     
-                u_int16_t d_namlen = strlen(sourceFile->d_name);
-                c150debug->printf(C150APPLICATION, "Filename is: %s", sourceFile->d_name);
+        while ((sourceFile = readdir(SRC)) != nullptr) {
+            // skip the . and .. name, never copy . or ..
+            if ((strcmp(sourceFile->d_name, ".") == 0) 
+            || (strcmp(sourceFile->d_name, "..")  == 0 )) {
+                continue;     
+            }     
+            u_int16_t d_namlen = strlen(sourceFile->d_name);
+            c150debug->printf(C150APPLICATION, "Filename is: %s", sourceFile->d_name);
 
-                string source(argv[srcDirArg], argv[srcDirArg] + strlen(argv[srcDirArg]));
-                string filename(sourceFile->d_name, sourceFile->d_name + d_namlen);
-                // do the copy -- this will check for and 
-                // skip subdirectories
-                // copyFile(source, sourceFile->d_name, tgrDir, fileNastiness);
-                vector<char> fileBuffer = safeReadFile(source, sourceFile->d_name, fileNastiness);
-                *GRADING << sourceFile->d_name << " beginning transmission, attempt 1." << endl;
-                //const unsigned char * fileChecksum = getSHA1(makeFileName(source, filename));
+            string source(argv[srcDirArg], argv[srcDirArg] + strlen(argv[srcDirArg]));
+            string filename(sourceFile->d_name, sourceFile->d_name + d_namlen);
+            // do the copy -- this will check for and 
+            // skip subdirectories
+            // copyFile(source, sourceFile->d_name, tgrDir, fileNastiness);
+            vector<char> fileBuffer = safeReadFile(source, sourceFile->d_name, fileNastiness);
+            *GRADING << sourceFile->d_name << " beginning transmission, attempt 1." << endl;
+            //const unsigned char * fileChecksum = getSHA1(makeFileName(source, filename));
 
-                int isSuccess = sendFileBySock(sock, filename, fileBuffer);
-                *GRADING << sourceFile->d_name << " transmission complete, waiting for end-to-end check, attempt 1." << endl;
+            int isSuccess = sendFileBySock(sock, filename, fileBuffer);
+            *GRADING << sourceFile->d_name << " transmission complete, waiting for end-to-end check, attempt 1." << endl;
 
+            c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer.data());
+            int retry = 1;
+            while (isSuccess != 0) {
+                *GRADING << sourceFile->d_name << " end-to-end check failed, attempt " << retry << endl;
+                ++retry;
+                isSuccess = sendFileBySock(sock, filename, fileBuffer);
                 c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer.data());
-                int retry = 1;
-                while (isSuccess != 0) {
-                    *GRADING << sourceFile->d_name << " end-to-end check failed, attempt " << retry << endl;
-                    ++retry;
-                    isSuccess = sendFileBySock(sock, filename, fileBuffer);
-                    c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer.data());
-                }
-                *GRADING << sourceFile->d_name << " end-to-end check succeeded, attempt " << retry << endl;
-                cout << "send: " << filename << endl;
+            }
+            *GRADING << sourceFile->d_name << " end-to-end check succeeded, attempt " << retry << endl;
+            cout << "send: " << filename << endl;
 
                 // 20 is the length of SHA1 checksum, 4 is the length of delimiter
                 // another one is the '\0'
@@ -232,10 +234,10 @@ main(int argc, char *argv[]) {
                 // delete[] fileChecksum;
                 // delete[] messageBuffer;
             }
-        } else {
-            c150debug->printf(C150APPLICATION,"Source or Target Directory is wrong");
-            exit(1);
-        }
+        // } else {
+        //     c150debug->printf(C150APPLICATION,"Source or Target Directory is wrong");
+        //     exit(1);
+        // }
 
         // sock -> write(argv[msgArg], strlen(argv[msgArg])+1); // +1 includes the null
 
