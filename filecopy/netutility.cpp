@@ -33,9 +33,7 @@ namespace C150NETWORK {
     // send a message
     // return the response
     Packet arrayToPacket(vector<char>& recBuffer) {
-
-        // cout << "RecBuffer is " ;
-
+        char lenBuffer[4];
         // get the message type
         memcpy(lenBuffer, recBuffer.data(), 4);
         int messageType = charArrayToInt(lenBuffer);
