@@ -20,6 +20,7 @@ namespace C150NETWORK {
     int32_t checkCopyPaths(char * srcDir, char * tgrDir);
     vector<char> safeReadFile(string sourceDir, string fileName, int nastiness);
     void safeWriteFile(string targetDir, string fileName, vector<char>& buffer, int nastiness);
+     void checkDirectory(char *dirname);
 }
 
 #endif
