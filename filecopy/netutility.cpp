@@ -14,7 +14,7 @@
 using namespace std;
 
 namespace C150NETWORK {
-    const int secLen = 300;
+    const int secLen = 400;
     vector<unsigned char> intToCharArray(int a);
     int charArrayToInt(unsigned char * ptr);
     // send a message
@@ -96,7 +96,7 @@ namespace C150NETWORK {
 //cout << "Write buffer size " << sizeof(buffer) << endl;
 
         try {
-            struct timespec req = {0, 5000}, rem;
+            struct timespec req = {0, 10000}, rem;
             c150debug->printf(C150APPLICATION, "Send Message: %s. Try time 0.", buffer);
             // sock->write(buffer, sizeof(buffer));
             // nanosleep(&req, &rem);
@@ -111,7 +111,7 @@ namespace C150NETWORK {
             //         // sock->read(recBuffer, sizeof(recBuffer));
             //     }
             // } else {  // otherwise, do it best to ensure the client could receive
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 5; i++) {
                 sock->write(buffer, sizeof(buffer));
                 nanosleep(&req, &rem);
             }
@@ -226,6 +226,9 @@ namespace C150NETWORK {
                 header = receiveMessage(sock);
                 messageType = get<0>(header);
                 rcvFilename = get<2>(header);
+            }
+            if (messageType != 32 || filename != rcvFilename) {
+                return -2;
             }
             vector<char> rcvChecksum = get<5>(header);
             cout << "Received checksum len: " << rcvChecksum.size() << endl;
