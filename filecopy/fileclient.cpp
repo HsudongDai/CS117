@@ -66,6 +66,7 @@
 #include "copyfile.hpp"
 #include "sha1.hpp"
 #include "netutility.hpp"
+#include "time.h"
 #include <fstream>
 #include <filesystem>
 
@@ -175,7 +176,7 @@ main(int argc, char *argv[]) {
         SRC = opendir(argv[srcDirArg]);
         
         // TARGET = opendir(tgrDir);
-
+        struct timespec req = {1, 0}, rem;
         while ((sourceFile = readdir(SRC)) != nullptr) {
             // skip the . and .. name, never copy . or ..
             if ((strcmp(sourceFile->d_name, ".") == 0) 
@@ -202,6 +203,7 @@ main(int argc, char *argv[]) {
             while (isSuccess != 0) {
                 *GRADING << sourceFile->d_name << " end-to-end check failed, attempt " << retry << endl;
                 ++retry;
+                nanosleep(&req, &rem);
                 isSuccess = sendFileBySock(sock, filename, fileBuffer);
                 c150debug->printf(C150APPLICATION,"%s: Writing message: \"%s\"\n", fileBuffer.data());
             }
