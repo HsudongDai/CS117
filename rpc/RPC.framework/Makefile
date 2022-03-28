@@ -23,6 +23,8 @@ CPPFLAGS = -g -Wall -Werror -I$(C150LIB)
 
 C150LIB = $(COMP117)/files/c150Utils/
 C150AR = $(C150LIB)c150ids.a
+C150IDSRPC = $(COMP117)/files/RPC.framework/
+C150IDSRPCAR = $(C150IDSRPC)c150idsrpc.a
 
 LDFLAGS = 
 INCLUDES = $(C150LIB)c150streamsocket.h $(C150LIB)c150network.h $(C150LIB)c150exceptions.h $(C150LIB)c150debug.h $(C150LIB)c150utility.h IDLToken.h tokenizeddeclarations.h  tokenizeddeclaration.h declarations.h declaration.h functiondeclaration.h typedeclaration.h arg_or_member_declaration.h 
@@ -44,7 +46,6 @@ c150idsrpc.a: tokenizeddeclarations.o IDLToken.o tokenizeddeclaration.o declarat
 
 generate_stub: generate_stub.o $(INCLUDES) $(C150AR) $(C150IDSRPCAR)
 	$(CPP) -o generate_stub generate_stub.o $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
-	
 
 %.o:%.cpp  $(INCLUDES)
 	$(CPP) -c  $(CPPFLAGS) $< 

@@ -171,7 +171,7 @@ int write_get_function_name_from_stream(stringstream& output,  const char idl_fi
            << "      break;\n";
     output << "    }\n"
            << "    // check for null and bump buffer pointer\n"
-           << "    if (*bufp++ == '\0') {\n"
+           << "    if (*bufp++ == '\\0') {\n"
            << "      readnull = true;\n"
            << "      break;\n"
            << "    }\n"
