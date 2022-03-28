@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <string>
 #include <map>
 #include "c150exceptions.h"
@@ -15,8 +16,8 @@
 using namespace std;
 
 int write_header(stringstream& output, const char idl_filename[]) {
-    if (output == nullptr) {
-        throw C150Exception("write_header: output stream is null");
+    if (idl_filename == nullptr) {
+        throw C150Exception("write_header: dil_filename is null");
         return -1;
     }
 
@@ -52,7 +53,7 @@ int write_header(stringstream& output, const char idl_filename[]) {
 }
 
 int write_functions(stringstream& output, const Declarations& parseTree) {
-    if (output == nullptr) {
+    if (parseTree.functions.size() == 0) {
         throw C150Exception("write_functions: output stream is null");
         return -1;
     }
@@ -63,7 +64,7 @@ int write_functions(stringstream& output, const Declarations& parseTree) {
         output << "  //\n";
         output << "  // Time to actually call the function \n";
         output << "  //\n";
-        output << "  c150debug->printf(C150RPCDEBUG,\"simplefunction.stub.cpp: invoking " << function.name << "()\");\n";
+        output << "  c150debug->printf(C150RPCDEBUG,\"simplefunction.stub.cpp: invoking " << function.first << "()\");\n";
         output << "  " << function.first << "();\n";
         output << "  //\n";
         output << "  // Send the response to the client\n";
@@ -77,7 +78,7 @@ int write_functions(stringstream& output, const Declarations& parseTree) {
 }
 
 int write_bad_function(stringstream& output, const char idl_filename[]) {
-    if (output == nullptr) {
+    if (idl_filename == nullptr) {
         throw C150Exception("write_bad_function: output stream is null");
         return -1;
     }
@@ -99,13 +100,13 @@ int write_bad_function(stringstream& output, const char idl_filename[]) {
 }
 
 int write_dispatcher(stringstream& output, const Declarations& parseTree) {
-    if (output == nullptr) {
+    if (parseTree.functions.size() == 0) {
         throw C150Exception("write_dispatcher: output stream is null");
         return -1;
     }
 
-    std::map<std::string, FunctionDeclaration*>::iterator fiter = parseTree.functions.begin();
-    FunctionDeclaration *functionp;    // Declare FunctionDelcaration pointer
+    auto fiter = parseTree.functions.begin();
+    // FunctionDeclaration *functionp;    // Declare FunctionDelcaration pointer
 
     output << "// ======================================================================\n";
     output << "//                             DISPATCHER\n";
@@ -136,8 +137,8 @@ int write_dispatcher(stringstream& output, const Declarations& parseTree) {
     return 0;
 }
 
-int write_get_function_name_from_stream(stringstream& output,  const char idl_filename[] {
-    if (output == nullptr) {
+int write_get_function_name_from_stream(stringstream& output,  const char idl_filename[]) {
+    if (idl_filename == nullptr) {
         throw C150Exception("write_get_function_name_from_stream: output stream is null");
         return -1;
     }
@@ -150,9 +151,9 @@ int write_get_function_name_from_stream(stringstream& output,  const char idl_fi
     output << "// ======================================================================\n";
     output << endl;
 
-    output << "  unsigned int i;\n";
-           << "  char *bufp;    // next char to read\n";
-           << "  bool readnull;\n";
+    output << "  unsigned int i;\n"
+           << "  char *bufp;    // next char to read\n"
+           << "  bool readnull;\n"
            << "  ssize_t readlen;             // amount of data read from socket\n";
     
     output << "//\n";
@@ -208,11 +209,11 @@ int write_get_function_name_from_stream(stringstream& output,  const char idl_fi
 }
 
 int generate_stub(const char idl_filename[]) {
-    ifstream idlFile(idl_fileName);        // open 
+    ifstream idlFile(idl_filename);        // open 
 
     if (!idlFile.is_open()) {
         stringstream ss;
-        ss << "Could not open IDL file: " << fileName;
+        ss << "Could not open IDL file: " << idl_filename;
         throw C150Exception(ss.str());
         return -2;
     }
@@ -220,17 +221,17 @@ int generate_stub(const char idl_filename[]) {
     // the variable parseTree
 
     Declarations parseTree(idlFile);
-    stringstream* stub_file = new stringstream();
+    stringstream stub_file;
     write_header(stub_file, idl_filename);
-    write_functions(stub_file, &parseTree);
+    write_functions(stub_file, parseTree);
     write_bad_function(stub_file, idl_filename);
-    write_dispatcher(stub_file, &parseTree);
+    write_dispatcher(stub_file, parseTree);
     write_get_function_name_from_stream(stub_file, idl_filename);
 
     string stub_filename(idl_filename, strlen(idl_filename) - 4);
     stub_filename += ".stub.cpp";
     ofstream stubFile(stub_filename.c_str());
-    stubFile << stub_file->str();
+    stubFile << stub_file.str();
     stubFile.close();
     return 0;
 }
