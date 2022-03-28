@@ -42,6 +42,10 @@ c150idsrpc.a: tokenizeddeclarations.o IDLToken.o tokenizeddeclaration.o declarat
 
 # make .o from .cpp
 
+generate_stub: generate_stub.o $(INCLUDES) $(C150AR) $(C150IDSRPCAR)
+	$(CPP) -o generate_stub generate_stub.o $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
+	
+
 %.o:%.cpp  $(INCLUDES)
 	$(CPP) -c  $(CPPFLAGS) $< 
 

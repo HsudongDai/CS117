@@ -65,7 +65,6 @@ namespace C150NETWORK {
         Packet packet = make_tuple(messageType, filenameLen, filename, packetID, carryloadLen, carryload);
 
         // release the memory
-        // delete[] recBuffer;
         return packet;
     }
 

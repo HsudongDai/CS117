@@ -37,7 +37,7 @@ try:
     #
     # Loop printing each function signature
     #
-    for  name, sig in decls["functions"].items():
+    for name, sig in decls["functions"].items():
 
         # Python List of all args (each is a dictionary with keys "name" and "type")
         args = sig["arguments"]
