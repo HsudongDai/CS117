@@ -72,7 +72,7 @@ int write_functions(stringstream& output, const Declarations& parseTree) {
         output << "  // If " << function.first << " returned something other than void, this is\n";
         output << "  // where we'd send the return" << function.second->getReturnType() << " to the client\n";
         output << "  RPCSTUBSOCKET->write(doneBuffer, 5);\n";
-        output << "}\n";
+        output << "}\n\n";
     }  
     return 0;
 }
@@ -91,8 +91,8 @@ int write_bad_function(stringstream& output, const char idl_filename[]) {
     output << "  //\n";
 
     output << "void __badFunction(char *functionName) {\n";
-    output << "  char doneBuffer[5] = \"BAD\"";
-    output << "  c150debug->printf(C150RPCDEBUG,\"" << idl_filename_string << ".stub.cpp"  << ": received call for nonexistent function %%s(), functionName);\n";
+    output << "  char doneBuffer[5] = \"BAD\";\n";
+    output << "  c150debug->printf(C150RPCDEBUG,\"" << idl_filename_string << ".stub.cpp"  << ": received call for nonexistent function %%s()\", functionName);\n";
     output << "  RPCSTUBSOCKET->write(doneBuffer, 5);\n";
     output << "}\n";
 
@@ -144,64 +144,66 @@ int write_get_function_name_from_stream(stringstream& output,  const char idl_fi
     }
 
     output << "// ======================================================================\n";
-    output << "//                             GET_FUNCTION_NAME_FROM_STREAM\n";
+    output << "//                   GET_FUNCTION_NAME_FROM_STREAM\n";
     output << "//\n";
     output << "//    This routine reads the function name from the input stream.\n";
     output << "//\n";
     output << "// ======================================================================\n";
     output << endl;
 
+    output << "void getFunctionNameFromStream(char *buffer, unsigned int bufSize) {\n";
+
     output << "  unsigned int i;\n"
            << "  char *bufp;    // next char to read\n"
            << "  bool readnull;\n"
            << "  ssize_t readlen;             // amount of data read from socket\n";
     
-    output << "//\n";
-    output << "// Read a message from the stream.\n";
-    output << "// -1 in size below is to leave room for null\n";
-    output << "//\n"
-           << "readnull = false;\n"
-           << "bufp = buffer;\n"
-           << "for (i=0; i< bufSize; i++) {\n"
-           << "  readlen = RPCSTUBSOCKET-> read(bufp, 1);  // read a byte\n"
-           << "  // check for eof or error\n"
-           << "  if (readlen == 0) {\n"
-           << "    break;\n";
+    output << "  //\n";
+    output << "  // Read a message from the stream.\n";
+    output << "  // -1 in size below is to leave room for null\n";
+    output << "  //\n"
+           << "  readnull = false;\n"
+           << "  bufp = buffer;\n"
+           << "  for (i=0; i< bufSize; i++) {\n"
+           << "    readlen = RPCSTUBSOCKET-> read(bufp, 1);  // read a byte\n"
+           << "    // check for eof or error\n"
+           << "    if (readlen == 0) {\n"
+           << "      break;\n";
     output << "    }\n"
            << "    // check for null and bump buffer pointer\n"
-           << "  if (*bufp++ == '\0') {\n"
-           << "    readnull = true;\n"
-           << "    break;\n"
-           << "  }\n"
-           << "}\n";
+           << "    if (*bufp++ == '\0') {\n"
+           << "      readnull = true;\n"
+           << "      break;\n"
+           << "    }\n"
+           << "  }\n";
 
     string idl_filename_string(idl_filename, strlen(idl_filename) - 4);
 
-    output << "//\n"
-           << "// With TCP streams, we should never get a 0 length read\n"
-           << "// except with timeouts (which we're not setting in pingstreamserver)\n"
-           << "// or EOF\n"
-           << "//\n";
-    output << "if (readlen == 0) {\n"
-           << "  c150debug->printf(C150RPCDEBUG," << idl_filename_string <<".stub: read zero length message, checking EOF);\n";
+    output << "  //\n"
+           << "  // With TCP streams, we should never get a 0 length read\n"
+           << "  // except with timeouts (which we're not setting in pingstreamserver)\n"
+           << "  // or EOF\n"
+           << "  //\n";
+    output << "  if (readlen == 0) {\n"
+           << "    c150debug->printf(C150RPCDEBUG," << idl_filename_string <<".stub: read zero length message, checking EOF);\n";
 
-    output << "  if (RPCSTUBSOCKET-> eof()) {\n"
-           << "    c150debug->printf(C150RPCDEBUG," << idl_filename_string << ".stub: EOF signaled on input);\n"
-           << "  } else {\n"
-           << "    throw C150Exception(" << idl_filename_string << ".stub: unexpected zero length read without eof);\n"
-           << "  }\n"
-           << "}\n";
+    output << "    if (RPCSTUBSOCKET-> eof()) {\n"
+           << "      c150debug->printf(C150RPCDEBUG," << idl_filename_string << ".stub: EOF signaled on input);\n"
+           << "    } else {\n"
+           << "      throw C150Exception(" << idl_filename_string << ".stub: unexpected zero length read without eof);\n"
+           << "    }\n"
+           << "  }\n";
 
-    output << "//\n"
-           << "// If we didn't get a null, input message was poorly formatted\n"
-           << "//\n"
-           << "else if(!readnull) \n"
+    output << "  //\n"
+           << "  // If we didn't get a null, input message was poorly formatted\n"
+           << "  //\n"
+           << "  else if(!readnull) \n"
            << "    throw C150Exception(" << idl_filename_string << ".stub: method name not null terminated or too long);\n"
            << "\n\n";
     
-    output << "//\n"
-           << "// Note that eof may be set here for our caller to check\n"
-           << "//\n"
+    output << "  //\n"
+           << "  // Note that eof may be set here for our caller to check\n"
+           << "  //\n"
 
            << "}\n";
 
