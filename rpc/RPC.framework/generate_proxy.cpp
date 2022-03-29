@@ -58,10 +58,12 @@ int writeProxyFunctions(stringstream& output, const Declarations& parseTree, con
     for (auto function : parseTree.functions) {
         output << "// " << function.first << endl;
         output << function.second->getReturnType() << " " << function.first << "(";
-        for (auto param : function.second->getParameters()) {
-            output << param.second->getType() << " " << param.first << ", ";
+        for (auto param = function.second->getArgumentVector().begin(); param != function.second->getArgumentVector().end(); param++) {
+            output << param.second->getType() << " " << param.first;
+            if (param != function.second->getArgumentVector().end() - 1) {
+                output << ", ";
+            }
         }
-        output.seekp(-1, '');
         output << ") {" << endl;
         output << "  char readBuffer[5];  // to read magic value DONE + null\n";
         output << "  //\n";
@@ -78,7 +80,7 @@ int writeProxyFunctions(stringstream& output, const Declarations& parseTree, con
         output << "  //\n";
         output << "  // Check the response\n";
         output << "  //\n";
-        output << "  if (strncmp(readBuffer,"DONE", sizeof(readBuffer))!=0) {\n";
+        output << "  if (strncmp(readBuffer, \"DONE\", sizeof(readBuffer)) != 0) {\n";
         output << "  throw C150Exception(" << idl_filename_string << ".proxy: " << function.first << "() received invalid response from the server\");\n";
         output << "  }\n";
         output << " c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".proxy.cpp: " <<  << " () successful return from remote call\");\n";
