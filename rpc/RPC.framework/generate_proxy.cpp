@@ -58,9 +58,11 @@ int writeProxyFunctions(stringstream& output, const Declarations& parseTree, con
     for (auto function : parseTree.functions) {
         output << "// " << function.first << endl;
         output << function.second->getReturnType() << " " << function.first << "(";
-        for (auto param = function.second->getArgumentVector().begin(); param != function.second->getArgumentVector().end(); param++) {
-            output << param->getType()->getName() << " " << param->getName();
-            if (param != function.second->getArgumentVector().end() - 1) {
+        auto members = function.second->getArgumentVector();
+        for (int i = 0; i < members.size(); i++) {
+            auto member = members[i];
+            output << member->getType()->getName() << " " << member->getName();
+            if (i < members.size() - 1) {
                 output << ", ";
             }
         }
