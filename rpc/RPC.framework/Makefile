@@ -47,6 +47,9 @@ c150idsrpc.a: tokenizeddeclarations.o IDLToken.o tokenizeddeclaration.o declarat
 generate_stub: generate_stub.o $(INCLUDES) $(C150AR) $(C150IDSRPCAR)
 	$(CPP) -o generate_stub generate_stub.o $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
 
+generate_proxy: generate_proxy.o $(INCLUDES) $(C150AR) $(C150IDSRPCAR)
+	$(CPP) -o generate_proxy generate_proxy.o $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
+
 %.o:%.cpp  $(INCLUDES)
 	$(CPP) -c  $(CPPFLAGS) $< 
 
