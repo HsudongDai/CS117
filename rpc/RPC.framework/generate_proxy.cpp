@@ -59,7 +59,7 @@ int writeProxyFunctions(stringstream& output, const Declarations& parseTree, con
         output << "// " << function.first << endl;
         output << function.second->getReturnType() << " " << function.first << "(";
         auto members = function.second->getArgumentVector();
-        for (int i = 0; i < members.size(); i++) {
+        for (size_t i = 0; i < members.size(); i++) {
             auto member = members[i];
             output << member->getType()->getName() << " " << member->getName();
             if (i < members.size() - 1) {
