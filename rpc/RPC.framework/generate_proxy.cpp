@@ -66,7 +66,7 @@ int writeProxyHeader(stringstream& output, const char idl_filename[]) {
     output << endl;
     output << "#include \"rpcproxyhelper.h\"" << endl;
     output << endl;
-    output << "#incldue \"" << idl_filename << "\"" << endl;
+    output << "#include \"" << idl_filename << "\"" << endl;
     output << endl;
     output << "#include <cstdio>" << endl;
     output << "#include <cstring>" << endl;
@@ -101,7 +101,7 @@ int writeProxyFunctions(stringstream& output, const Declarations& parseTree, con
 
     for (auto function : parseTree.functions) {
         output << "// " << function.first << endl;
-        output << function.second->getReturnType() << " " << function.first << "(";
+        output << function.second->getReturnType()->getName() << " " << function.first << "(";
         auto members = function.second->getArgumentVector();
         for (size_t i = 0; i < members.size(); i++) {
             auto member = members[i];
@@ -127,7 +127,7 @@ int writeProxyFunctions(stringstream& output, const Declarations& parseTree, con
         output << "  // Check the response\n";
         output << "  //\n";
         output << "  if (strncmp(readBuffer, \"DONE\", sizeof(readBuffer)) != 0) {\n";
-        output << "  throw C150Exception(" << idl_filename_string << ".proxy: " << function.first << "() received invalid response from the server\");\n";
+        output << "    throw C150Exception(\"" << idl_filename_string << ".proxy: " << function.first << "() received invalid response from the server\");\n";
         output << "  }\n";
         output << " c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".proxy.cpp: " << function.first << " () successful return from remote call\");\n";
         output << "}" << endl;
