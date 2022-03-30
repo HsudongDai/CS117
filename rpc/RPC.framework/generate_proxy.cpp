@@ -53,7 +53,7 @@ int generateProxy(const char idl_filename[]) {
     string proxy_filename(idl_filename, strlen(idl_filename) - 4);
     proxy_filename += ".proxy.cpp";
     ofstream proxyFile(proxy_filename.c_str());
-    proxyFile << proxy_file_stream.str();
+    proxyFile << output.str();
     proxyFile.close();
     return 0;
 }
