@@ -15,6 +15,50 @@
 
 using namespace std;
 
+int writeProxyHeader(stringstream& output, const char idl_filename[]);
+int writeProxyFunctions(stringstream& output, const Declarations& parseTree, const char idl_filename[]);
+int generateProxy(const char idl_filename[]);
+
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        cout << "Usage: " << argv[0] << " <idl_filename>" << endl;
+        return -1;
+    }
+
+    generateProxy(argv[1]);
+    return 0;
+}
+
+int generateProxy(const char idl_filename[]) {
+    ifstream idlFile(idl_filename);        // open 
+
+    if (!idlFile.is_open()) {
+        stringstream ss;
+        ss << "Could not open IDL file: " << idl_filename;
+        throw C150Exception(ss.str());
+        return -2;
+    }
+    // The following line does all the work parsing the file into
+    // the variable parseTree
+
+    Declarations parseTree(idlFile);
+    stringstream proxy_file_stream;
+    if (writeProxyHeader(output, idl_filename) != 0) {
+        return -1;
+    }
+    if (writeProxyFunctions(output, parseTree, idl_filename) != 0) {
+        return -1;
+    }
+
+    string proxy_filename(idl_filename, strlen(idl_filename) - 4);
+    proxy_filename += ".proxy.cpp";
+    ofstream proxyFile(proxy_filename.c_str());
+    proxyFile << proxy_file_stream.str();
+    proxyFile.close();
+    return 0;
+}
+
+
 int writeProxyHeader(stringstream& output, const char idl_filename[]) {
     output << "// Language: cpp" << endl;
     output << "// Path: rpc/RPC.samples/generate_proxy.cpp" << endl;
