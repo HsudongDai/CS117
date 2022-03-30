@@ -42,7 +42,7 @@ int generateProxy(const char idl_filename[]) {
     // the variable parseTree
 
     Declarations parseTree(idlFile);
-    stringstream proxy_file_stream;
+    stringstream output;
     if (writeProxyHeader(output, idl_filename) != 0) {
         return -1;
     }
