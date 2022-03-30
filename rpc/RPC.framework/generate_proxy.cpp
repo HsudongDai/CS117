@@ -129,7 +129,7 @@ int writeProxyFunctions(stringstream& output, const Declarations& parseTree, con
         output << "  if (strncmp(readBuffer, \"DONE\", sizeof(readBuffer)) != 0) {\n";
         output << "    throw C150Exception(\"" << idl_filename_string << ".proxy: " << function.first << "() received invalid response from the server\");\n";
         output << "  }\n";
-        output << " c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".proxy.cpp: " << function.first << " () successful return from remote call\");\n";
+        output << "  c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".proxy.cpp: " << function.first << " () successful return from remote call\");\n";
         output << "}" << endl;
         output << endl;
     }
