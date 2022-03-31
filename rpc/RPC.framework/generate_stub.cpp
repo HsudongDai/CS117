@@ -14,15 +14,17 @@
 #include "idl_to_json.cpp"
 
 using namespace std;
+using namespace C150NETWORK;
 
-int C150NETWORK::writeStubHeader(stringstream& output, const char idl_filename[])int writeStubHeader(stringstream& output, const char idl_filename[]);
-int C150NETWORK::writeStructDefinitions(stringstream& output, const Declarations& parseTree);
-int C150NETWORK::writeStubFunctions(stringstream& output, const Declarations& parseTree);
-int C150NETWORK::writeStubBadFunction(stringstream& output, const char idl_filename[]);
-int C150NETWORK::writeStubDispatcher(stringstream& output, const Declarations& parseTree);
-int C150NETWORK::writeStubGetFunctionNameFromStream(stringstream& output,  const char idl_filename[]);
-int C150NETWORK::generateStub(const char idl_filename[]);
-
+namespace C150NETWORK{
+    int writeStubHeader(stringstream& output, const char idl_filename[]);
+    int writeStructDefinitions(stringstream& output, const Declarations& parseTree);
+    int writeStubFunctions(stringstream& output, const Declarations& parseTree);
+    int writeStubBadFunction(stringstream& output, const char idl_filename[]);
+    int writeStubDispatcher(stringstream& output, const Declarations& parseTree);
+    int writeStubGetFunctionNameFromStream(stringstream& output, const char idl_filename[]);
+    int generateStub(const char idl_filename[]);
+}
 // todo: need to add the definitions of structs at the beginning of files
 
 int main(int argc, char* argv[]) {
@@ -115,7 +117,7 @@ namespace C150NETWORK {
     }
 
     int writeStructDefinitions(stringstream& output, const Declarations& parseTree) {
-        if (parseTree.structs.size() == 0) {
+        if (parseTree.types.size() == 0) {
             return 0;
         }
 
@@ -150,8 +152,8 @@ namespace C150NETWORK {
             //     output << "};" << endl;
             //     output << endl;
             // }
+            }
         }
-
         return 0;
     }
 
@@ -161,9 +163,9 @@ namespace C150NETWORK {
             return -1;
         }
 
-        for (auto& function : parseTree.functions) {
-            output << function.second->getReturnType()->getName() << " __" << function.first << "("
-            auto members = function.second->getArgumentVector();
+        for (auto& function: parseTree.functions) {
+            output << function.second->getReturnType()->getName() << " __" << function.first << "(";
+            auto& members = function.second->getArgumentVector();
             for (size_t i = 0; i < members.size(); i++) {
                 auto member = members[i];
                 output << member->getType()->getName() << " " << member->getName();
