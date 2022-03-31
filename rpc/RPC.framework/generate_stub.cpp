@@ -50,23 +50,29 @@ namespace C150NETWORK {
 
         Declarations parseTree(idlFile);
         stringstream stub_file;
-        if (writeStubHeader(stub_file, idl_filename) != 0) {
+
+        if (parseTree.functions.size() == 0 || parseTree.types.size() == 0) {
+            throw C150Exception("This idl file contains no functions or types");
             return -1;
+        }
+
+        if (writeStubHeader(stub_file, idl_filename) != 0) {
+            return -3;
         }
         if (writeStructDefinitions(stub_file, parseTree) != 0) {
-            return -1;
+            return -4;
         }
         if (writeStubFunctions(stub_file, parseTree) != 0) {
-            return -1;
+            return -5;
         }
         if (writeStubBadFunction(stub_file, idl_filename) != 0) {
-            return -1;
+            return -6;
         }
         if (writeStubDispatcher(stub_file, parseTree) != 0) {
-            return -1;
+            return -7;
         }
         if (writeStubGetFunctionNameFromStream(stub_file, idl_filename) != 0) {
-            return -1;
+            return -8;
         }
 
         string stub_filename(idl_filename, strlen(idl_filename) - 4);
@@ -79,7 +85,7 @@ namespace C150NETWORK {
 
     int writeStubHeader(stringstream& output, const char idl_filename[]) {
         if (idl_filename == nullptr) {
-            throw C150Exception("write_header: dil_filename is null");
+            throw C150Exception("write_header: idl_filename is null");
             return -1;
         }
 
@@ -144,14 +150,14 @@ namespace C150NETWORK {
                 }
                 output << "};" << endl;
                 output << endl;
-            // } else if (structDeclaration.second->isArray()) {
-            //     output << "// " << structDeclaration.second->getName() << endl;
-            //     output << "struct " << structDeclaration.second->getName() << " {" << endl;
-            //     output << "  " << structDeclaration.second->getArrayType()->getName() << " *data;" << endl;
-            //     output << "  int size;" << endl;
-            //     output << "};" << endl;
-            //     output << endl;
-            // }
+                // } else if (structDeclaration.second->isArray()) {
+                //     output << "// " << structDeclaration.second->getName() << endl;
+                //     output << "struct " << structDeclaration.second->getName() << " {" << endl;
+                //     output << "  " << structDeclaration.second->getArrayType()->getName() << " *data;" << endl;
+                //     output << "  int size;" << endl;
+                //     output << "};" << endl;
+                //     output << endl;
+                // }
             }
         }
         return 0;
@@ -159,8 +165,7 @@ namespace C150NETWORK {
 
     int writeStubFunctions(stringstream& output, const Declarations& parseTree) {
         if (parseTree.functions.size() == 0) {
-            throw C150Exception("write_functions: output stream is null");
-            return -1;
+            return 0;
         }
 
         for (auto& function: parseTree.functions) {
@@ -223,12 +228,21 @@ namespace C150NETWORK {
 
     int writeStubDispatcher(stringstream& output, const Declarations& parseTree) {
         if (parseTree.functions.size() == 0) {
-            throw C150Exception("write_dispatcher: output stream is null");
-            return -1;
+            // at this time there would be no more functions to write
+            // simply wriye the bad function
+
+            output << "void getFunctionNamefromStream() {\n";
+            output << "  char functionName[50];\n";
+            output << "  RPCSTUBSOCKET->read(functionName, 50);\n";
+            output << "  if (!RPCSTUBSOCKET-> eof()) {\n";
+            output << "    __badFunction();\n";
+            output << "  }\n";
+            output << "}\n";
+
+            return 0;
         }
 
         auto fiter = parseTree.functions.begin();
-        // FunctionDeclaration *functionp;    // Declare FunctionDelcaration pointer
 
         output << "// ======================================================================\n";
         output << "//                             DISPATCHER\n";
@@ -266,7 +280,7 @@ namespace C150NETWORK {
         }
 
         output << "// ======================================================================\n";
-        output << "//                   GET_FUNCTION_NAME_FROM_STREAM\n";
+        output << "//           GET_FUNCTION_NAME_FROM_STREAM\n";
         output << "//\n";
         output << "//    This routine reads the function name from the input stream.\n";
         output << "//\n";
@@ -284,50 +298,49 @@ namespace C150NETWORK {
         output << "  // Read a message from the stream.\n";
         output << "  // -1 in size below is to leave room for null\n";
         output << "  //\n"
-            << "  readnull = false;\n"
-            << "  bufp = buffer;\n"
-            << "  for (int i = 0; i < bufSize; i++) {\n"
-            << "    readlen = RPCSTUBSOCKET-> read(bufp, 1);  // read a byte\n"
-            << "    // check for eof or error\n"
-            << "    if (readlen == 0) {\n"
-            << "      break;\n";
+               << "  readnull = false;\n"
+               << "  bufp = buffer;\n"
+               << "  for (int i = 0; i < bufSize; i++) {\n"
+               << "    readlen = RPCSTUBSOCKET-> read(bufp, 1);  // read a byte\n"
+               << "    // check for eof or error\n"
+               << "    if (readlen == 0) {\n"
+               << "      break;\n";
         output << "    }\n"
-            << "    // check for null and bump buffer pointer\n"
-            << "    if (*bufp++ == '\\0') {\n"
-            << "      readnull = true;\n"
-            << "      break;\n"
-            << "    }\n"
-            << "  }\n";
+               << "    // check for null and bump buffer pointer\n"
+               << "    if (*bufp++ == '\\0') {\n"
+               << "      readnull = true;\n"
+               << "      break;\n"
+               << "    }\n"
+               << "  }\n";
 
         string idl_filename_string(idl_filename, strlen(idl_filename) - 4);
 
         output << "  //\n"
-            << "  // With TCP streams, we should never get a 0 length read\n"
-            << "  // except with timeouts (which we're not setting in pingstreamserver)\n"
-            << "  // or EOF\n"
-            << "  //\n";
+               << "  // With TCP streams, we should never get a 0 length read\n"
+               << "  // except with timeouts (which we're not setting in pingstreamserver)\n"
+               << "  // or EOF\n"
+               << "  //\n";
         output << "  if (readlen == 0) {\n"
-            << "    c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string <<".stub: read zero length message, checking EOF\");\n";
+               << "    c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string <<".stub: read zero length message, checking EOF\");\n";
 
         output << "    if (RPCSTUBSOCKET-> eof()) {\n"
-            << "      c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".stub: EOF signaled on input\");\n"
-            << "    } else {\n"
-            << "      throw C150Exception(\"" << idl_filename_string << ".stub: unexpected zero length read without eof\");\n"
-            << "    }\n"
-            << "  }\n";
+               << "      c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".stub: EOF signaled on input\");\n"
+               << "    } else {\n"
+               << "      throw C150Exception(\"" << idl_filename_string << ".stub: unexpected zero length read without eof\");\n"
+               << "    }\n"
+               << "  }\n";
 
         output << "  //\n"
-            << "  // If we didn't get a null, input message was poorly formatted\n"
-            << "  //\n"
-            << "  else if(!readnull) \n"
-            << "    throw C150Exception(\"" << idl_filename_string << ".stub: method name not null terminated or too long\");\n"
-            << "\n\n";
+               << "  // If we didn't get a null, input message was poorly formatted\n"
+               << "  //\n"
+               << "  else if(!readnull) \n"
+               << "    throw C150Exception(\"" << idl_filename_string << ".stub: method name not null terminated or too long\");\n"
+               << "\n\n";
         
         output << "  //\n"
-            << "  // Note that eof may be set here for our caller to check\n"
-            << "  //\n"
-
-            << "}\n";
+               << "  // Note that eof may be set here for our caller to check\n"
+               << "  //\n"
+               << "}\n";
 
         return 0;
     }
