@@ -137,7 +137,7 @@ namespace C150NETWORK {
                 output << "struct " << structDeclaration.second->getName() << " {" << endl;
                 for (auto& field : structDeclaration.second->getStructMembers()) {
                     if (field->getType()->isArray()) {
-                        output << "  " << field->getType()->getArrayMemberType() << " " << field->getName() << "[" << field->getType()->getArrayBound() << "];" << endl;
+                        output << "  " << field->getType()->getArrayMemberType()->getName() << " " << field->getName() << "[" << field->getType()->getArrayBound() << "];" << endl;
                     } else {
                         output << "  " << field->getType()->getName() << " " << field->getName() << ";" << endl;
                     }          
@@ -179,7 +179,15 @@ namespace C150NETWORK {
             output << "  // Time to actually call the function \n";
             output << "  //\n";
             output << "  c150debug->printf(C150RPCDEBUG,\"simplefunction.stub.cpp: invoking " << function.first << "()\");\n";
-            output << "  " << function.first << "();\n";
+            output << "  " << function.first << "(";
+            for (size_t i = 0; i < members.size(); i++) {
+                auto member = members[i];
+                output << member->getName();
+                if (i < members.size() - 1) {
+                    output << ", ";
+                }
+            }
+            output << ");\n";
             output << "  //\n";
             output << "  // Send the response to the client\n";
             output << "  //\n";
@@ -237,7 +245,7 @@ namespace C150NETWORK {
         output << "  if (!RPCSTUBSOCKET-> eof()) {\n";
         output << "    if (strcmp(functionName, " << fiter->first << ") == 0) {\n";
         output << "      __" << fiter->first << "();\n";
-        for (; fiter != parseTree.functions.end(); ++fiter) {
+        for (++fiter; fiter != parseTree.functions.end(); ++fiter) {
             output << "    } else if (strcmp(functionName, " << fiter->first << ") == 0) {\n";
             output << "      __" << fiter->first << "();\n";
         }
