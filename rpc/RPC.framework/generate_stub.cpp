@@ -51,7 +51,7 @@ namespace C150NETWORK {
         Declarations parseTree(idlFile);
         stringstream stub_file;
 
-        if (parseTree.functions.size() == 0 || parseTree.types.size() == 0) {
+        if (parseTree.functions.size() == 0 && parseTree.types.size() == 0) {
             throw C150Exception("This idl file contains no functions or types");
             return -1;
         }
@@ -144,10 +144,11 @@ namespace C150NETWORK {
                 for (auto& field : structDeclaration.second->getStructMembers()) {
                     if (field->getType()->isArray()) {
                         string rawType(field->getType()->getName());
-                        string arrayType = rawType.substr(2, arrayType.size() - 2);
+                        string arrayType = rawType.substr(2, rawType.size() - 2);
+                        // cout << "array type: " << arrayType << endl;
                         int idx = arrayType.find("[");
                         string dataType = arrayType.substr(0, idx);
-                        string arrayIdx = arrayType.substr(idx + 1, arrayType.size() - idx + 1);
+                        string arrayIdx = arrayType.substr(idx, arrayType.size() - idx + 1);
                         output << "  " << dataType << " " << field->getName() << arrayIdx << ";" << endl;
                         // output << "  " << arrayType << " " << field->getName() << "[" << field->getType()->getArrayBound() << "];" << endl;
                     } else {
