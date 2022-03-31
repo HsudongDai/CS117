@@ -193,7 +193,7 @@ namespace C150NETWORK {
                 }
                 if (i != members.size() - 1) {
                     output << ", ";
-		}
+                }
             }
             output << ") {\n";
             output << "  char doneBuffer[5] = \"DONE\";  // to write magic value DONE + null\n";
