@@ -16,17 +16,7 @@
 using namespace std;
 using namespace C150NETWORK;
 
-namespace C150NETWORK{
-    int writeStubHeader(stringstream& output, const char idl_filename[]);
-    int writeStructDefinitions(stringstream& output, const Declarations& parseTree);
-    int writeStubFunctions(stringstream& output, const Declarations& parseTree);
-    int writeStubBadFunction(stringstream& output, const char idl_filename[]);
-    int writeStubDispatcher(stringstream& output, const Declarations& parseTree);
-    int writeStubGetFunctionNameFromStream(stringstream& output, const char idl_filename[]);
-    int generateStub(const char idl_filename[]);
-}
-// todo: need to add the definitions of structs at the beginning of files
-
+// left for test only, should not be compiled when not tested separately
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         cout << "Usage: " << argv[0] << " <idl_filename>" << endl;
