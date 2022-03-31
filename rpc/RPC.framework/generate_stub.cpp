@@ -180,9 +180,16 @@ namespace C150NETWORK {
             auto& members = function.second->getArgumentVector();
             for (size_t i = 0; i < members.size(); i++) {
                 auto member = members[i];
-                output << member->getType()->getName() << " " << member->getName();
-                if (i < members.size() - 1) {
-                    output << ", ";
+                if (member->getType()->isArray()) {
+                    string rawType(field->getType()->getName());
+                    string arrayType = rawType.substr(2, rawType.size() - 2);
+                    // cout << "array type: " << arrayType << endl;
+                    int idx = arrayType.find("[");
+                    string dataType = arrayType.substr(0, idx);
+                    string arrayIdx = arrayType.substr(idx, arrayType.size() - idx + 1);
+                    output << "  " << dataType << " " << field->getName() << arrayIdx << ";" << endl;
+                } else {
+                    output << member->getType()->getName() << " " << member->getName();
                 }
             }
             output << ") {\n";
