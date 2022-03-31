@@ -59,91 +59,88 @@ void setUpDebugLogging(const char *logname, int argc, char *argv[]);
 int 
 main(int argc, char *argv[]) {
 
-     //
-     //  Set up debug message logging
-     //
-     stringstream logfilename;
-     logfilename << argv[0] << "debug.txt"; 
-     setUpDebugLogging(logfilename.str().c_str(),argc, argv);
+    //
+    //  Set up debug message logging
+    //
+    stringstream logfilename;
+    logfilename << argv[0] << "debug.txt"; 
+    setUpDebugLogging(logfilename.str().c_str(),argc, argv);
 
-     //
-     // Make sure command line looks right
-     //
-     if (argc != 1) {
-       fprintf(stderr,"Correct syntxt is: %s ... (there are no arguments) \n", argv[0]);
-       exit(1);
-     }
-     //
-     //  DO THIS FIRST OR YOUR ASSIGNMENT WON'T BE GRADED!
-     //
-     
-     GRADEME(argc, argv);
+    //
+    // Make sure command line looks right
+    //
+    if (argc != 1) {
+        fprintf(stderr,"Correct syntxt is: %s ... (there are no arguments) \n", argv[0]);
+        exit(1);
+    }
+    //
+    //  DO THIS FIRST OR YOUR ASSIGNMENT WON'T BE GRADED!
+    //
+    
+    GRADEME(argc, argv);
 
-     //
-     //     Call the functions and see if they return
-     //
-     try {
+    //
+    //     Call the functions and see if they return
+    //
+    try {
 
-       //
-       // Set up the socket so the stubs can find it
-       //
-       rpcstubinitialize();
+        //
+        // Set up the socket so the stubs can find it
+        //
+        rpcstubinitialize();
 
 
-       //
-       // Infinite loop accepting connections
-       //
-       while (1) {
+        //
+        // Infinite loop accepting connections
+        //
+        while (1) {
 
-	 //
-	 // We'll hang here until another client asks to connect
-	 // When we drop through, RPCSTUBSOCKET will talk to that one
-	 // Note that RPCSTUBSOCKET is a global variable set up by
-         // rpcstubinitialize and declared in rpcstubhelper.h
-	 //
-	 c150debug->printf(C150RPCDEBUG,"rpcserver.cpp:"
-                                        "calling C150StreamSocket::accept");
-         RPCSTUBSOCKET -> accept();
-	 
-       
-         //
-         // infinite loop processing messages
-         //
-         while(1)	{
-  
-  	   //
-	   // Call a function for the client. The stubs will do the 
-	   // work of reading and writing the stream, but will return on eof,
-	   // which we'll get when client goes away.
-	   //
-	   dispatchFunction();     // call the subs function dispatcher
-  
-	   if (RPCSTUBSOCKET -> eof()) {
-  	       c150debug->printf(C150RPCDEBUG,"rpcserver.cpp: EOF signaled on input");
-	       break;
-	   }
-	 }                         // end: while processing messages
+            //
+            // We'll hang here until another client asks to connect
+            // When we drop through, RPCSTUBSOCKET will talk to that one
+            // Note that RPCSTUBSOCKET is a global variable set up by
+                  // rpcstubinitialize and declared in rpcstubhelper.h
+            //
+            c150debug->printf(C150RPCDEBUG,"rpcserver.cpp: calling C150StreamSocket::accept");
+            RPCSTUBSOCKET -> accept();
 
-	 //
-	 // Done looping on this connection, close and wait for another
-	 //
-         c150debug->printf(C150RPCDEBUG,"Calling C150StreamSocket::close");
-	 RPCSTUBSOCKET -> close();
-       }                          // end: while processing all connections
-     }
+            //
+            // infinite loop processing messages
+            //
+            while(1)	{
+                //
+                // Call a function for the client. The stubs will do the 
+                // work of reading and writing the stream, but will return on eof,
+                // which we'll get when client goes away.
+                //
+                dispatchFunction();     // call the subs function dispatcher
+              
+                if (RPCSTUBSOCKET -> eof()) {
+                    c150debug->printf(C150RPCDEBUG,"rpcserver.cpp: EOF signaled on input");
+                    break;
+                }
+            }                         // end: while processing messages
 
-     //
-     //  Handle networking errors -- for now, just print message and give up!
-     //
-     catch (C150Exception& e) {
-       // Write to debug log
-       c150debug->printf(C150ALWAYSLOG,"Caught C150Exception: %s\n",
-			 e.formattedExplanation().c_str());
-       // In case we're logging to a file, write to the console too
-       cerr << argv[0] << ": caught C150NetworkException: " << e.formattedExplanation() << endl;
-     }
+            //
+            // Done looping on this connection, close and wait for another
+            //
+            c150debug->printf(C150RPCDEBUG,"Calling C150StreamSocket::close");
+            RPCSTUBSOCKET -> close();
+        }                          // end: while processing all connections
+    }
 
-     return 0;
+    //
+    //  Handle networking errors -- for now, just print message and give up!
+    //
+    catch (C150Exception& e) {
+      // Write to debug log
+      c150debug->printf(C150ALWAYSLOG,"Caught C150Exception: %s\n",
+      e.formattedExplanation().c_str());
+      // In case we're logging to a file, write to the console too
+      cerr << argv[0] << ": caught C150NetworkException: " << e.formattedExplanation() << endl;
+    }
+
+    return 0;
 }
 
 
