@@ -121,7 +121,7 @@ namespace C150NETWORK {
 
         return 0;
     }
-
+    // todo deal with multi-dimensional arrays
     int writeStructDefinitions(stringstream& output, const Declarations& parseTree) {
         if (parseTree.types.size() == 0) {
             return 0;
@@ -143,7 +143,13 @@ namespace C150NETWORK {
                 output << "struct " << structDeclaration.second->getName() << " {" << endl;
                 for (auto& field : structDeclaration.second->getStructMembers()) {
                     if (field->getType()->isArray()) {
-                        output << "  " << field->getType()->getArrayMemberType()->getName() << " " << field->getName() << "[" << field->getType()->getArrayBound() << "];" << endl;
+                        string rawType(field->getType()->getName());
+                        string arrayType = rawType.substr(2, arrayType.size() - 2);
+                        int idx = arrayType.find("[");
+                        string dataType = arrayType.substr(0, idx);
+                        string arrayIdx = arrayType.substr(idx + 1, arrayType.size() - idx + 1);
+                        output << "  " << dataType << " " << field->getName() << arrayIdx << ";" << endl;
+                        // output << "  " << arrayType << " " << field->getName() << "[" << field->getType()->getArrayBound() << "];" << endl;
                     } else {
                         output << "  " << field->getType()->getName() << " " << field->getName() << ";" << endl;
                     }          
@@ -211,17 +217,17 @@ namespace C150NETWORK {
         }
         string idl_filename_string(idl_filename, strlen(idl_filename) - 4);
 
-        output << "  // \n";
-        output << "  //     __badFunction \n";
-        output << "  //\n";
-        output << "  //   Pseudo-stub for missing functions. \n";
-        output << "  //\n";
+        output << "// \n";
+        output << "//     __badFunction \n";
+        output << "//\n";
+        output << "//   Pseudo-stub for missing functions. \n";
+        output << "//\n";
 
         output << "void __badFunction(char *functionName) {\n";
         output << "  char doneBuffer[5] = \"BAD\";\n";
         output << "  c150debug->printf(C150RPCDEBUG,\"" << idl_filename_string << ".stub.cpp"  << ": received call for nonexistent function %%s()\", functionName);\n";
         output << "  RPCSTUBSOCKET->write(doneBuffer, 5);\n";
-        output << "}\n";
+        output << "}\n\n";
 
         return 0;
     }
