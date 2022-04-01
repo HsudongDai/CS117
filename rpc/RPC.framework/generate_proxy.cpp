@@ -154,7 +154,7 @@ namespace C150NETWORK {
                     string rawType(member->getType()->getName());
                     string arrayType = rawType.substr(2, rawType.size() - 2);
                     // cout << "array type: " << arrayType << endl;
-                    int idx = arrayType.find("[");
+                    int idx = arrayType.find_first_of('[');
                     string dataType = arrayType.substr(0, idx);
                     string arrayIdx = arrayType.substr(idx, arrayType.size() - idx + 1);
                     output << dataType << " " << member->getName() << arrayIdx;
