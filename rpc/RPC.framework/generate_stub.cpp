@@ -51,29 +51,32 @@ namespace C150NETWORK {
         Declarations parseTree(idlFile);
         stringstream stub_file;
 
-        if (parseTree.functions.size() == 0 && parseTree.types.size() == 0) {
-            throw C150Exception("This idl file contains no functions or types");
-            return -1;
-        }
-
-        if (writeStubHeader(stub_file, idl_filename) != 0) {
-            return -3;
-        }
-        if (writeStructDefinitions(stub_file, parseTree) != 0) {
-            return -4;
-        }
-        if (writeStubFunctions(stub_file, parseTree) != 0) {
-            return -5;
-        }
-        if (writeStubBadFunction(stub_file, idl_filename) != 0) {
-            return -6;
-        }
-        if (writeStubDispatcher(stub_file, parseTree) != 0) {
-            return -7;
-        }
-        if (writeStubGetFunctionNameFromStream(stub_file, idl_filename) != 0) {
-            return -8;
-        }
+        try {
+            if (parseTree.functions.size() == 0 && parseTree.types.size() == 0) {
+                throw C150Exception("This idl file contains no functions or types");
+            }
+            if (writeStubHeader(stub_file, idl_filename) != 0) {
+                throw C150Exception("Fail in writing stub header");
+            }
+            if (writeStructDefinitions(stub_file, parseTree) != 0) {
+                throw C150Exception("Fail in writing stub struct definitions");
+            }
+            if (writeStubFunctions(stub_file, parseTree) != 0) {
+                throw C150Exception("Fail in writing stub functions");
+            }
+            if (writeStubBadFunction(stub_file, idl_filename) != 0) {
+                throw C150Exception("Fail in writing stub bad function");
+            }
+            if (writeStubDispatcher(stub_file, parseTree) != 0) {
+                throw C150Exception("Fail in writing stub dispatcher");
+            }
+            if (writeStubGetFunctionNameFromStream(stub_file, idl_filename) != 0) {
+                throw C150Exception("Fail in writing stub getFunctionNameFromStream");
+            }
+        } catch (C150Exception e) {
+            c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
+            return -2;
+        }     
 
         string stub_filename(idl_filename, strlen(idl_filename) - 4);
         stub_filename += ".stub.cpp";
@@ -84,10 +87,14 @@ namespace C150NETWORK {
     }
 
     int writeStubHeader(stringstream& output, const char idl_filename[]) {
-        if (idl_filename == nullptr) {
-            throw C150Exception("write_header: idl_filename is null");
-            return -1;
-        }
+        try {
+            if (idl_filename == nullptr) {
+                throw C150Exception("write_header: idl_filename is null");
+            }
+        } catch (C150Exception e) {
+            c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
+            return -4;
+        }      
 
         output << "// Language: cpp" << endl;
         output << "// Path: rpc/RPC.samples/generate_stub.cpp" << endl;
@@ -222,10 +229,15 @@ namespace C150NETWORK {
     }
 
     int writeStubBadFunction(stringstream& output, const char idl_filename[]) {
-        if (idl_filename == nullptr) {
-            throw C150Exception("write_bad_function: output stream is null");
-            return -1;
-        }
+        try {
+            if (idl_filename == nullptr) {
+                throw C150Exception("write_bad_function: output stream is null");
+            }
+        } catch (C150Exception e) {
+            c150debug->printf(C150RPCDEBUG,"%s",e.formattedExplanation());
+            return -6;
+        } 
+
         string idl_filename_string(idl_filename, strlen(idl_filename) - 4);
 
         output << "// \n";

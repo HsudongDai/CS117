@@ -6,6 +6,7 @@
 #include <cstring>
 #include <string>
 #include <map>
+#include "c150debug.h"
 #include "c150exceptions.h"
 #include "declarations.h"
 #include "functiondeclaration.h"
@@ -48,12 +49,21 @@ namespace C150NETWORK {
 
         Declarations parseTree(idlFile);
         stringstream output;
-        if (writeProxyHeader(output, idl_filename) != 0) {
-            return -1;
-        }
-        if (writeProxyFunctions(output, parseTree, idl_filename) != 0) {
-            return -1;
-        }
+
+        try {
+            if (parseTree.functions.size() == 0 && parseTree.types.size() == 0) {
+                throw C150Exception("This idl file contains no functions or types");
+            }
+            if (writeProxyHeader(output, idl_filename) != 0) {
+                throw C150Exception("Fail in writing proxy header");
+            }
+            if (writeProxyFunctions(output, parseTree, idl_filename) != 0) {
+                throw C150Exception("Fail in writing proxy functions");
+            }
+        } catch (C150Exception e) {
+            c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
+            return -3;
+        }       
 
         string proxy_filename(idl_filename, strlen(idl_filename) - 4);
         proxy_filename += ".proxy.cpp";
@@ -74,6 +84,7 @@ namespace C150NETWORK {
         output << endl;
         output << "#include <cstdio>" << endl;
         output << "#include <cstring>" << endl;
+        output << "#include <string>" << endl;
         output << "#include \"c150debug.h\"" << endl;
         output << "using namespace C150NETWORK;" << endl;
         output << endl;
@@ -138,8 +149,8 @@ namespace C150NETWORK {
     // todo: must deal with array-type parameters
     int writeProxyFunctions(stringstream& output, const Declarations& parseTree, const char idl_filename[]) {
         if (parseTree.functions.size() == 0) {
-            throw C150Exception("write_functions: output stream is null");
-            return -1;
+            // throw C150Exception("write_functions: output stream is null");
+            return 0;
         }
 
         string idl_filename_string(idl_filename, strlen(idl_filename) - 4);
