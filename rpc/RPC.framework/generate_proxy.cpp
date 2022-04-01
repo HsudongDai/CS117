@@ -52,7 +52,7 @@ namespace C150NETWORK {
 
         try {
             if (parseTree.functions.size() == 0 && parseTree.types.size() == 0) {
-                throw C150Exception("This idl file contains no functions or types");
+                throw C150Network("This idl file contains no functions or types");
             }
             if (writeProxyHeader(output, idl_filename) != 0) {
                 throw C150Exception("Fail in writing proxy header");
