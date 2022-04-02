@@ -6,6 +6,7 @@
 #include <cstring>
 #include <string>
 #include <map>
+#include <libgen.h>
 #include "c150debug.h"
 #include "c150exceptions.h"
 #include "declarations.h"
@@ -174,7 +175,8 @@ namespace C150NETWORK {
             return 0;
         }
 
-        string idl_filename_string(idl_filename, strlen(idl_filename) - 4);
+        // string idl_filename_string(idl_filename, strlen(idl_filename) - 4);
+        char * idl_filename_base = basename(idl_filename);
 
         for (auto function : parseTree.functions) {
             output << "// " << function.first << endl;
@@ -207,16 +209,16 @@ namespace C150NETWORK {
             output << "  //\n";
             output << "  // Read the response\n";
             output << "  //\n";
-            output << "  c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".proxy.cpp: " << function.first << "() invocation sent, waiting for response\");\n";
+            output << "  c150debug->printf(C150RPCDEBUG, \"" << idl_filename_base << ".proxy.cpp: " << function.first << "() invocation sent, waiting for response\");\n";
             output << "  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer)); // only legal response is DONE\n";
 
             output << "  //\n";
             output << "  // Check the response\n";
             output << "  //\n";
             output << "  if (strncmp(readBuffer, \"DONE\", sizeof(readBuffer)) != 0) {\n";
-            output << "    throw C150Exception(\"" << idl_filename_string << ".proxy: " << function.first << "() received invalid response from the server\");\n";
+            output << "    throw C150Exception(\"" << idl_filename_base << ".proxy: " << function.first << "() received invalid response from the server\");\n";
             output << "  }\n";
-            output << "  c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".proxy.cpp: " << function.first << " () successful return from remote call\");\n";
+            output << "  c150debug->printf(C150RPCDEBUG, \"" << idl_filename_base << ".proxy.cpp: " << function.first << " () successful return from remote call\");\n";
             output << "}" << endl;
             output << endl;
         }
