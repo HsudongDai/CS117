@@ -80,19 +80,19 @@ namespace C150NETWORK {
             return -2;
         }
 
+        string idl_filename_str(idl_filename, strlen(idl_filename) - 4);
         stringstream ss;
         if (outputFilepath == nullptr || strlen(outputFilepath) == 0) {
-            ss << idl_filename << ".stub.cpp";
+            ss << idl_filename_str << ".stub.cpp";
         } else {
-            string idl_filename_string(idl_filename);
-            if (idl_filename_string.find_last_of('/') != string::npos) {
-                idl_filename_string = idl_filename_string.substr(idl_filename_string.find_last_of('/') + 1);
+            if (idl_filename_str.find_last_of('/') != string::npos) {
+                idl_filename_str = idl_filename_str.substr(idl_filename_str.find_last_of('/') + 1);
             }
             ss << outputFilepath;
             if (outputFilepath[strlen(outputFilepath) - 1] != '/') {
                 ss << '/';
             }
-            ss << idl_filename_string << ".stub.cpp";
+            ss << idl_filename_str << ".stub.cpp";
         }
 
         ofstream stubFile(ss.str());

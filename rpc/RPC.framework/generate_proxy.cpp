@@ -20,22 +20,22 @@ namespace C150NETWORK {
     int writeProxyHeader(stringstream& output, const char idl_filename[]);
     int writeProxyStructDefinitions(stringstream& output, const Declarations& parseTree);
     int writeProxyFunctions(stringstream& output, const Declarations& parseTree, const char idl_filename[]);
-    int generateProxy(const char idl_filename[]); 
+    int generateProxy(const char idl_filename[], const char outputFilepath[]); 
 }
 
 
-int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        cout << "Usage: " << argv[0] << " <idl_filename>" << endl;
-        return -1;
-    }
+// int main(int argc, char* argv[]) {
+//     if (argc != 2) {
+//         cout << "Usage: " << argv[0] << " <idl_filename>" << endl;
+//         return -1;
+//     }
 
-    generateProxy(argv[1]);
-    return 0;
-}
+//     generateProxy(argv[1]);
+//     return 0;
+// }
 
 namespace C150NETWORK {
-    int generateProxy(const char idl_filename[]) {
+    int generateProxy(const char idl_filename[], const char outputFilepath[]) {
         ifstream idlFile(idl_filename);        // open 
 
         if (!idlFile.is_open()) {
@@ -69,9 +69,22 @@ namespace C150NETWORK {
             return -3;
         }       
 
-        string proxy_filename(idl_filename, strlen(idl_filename) - 4);
-        proxy_filename += ".proxy.cpp";
-        ofstream proxyFile(proxy_filename.c_str());
+        string idl_filename_str(idl_filename, strlen(idl_filename) - 4);
+        stringstream ss;
+        if (outputFilepath == nullptr || strlen(outputFilepath) == 0) {
+            ss << idl_filename << ".proxy.cpp";
+        } else {
+            if (idl_filename_str.find_last_of('/') != string::npos) {
+                idl_filename_str = idl_filename_string.substr(idl_filename_str.find_last_of('/') + 1);
+            }
+            ss << outputFilepath;
+            if (outputFilepath[strlen(outputFilepath) - 1] != '/') {
+                ss << '/';
+            }
+            ss << idl_filename_str << ".proxy.cpp";
+        }
+
+        ofstream proxyFile(ss.c_str());
         proxyFile << output.str();
         proxyFile.close();
         return 0;

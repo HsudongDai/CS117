@@ -19,5 +19,5 @@ namespace C150NETWORK {
     int writeProxyHeader(stringstream& output, const char idl_filename[]);
     int writeProxyStructDefinitions(stringstream& output, const Declarations& parseTree);
     int writeProxyFunctions(stringstream& output, const Declarations& parseTree, const char idl_filename[]);
-    int generateProxy(const char idl_filename[]); 
+    int generateProxy(const char idl_filename[], const char outputFilepath[]); 
 }
