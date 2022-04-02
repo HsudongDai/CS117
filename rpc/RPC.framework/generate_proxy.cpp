@@ -176,7 +176,7 @@ namespace C150NETWORK {
         }
 
         // string idl_filename_string(idl_filename, strlen(idl_filename) - 4);
-        char * idl_filename_base = basename(idl_filename);
+        char * idl_filename_base = basename((char *)idl_filename);
 
         for (auto function : parseTree.functions) {
             output << "// " << function.first << endl;
@@ -204,7 +204,7 @@ namespace C150NETWORK {
             output << "  //\n";
             output << "  // Send the Remote Call\n";
             output << "  //\n";
-            output << "  c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".proxy.cpp:" << function.first << "invoked\");\n";
+            output << "  c150debug->printf(C150RPCDEBUG, \"" << idl_filename_base << ".proxy.cpp:" << function.first << "invoked\");\n";
             output << "  RPCPROXYSOCKET->write(" << function.first << ", strlen(" << function.first << ")+1); // write function name including null\n";
             output << "  //\n";
             output << "  // Read the response\n";
