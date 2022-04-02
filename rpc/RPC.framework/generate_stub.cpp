@@ -29,15 +29,15 @@ namespace C150NETWORK{
 
 // left for test only, should not be compiled when not tested separately
 int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        cout << "Usage: " << argv[0] << " <idl_filename>" << endl;
+    if (argc != 3) {
+        cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
         return -1;
     }
-    return generateStub(argv[1]);
+    return generateStub(argv[1], argv[2]);
 }
 
 namespace C150NETWORK {
-    int generateStub(const char idl_filename[]) {
+    int generateStub(const char idl_filename[], const char outputFilepath[]) {
         ifstream idlFile(idl_filename);        // open 
 
         if (!idlFile.is_open()) {
@@ -78,11 +78,24 @@ namespace C150NETWORK {
             // c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
             cout << "Caught C150Exception: " << e.formattedExplanation() << endl;
             return -2;
-        }     
+        }
 
-        string stub_filename(idl_filename, strlen(idl_filename) - 4);
-        stub_filename += ".stub.cpp";
-        ofstream stubFile(stub_filename.c_str());
+        stringstream ss;
+        if (outputFilepath == nullptr || strlen(outputFilepath) == 0) {
+            ss << idl_filename << ".stub.cpp";
+        } else {
+            string idl_filename_string(idl_filename);
+            if (idl_filename_string.find_last_of('/') != string::npos) {
+                idl_filename_string = idl_filename_string.substr(idl_filename_string.find_last_of('/') + 1);
+            }
+            ss << outputFilepath;
+            if (outputFilepath[strlen(outputFilepath) - 1] != '/') {
+                ss << '/';
+            }
+            ss << idl_filename_string << ".stub.cpp";
+        }
+
+        ofstream stubFile(ss.c_str());
         stubFile << stub_file.str();
         stubFile.close();
         return 0;
@@ -103,7 +116,13 @@ namespace C150NETWORK {
         output << "// Path: rpc/RPC.samples/generate_stub.cpp" << endl;
         output << "// Compare this snippet from rpc/RPC.samples/simplefunction.proxy.cpp:" << endl;
         output << endl;
-        output << "#include \"" << idl_filename << "\"" << endl;
+
+        string idl_filename_string(idl_filename);
+        if (idl_filename_string.find_last_of('/') != string::npos) {
+            idl_filename_string = idl_filename_string.substr(idl_filename_string.find_last_of('/') + 1);
+        }
+
+        output << "#include \"" << idl_filename_string << "\"" << endl;
         output << endl;
         output << "#include \"rpcproxyhelper.h\"" << endl;
         output << "#include \"c150debug.h\"" << endl;
