@@ -24,15 +24,15 @@ namespace C150NETWORK {
 }
 
 
-// int main(int argc, char* argv[]) {
-//     if (argc != 2) {
-//         cout << "Usage: " << argv[0] << " <idl_filename>" << endl;
-//         return -1;
-//     }
+int main(int argc, char* argv[]) {
+    if (argc != 3) {
+        cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
+       return -1;
+    }
 
-//     generateProxy(argv[1]);
-//     return 0;
-// }
+    generateProxy(argv[1], argv[2]);
+    return 0;
+}
 
 namespace C150NETWORK {
     int generateProxy(const char idl_filename[], const char outputFilepath[]) {
@@ -75,7 +75,7 @@ namespace C150NETWORK {
             ss << idl_filename << ".proxy.cpp";
         } else {
             if (idl_filename_str.find_last_of('/') != string::npos) {
-                idl_filename_str = idl_filename_string.substr(idl_filename_str.find_last_of('/') + 1);
+                idl_filename_str = idl_filename_str.substr(idl_filename_str.find_last_of('/') + 1);
             }
             ss << outputFilepath;
             if (outputFilepath[strlen(outputFilepath) - 1] != '/') {
@@ -84,7 +84,7 @@ namespace C150NETWORK {
             ss << idl_filename_str << ".proxy.cpp";
         }
 
-        ofstream proxyFile(ss.c_str());
+        ofstream proxyFile(ss.str());
         proxyFile << output.str();
         proxyFile.close();
         return 0;
