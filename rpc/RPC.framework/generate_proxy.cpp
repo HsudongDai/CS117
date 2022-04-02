@@ -64,7 +64,7 @@ namespace C150NETWORK {
                 throw C150Exception("Fail in writing proxy functions");
             }
         } catch (C150Exception& e) {
-            printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
+            c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
             printf("Caught C150Exception: %s", e.formattedExplanation().c_str()	);
             return -3;
         }       
