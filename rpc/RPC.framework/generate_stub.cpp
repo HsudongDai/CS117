@@ -309,10 +309,10 @@ namespace C150NETWORK {
         output << "  char functionName[50];\n";
         output << "  RPCSTUBSOCKET->read(functionName, 50);\n";
         output << "  if (!RPCSTUBSOCKET-> eof()) {\n";
-        output << "    if (strcmp(functionName, " << fiter->first << ") == 0) {\n";
+        output << "    if (strcmp(functionName, \"" << fiter->first << "\") == 0) {\n";
         output << "      __" << fiter->first << "();\n";
         for (++fiter; fiter != parseTree.functions.end(); ++fiter) {
-            output << "    } else if (strcmp(functionName, " << fiter->first << ") == 0) {\n";
+            output << "    } else if (strcmp(functionName, \"" << fiter->first << "\") == 0) {\n";
             output << "      __" << fiter->first << "();\n";
         }
         output << "    } else {\n";
