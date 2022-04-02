@@ -6,6 +6,7 @@
 #include <cstring>
 #include <string>
 #include <map>
+#include <libgen.h>
 #include "c150exceptions.h"
 #include "c150debug.h"
 #include "declarations.h"
@@ -365,7 +366,8 @@ namespace C150NETWORK {
                << "    }\n"
                << "  }\n";
 
-        string idl_filename_string(idl_filename, strlen(idl_filename) - 4);
+        char * idl_filename_base = basename((char *)idl_filename);
+        string idl_filename_string(idl_filename_base, strlen(idl_filename_base) - 4);
 
         output << "  //\n"
                << "  // With TCP streams, we should never get a 0 length read\n"
