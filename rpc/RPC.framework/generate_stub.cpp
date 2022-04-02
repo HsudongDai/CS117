@@ -271,7 +271,7 @@ namespace C150NETWORK {
 
         output << "void __badFunction(char *functionName) {\n";
         output << "  char doneBuffer[5] = \"BAD\";\n";
-        output << "  c150debug->printf(C150RPCDEBUG,\"" << idl_filename_string << ".stub.cpp"  << ": received call for nonexistent function %%s()\", functionName);\n";
+        output << "  c150debug->printf(C150RPCDEBUG,\"" << idl_filename_string << ".stub.cpp"  << ": received call for nonexistent function %s()\", functionName);\n";
         output << "  RPCSTUBSOCKET->write(doneBuffer, 5);\n";
         output << "}\n\n";
 
