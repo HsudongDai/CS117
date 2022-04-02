@@ -375,12 +375,12 @@ namespace C150NETWORK {
                << "  // or EOF\n"
                << "  //\n";
         output << "  if (readlen == 0) {\n"
-               << "    c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string <<".stub: read zero length message, checking EOF\");\n";
+               << "    c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string <<".stub.cpp: read zero length message, checking EOF\");\n";
 
         output << "    if (RPCSTUBSOCKET-> eof()) {\n"
-               << "      c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".stub: EOF signaled on input\");\n"
+               << "      c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".stub.cpp: EOF signaled on input\");\n"
                << "    } else {\n"
-               << "      throw C150Exception(\"" << idl_filename_string << ".stub: unexpected zero length read without eof\");\n"
+               << "      throw C150Exception(\"" << idl_filename_string << ".stub.cpp: unexpected zero length read without eof\");\n"
                << "    }\n"
                << "  }\n";
 
@@ -388,7 +388,7 @@ namespace C150NETWORK {
                << "  // If we didn't get a null, input message was poorly formatted\n"
                << "  //\n"
                << "  else if(!readnull) \n"
-               << "    throw C150Exception(\"" << idl_filename_string << ".stub: method name not null terminated or too long\");\n"
+               << "    throw C150Exception(\"" << idl_filename_string << ".stub.cpp: method name not null terminated or too long\");\n"
                << "\n\n";
         
         output << "  //\n"
