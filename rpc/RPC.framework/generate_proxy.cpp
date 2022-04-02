@@ -60,7 +60,7 @@ namespace C150NETWORK {
             if (writeProxyFunctions(output, parseTree, idl_filename) != 0) {
                 throw C150Exception("Fail in writing proxy functions");
             }
-        } catch (C150Exception e) {
+        } catch (C150Exception& e) {
             // c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
             printf("Caught C150Exception: %s", e.formattedExplanation());
             return -3;
@@ -81,7 +81,11 @@ namespace C150NETWORK {
         output << endl;
         output << "#include \"rpcproxyhelper.h\"" << endl;
         output << endl;
-        output << "#include \"" << idl_filename << "\"" << endl;
+        string idl_filename_string(idl_filename);
+        if (idl_filename_string.find_first_not_of('/') != string::npos) {
+            idl_filename_string = idl_filename_string.substr(idl_filename_string.find_first_not_of('/'));
+        }
+        output << "#include \"" << idl_filename_string << "\"" << endl;
         output << endl;
         output << "#include <cstdio>" << endl;
         output << "#include <cstring>" << endl;
