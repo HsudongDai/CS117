@@ -52,17 +52,20 @@ namespace C150NETWORK {
 
         try {
             if (parseTree.functions.size() == 0 && parseTree.types.size() == 0) {
-                throw C150Network("This idl file contains no functions or types");
+                throw C150Exception("This idl file contains no functions or types");
             }
             if (writeProxyHeader(output, idl_filename) != 0) {
                 throw C150Exception("Fail in writing proxy header");
+            }
+            if (writeProxyStructDefinitions(output, parseTree) != 0) {
+                throw C150Exception("Fail in writing proxy struct definitions");
             }
             if (writeProxyFunctions(output, parseTree, idl_filename) != 0) {
                 throw C150Exception("Fail in writing proxy functions");
             }
         } catch (C150Exception& e) {
             // c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
-            printf("Caught C150Exception: %s", e.formattedExplanation());
+            printf("Caught C150Exception: %s", e.formattedExplanation().c_str()	);
             return -3;
         }       
 
@@ -82,8 +85,8 @@ namespace C150NETWORK {
         output << "#include \"rpcproxyhelper.h\"" << endl;
         output << endl;
         string idl_filename_string(idl_filename);
-        if (idl_filename_string.find_first_not_of('/') != string::npos) {
-            idl_filename_string = idl_filename_string.substr(idl_filename_string.find_first_not_of('/'));
+        if (idl_filename_string.find_last_of('/') != string::npos) {
+            idl_filename_string = idl_filename_string.substr(idl_filename_string.find_last_of('/') + 1);
         }
         output << "#include \"" << idl_filename_string << "\"" << endl;
         output << endl;

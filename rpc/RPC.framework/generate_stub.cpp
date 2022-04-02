@@ -234,7 +234,7 @@ namespace C150NETWORK {
     int writeStubBadFunction(stringstream& output, const char idl_filename[]) {
         try {
             if (idl_filename == nullptr) {
-                throw C150("write_bad_function: output stream is null");
+                throw C150Exception("write_bad_function: output stream is null");
             }
         } catch (C150Exception& e) {
             // c150debug->printf(C150APPLICATION,"%s",e.formattedExplanation());
