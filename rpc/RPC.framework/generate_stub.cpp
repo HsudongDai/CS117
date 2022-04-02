@@ -24,7 +24,7 @@ namespace C150NETWORK{
     int writeStubBadFunction(stringstream& output, const char idl_filename[]);
     int writeStubDispatcher(stringstream& output, const Declarations& parseTree);
     int writeStubGetFunctionNameFromStream(stringstream& output, const char idl_filename[]);
-    int generateStub(const char idl_filename[]);
+    int generateStub(const char idl_filename[], const char outputFilepath[]);
 }
 
 // left for test only, should not be compiled when not tested separately
@@ -95,7 +95,7 @@ namespace C150NETWORK {
             ss << idl_filename_string << ".stub.cpp";
         }
 
-        ofstream stubFile(ss.c_str());
+        ofstream stubFile(ss.str());
         stubFile << stub_file.str();
         stubFile.close();
         return 0;
