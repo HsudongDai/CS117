@@ -1,3 +1,6 @@
+#ifndef __GENERATE_STUB_HPP__
+#define __GENERATE_STUB_HPP__
+
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -25,3 +28,5 @@ namespace C150NETWORK{
     int writeStubGetFunctionNameFromStream(stringstream& output, const char idl_filename[]);
     int generateStub(const char idl_filename[], const char outputFilepath[]);
 }
+
+#endif

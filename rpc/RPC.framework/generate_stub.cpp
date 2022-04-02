@@ -12,7 +12,7 @@
 #include "functiondeclaration.h"
 #include "typedeclaration.h"
 
-#include "idl_to_json.cpp"
+#include "idl_to_json.hpp"
 
 using namespace std;
 using namespace C150NETWORK;

@@ -1,3 +1,6 @@
+#ifndef __GENERATE_PROXY_HPP__
+#define __GENERATE_PROXY_HPP__
+
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -21,3 +24,5 @@ namespace C150NETWORK {
     int writeProxyFunctions(stringstream& output, const Declarations& parseTree, const char idl_filename[]);
     int generateProxy(const char idl_filename[], const char outputFilepath[]); 
 }
+
+#endif
