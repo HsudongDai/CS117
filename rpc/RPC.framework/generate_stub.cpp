@@ -28,13 +28,13 @@ namespace C150NETWORK{
 }
 
 // left for test only, should not be compiled when not tested separately
-int main(int argc, char* argv[]) {
-    if (argc != 3) {
-        cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
-        return -1;
-    }
-    return generateStub(argv[1], argv[2]);
-}
+// int main(int argc, char* argv[]) {
+//     if (argc != 3) {
+//         cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
+//         return -1;
+//     }
+//     return generateStub(argv[1], argv[2]);
+// }
 
 namespace C150NETWORK {
     int generateStub(const char idl_filename[], const char outputFilepath[]) {
@@ -75,7 +75,7 @@ namespace C150NETWORK {
                 throw C150Exception("Fail in writing stub getFunctionNameFromStream");
             }
         } catch (C150Exception& e) {
-            // c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
+            c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
             cout << "Caught C150Exception: " << e.formattedExplanation() << endl;
             return -2;
         }
@@ -107,7 +107,7 @@ namespace C150NETWORK {
                 throw C150Exception("write_header: idl_filename is null");
             }
         } catch (C150Exception& e) {
-            // c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
+            c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
             cout << "Caught C150Exception: " << e.formattedExplanation() << endl;
             return -4;
         }      
@@ -256,7 +256,7 @@ namespace C150NETWORK {
                 throw C150Exception("write_bad_function: output stream is null");
             }
         } catch (C150Exception& e) {
-            // c150debug->printf(C150APPLICATION,"%s",e.formattedExplanation());
+            c150debug->printf(C150APPLICATION,"%s",e.formattedExplanation());
             cout << "write_bad_function: " << e.formattedExplanation() << endl;
             return -6;
         } 

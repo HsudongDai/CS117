@@ -24,15 +24,15 @@ namespace C150NETWORK {
 }
 
 
-int main(int argc, char* argv[]) {
-    if (argc != 3) {
-        cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
-       return -1;
-    }
+// int main(int argc, char* argv[]) {
+//     if (argc != 3) {
+//         cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
+//        return -1;
+//     }
 
-    generateProxy(argv[1], argv[2]);
-    return 0;
-}
+//     generateProxy(argv[1], argv[2]);
+//     return 0;
+// }
 
 namespace C150NETWORK {
     int generateProxy(const char idl_filename[], const char outputFilepath[]) {
@@ -64,7 +64,7 @@ namespace C150NETWORK {
                 throw C150Exception("Fail in writing proxy functions");
             }
         } catch (C150Exception& e) {
-            // c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
+            printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
             printf("Caught C150Exception: %s", e.formattedExplanation().c_str()	);
             return -3;
         }       
