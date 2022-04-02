@@ -12,7 +12,7 @@
 #include "functiondeclaration.h"
 #include "typedeclaration.h"
 
-#include "idl_to_json.cpp"
+#include "idl_to_json.hpp"
 
 #include "generate_proxy.hpp"
 #include "generate_stub.hpp"
@@ -22,10 +22,10 @@ using namespace C150NETWORK;
 
 int rpcGenerate(const char idl_filename[], const char filepath[]) {
     try {
-        if (idl_filename == null || strlen(idl_filename) == 0) {
+        if (idl_filename == nullptr || strlen(idl_filename) == 0) {
             throw C150Exception("rpcGenerate: idl_filename or is NULL or empty");
         }
-        if (filepath == null || strlen(filepath) == 0) {
+        if (filepath == nullptr || strlen(filepath) == 0) {
             throw C150Exception("rpcGenerate: filepath or is NULL or empty");
         }
 
