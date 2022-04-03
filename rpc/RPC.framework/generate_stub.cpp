@@ -244,7 +244,7 @@ namespace C150NETWORK {
             output << "  // Send the response to the client\n";
             output << "  //\n";
             output << "  // If " << function.first << " returned something other than void, this is\n";
-            output << "  // where we'd send the return" << function.second->getReturnType() << " to the client\n";
+            output << "  // where we'd send the return " << function.second->getReturnType()->getName() << " to the client\n";
             output << "  RPCSTUBSOCKET->write(doneBuffer, 5);\n";
             output << "}\n\n";
         }  

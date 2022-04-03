@@ -113,7 +113,7 @@ main(int argc, char *argv[]) {
                 // work of reading and writing the stream, but will return on eof,
                 // which we'll get when client goes away.
                 //
-                dispatchFunction();     // call the subs function dispatcher
+                dispatchFunction();     // call the stubs function dispatcher
               
                 if (RPCSTUBSOCKET -> eof()) {
                     c150debug->printf(C150RPCDEBUG,"rpcserver.cpp: EOF signaled on input");
