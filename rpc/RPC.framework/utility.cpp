@@ -22,7 +22,7 @@ namespace C150NETWORK {
     }
 
     ArrayDecl getArrayDecl(TypeDeclaration* type) {
-        string rawType(typeDecl->getName());
+        string rawType(type->getName());
         string arrayType = rawType.substr(2, rawType.size() - 2);
         // cout << "array type: " << arrayType << endl;
         int idx = arrayType.find_first_of('[');
@@ -36,7 +36,7 @@ namespace C150NETWORK {
         if (type->isArray()) {
             ArrayDecl arrayDecl = getArrayDecl(type->getName());
             string decl = "string64_to_" + arrayDecl.type + replaceBrackets(arrayDecl.idx);
-            return decl
+            return decl;
         }
         string decl = "string64_to_" + type->getName();
         return decl;
