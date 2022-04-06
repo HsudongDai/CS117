@@ -12,11 +12,11 @@ namespace C150NETWORK {
         string idx;
     };
 
-    string replaceBrackets(string s) const;
-    string removeUnderlines(string s) const;
-    ArrayDecl getArrayDecl(TypeDeclaration* type) const;
-    string getEncDecl(TypeDeclaration* type) const;
-    string getDecDecl(TypeDeclaration* type) const;
+    string replaceBrackets(string s);
+    string removeUnderlines(string s);
+    ArrayDecl getArrayDecl(TypeDeclaration* type);
+    string getEncDecl(TypeDeclaration* type);
+    string getDecDecl(TypeDeclaration* type);
 }
 
 #endif

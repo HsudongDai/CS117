@@ -2,17 +2,17 @@
 #include "declarations.h"
 #include "functiondeclaration.h"
 #include "typedeclaration.h"
-#include "base64.h"
-#include "utility.h"
+#include "base64.hpp"
+#include "utility.hpp"
 
 namespace C150NETWORK {
     
-    string removeUnderlines(string s) const {
+    string removeUnderlines(string s) {
         int idx = s.find_first_not_of('_');
         return s.substr(idx + 1);
     }
 
-    string replaceBrackets(string s) const {
+    string replaceBrackets(string s) {
         for (size_t i = 0; i < s.size(); ++i) {
             if (s[i] == '[' || s[i] == ']') {
                 s[i] = '_';
@@ -21,7 +21,7 @@ namespace C150NETWORK {
         return s;
     }
 
-    ArrayDecl getArrayDecl(TypeDeclaration* type) const {
+    ArrayDecl getArrayDecl(TypeDeclaration* type) {
         string rawType(typeDecl->getName());
         string arrayType = rawType.substr(2, rawType.size() - 2);
         // cout << "array type: " << arrayType << endl;
@@ -32,7 +32,7 @@ namespace C150NETWORK {
         return ArrayDecl{dataType, arrayIdx};
     }
 
-    string getEncDecl(TypeDeclaration* type) const {
+    string getEncDecl(TypeDeclaration* type) {
         if (type->isArray()) {
             ArrayDecl arrayDecl = getArrayDecl(type->getName());
             string decl = "string64_to_" + arrayDecl.type + replaceBrackets(arrayDecl.idx);
@@ -42,7 +42,7 @@ namespace C150NETWORK {
         return decl;
     }
 
-    string getDecDecl(TypeDeclaration* type) const {
+    string getDecDecl(TypeDeclaration* type) {
         if (type->isArray()) {
             ArrayDecl arrayDecl = getArrayDecl(type->getName());
             string decl = "parse_" + arrayDecl.type + replaceBrackets(arrayDecl.idx);
