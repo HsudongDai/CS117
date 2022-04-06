@@ -34,7 +34,7 @@ namespace C150NETWORK {
 
     string getEncDecl(TypeDeclaration* type) {
         if (type->isArray()) {
-            ArrayDecl arrayDecl = getArrayDecl(type->getName());
+            ArrayDecl arrayDecl = getArrayDecl(type);
             string decl = "string64_to_" + arrayDecl.type + replaceBrackets(arrayDecl.idx);
             return decl;
         }
@@ -44,7 +44,7 @@ namespace C150NETWORK {
 
     string getDecDecl(TypeDeclaration* type) {
         if (type->isArray()) {
-            ArrayDecl arrayDecl = getArrayDecl(type->getName());
+            ArrayDecl arrayDecl = getArrayDecl(type);
             string decl = "parse_" + arrayDecl.type + replaceBrackets(arrayDecl.idx);
             return decl;
         }
