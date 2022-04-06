@@ -45,17 +45,20 @@ c150idsrpc.a: tokenizeddeclarations.o IDLToken.o tokenizeddeclaration.o declarat
 # make .o from .cpp
 
 generate_stub: generate_stub.o $(INCLUDES) $(C150AR) $(C150IDSRPCAR)
-	$(CPP) -o generate_stub generate_stub.o $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
+	$(CPP) $(CPPFLAGS) -c utility.cpp -o utility.o
+	$(CPP) -o generate_stub utility.o generate_stub.o $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
 
 generate_proxy: generate_proxy.o $(INCLUDES) $(C150AR) $(C150IDSRPCAR)
-	$(CPP) -o generate_proxy generate_proxy.o $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
+	$(CPP) $(CPPFLAGS) -c utility.cpp -o utility.o
+	$(CPP) -o generate_proxy utility.o generate_proxy.o $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
 
 # Compile the rpcgenerate program
-rpcgenerate: Makefile rpcgenerate.o generate_stub.o generate_proxy.o $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
+rpcgenerate: rpcgenerate.o generate_stub.o generate_proxy.o utility.o $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
+	$(CPP) $(CPPFLAGS) -c utility.cpp -o utility.o
 	$(CPP) -o generate_proxy.o -c generate_proxy.cpp $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
 	$(CPP) -o generate_stub.o -c generate_stub.cpp $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
 	$(CPP) -o rpcgenerate.o -c rpcgenerate.cpp $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
-	$(CPP) -o rpcgenerate generate_proxy.o generate_stub.o rpcgenerate.o $(C150AR) $(C150IDSRPCAR) $(CPPFLAGS)
+	$(CPP) -o rpcgenerate utility.o generate_proxy.o generate_stub.o rpcgenerate.o $(C150AR) $(C150IDSRPCAR) $(CPPFLAGS)
 
 %.o:%.cpp  $(INCLUDES)
 	$(CPP) -c  $(CPPFLAGS) $< 
