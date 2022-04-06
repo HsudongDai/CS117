@@ -22,6 +22,7 @@ using namespace C150NETWORK;
 namespace C150NETWORK{
     int writeStubHeader(stringstream& output, const char idl_filename[]);
     int writeStructDefinitions(stringstream& output, const Declarations& parseTree);
+    int writeStubTypeParsers(stringstream& output, const Declarations& parseTree);
     int writeStubFunctions(stringstream& output, const Declarations& parseTree);
     int writeStubBadFunction(stringstream& output, const char idl_filename[]);
     int writeStubDispatcher(stringstream& output, const Declarations& parseTree);

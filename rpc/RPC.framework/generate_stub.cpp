@@ -14,6 +14,7 @@
 #include "typedeclaration.h"
 
 #include "idl_to_json.hpp"
+#include "utility.hpp"
 
 using namespace std;
 using namespace C150NETWORK;
@@ -29,13 +30,13 @@ namespace C150NETWORK{
 }
 
 // left for test only, should not be compiled when not tested separately
-// int main(int argc, char* argv[]) {
-//     if (argc != 3) {
-//         cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
-//         return -1;
-//     }
-//     return generateStub(argv[1], argv[2]);
-// }
+int main(int argc, char* argv[]) {
+    if (argc != 3) {
+        cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
+        return -1;
+    }
+    return generateStub(argv[1], argv[2]);
+}
 
 namespace C150NETWORK {
     int generateStub(const char idl_filename[], const char outputFilepath[]) {
@@ -62,6 +63,9 @@ namespace C150NETWORK {
             }
             if (writeStructDefinitions(stub_file, parseTree) != 0) {
                 throw C150Exception("Fail in writing stub struct definitions");
+            }
+            if (writeStubTypeParsers(stub_file, parseTree) != 0) {
+                throw C150Exception("Fail in writing stub type parsers");
             }
             if (writeStubFunctions(stub_file, parseTree) != 0) {
                 throw C150Exception("Fail in writing stub functions");
@@ -128,6 +132,7 @@ namespace C150NETWORK {
         output << "#include \"rpcproxyhelper.h\"" << endl;
         output << "#include \"c150debug.h\"" << endl;
         output << "#include <string>" << endl;
+        output << "#include \"base64.hpp\"" << endl;
         output << endl;
         output << "using namespace C150NETWORK;" << endl;
         output << endl;
@@ -197,6 +202,107 @@ namespace C150NETWORK {
                 // }
             }
         }
+        return 0;
+    }
+
+    int writeStubTypeParsers(stringstream& output, const Declarations& parseTree) {
+        output << "string string64_to_string(string *val) {\n"
+               << "  return base64_encode(*val);\n"
+               << "}\n"
+               << "void parse_string(string *value, string arg) {\n"
+               << "  *value = arg;\n"
+               << "}\n";
+        output << "string string64_to_int(int *val) {\n"
+               << "  return base64_encode(to_string(*val));\n"
+               << "}\n"
+               << "void parse_int(int *value, string arg) {\n"
+               << "  *value = stoi(arg);\n"
+               << "}\n"
+               << "string string64_to_float(float *val) {\n"
+               << "  return base64_encode(to_string(*val));\n"
+               << "}\n";
+        output << "void parse_float(float *value, string arg) {\n"
+               << "  *value = stof(arg);\n"
+               << "}\n";
+
+        for (auto& type : parseTree.types) {
+            if (type.first == "int" || type.first == "float" || type.first == "string" || type.first == "void") {
+                continue;
+            }
+            auto& typeDecl = type.second;
+
+            stringstream encDecl, decDecl;
+            string val = "val";
+            
+            if (typeDecl->isArray()) {
+                string typeName = typeDecl->getName();
+                typeName = typeName.substr(typeName.find_last_of('_') + 1);
+                for (int i = 0; i < typeName.size(); i++) {
+                    if (typeName[i] == '[' || typeName[i] == ']') {
+                        typeName[i] = '_';
+                    }
+                }
+
+                string rawType(typeDecl->getName());
+                string arrayType = rawType.substr(2, rawType.size() - 2);
+                // cout << "array type: " << arrayType << endl;
+                int idx = arrayType.find_first_of('[');
+                string dataType = arrayType.substr(0, idx);
+                string arrayIdx = arrayType.substr(idx, arrayType.size() - idx + 1);
+
+                encDecl << "string string64_to_" << typeName << "(" << dataType << " val" << arrayIdx << ") {\n";
+                decDecl << "void parse_" << typeName << "(" << dataType << " value" << arrayIdx << ", string arg" << ") {\n";
+            } else {
+                encDecl << "string string64_to_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val) {\n";
+                decDecl << "void parse_" << typeDecl->getName() << "(" << typeDecl->getName() << " *value, string arg) {\n";
+                val = "*(val)";
+            }
+
+            encDecl += "  stringstream ss;\n";
+            decDecl += "  stringstream args;\n  string arg64;\n  args.str(arg);\n";
+
+            if (typeDecl->isStruct()) {
+                for (auto& member: typeDecl->getStructMembers()) {
+                    decDecl += "  args >> arg64;\n";
+                    if (member->getType()->isArray()) {
+                        encDecl << "  ss << " << getEncDecl(member) << "(" << val << "." << member->getName() << ") << ' ';\n";
+                        decDecl << "  " << getDecDecl(member) << "((*val)." << member->getName() << ", base64_decode(arg64));\n";
+                    } else {
+                        encDecl << "  ss << " << getEncDecl(member) << "(&("  
+                                << val << "." << member->getName() << ")) << ' ';\n";
+                        decDecl << "   " << getDecDecl(member) << "(&(" << val << "." <<  member->getName() <<"), base64_decode(arg64));\n";
+                    }
+                }
+            } else {
+                encDecl << "  for(int i = 0; i < " << typeDecl->getArrayBound() << "; i++) {\n";
+                if (typeDecl->isArray()) {
+                    encDecl << "    ss << " << getEncDecl(typeDecl) << "(" << val << "[i]) << ' ';" << endl;
+                }
+                else {
+                    encDecl << "    s << " << getEncDecl(typeDecl) << " << (&(" << val <<"[i])) << ' ';" << endl;
+                }
+                encDecl << "  }\n";
+
+                decDecl << "  for(int i = 0; i < " << typeDecl->getArrayBound() << "; i++) {" << endl;
+                decDecl << "    args >> arg64;" << endl;
+                if (typeDecl->isArray()) {
+                    decDecl << "    " << getDecDecl(typeDecl) << "(" << val << "[i], base64_decode(arg64));" << endl;
+                }
+                else {
+                    decDecl << "    " << getDecDecl(typeDecl) << "(&(" << val << "[i]), base64_decode(arg64));" << endl;
+                }
+                decDecl << "  }" << endl;
+            }
+
+            encDecl << "  return base64_encode(ss.str());" << endl;
+            encDecl << "}" << endl;
+
+            decDecl << "}" << endl;
+        }
+
+        output << encDecl.str();
+        output << endl;
+        output << decDecl.str();
         return 0;
     }
 

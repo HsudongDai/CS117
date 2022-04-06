@@ -12,7 +12,9 @@
 #include "declarations.h"
 #include "functiondeclaration.h"
 #include "typedeclaration.h"
+#include "base64.h"
 
+#include "utility.h"
 #include "idl_to_json.hpp"
 
 using namespace std;
@@ -20,20 +22,21 @@ using namespace std;
 namespace C150NETWORK {
     int writeProxyHeader(stringstream& output, const char idl_filename[]);
     int writeProxyStructDefinitions(stringstream& output, const Declarations& parseTree);
+    int writeProxyTypeParsers(stringstream& output, const Declarations& parseTree);
     int writeProxyFunctions(stringstream& output, const Declarations& parseTree, const char idl_filename[]);
     int generateProxy(const char idl_filename[], const char outputFilepath[]); 
 }
 
 
-// int main(int argc, char* argv[]) {
-//     if (argc != 3) {
-//         cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
-//        return -1;
-//     }
+int main(int argc, char* argv[]) {
+    if (argc != 3) {
+        cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
+       return -1;
+    }
 
-//     generateProxy(argv[1], argv[2]);
-//     return 0;
-// }
+    generateProxy(argv[1], argv[2]);
+    return 0;
+}
 
 namespace C150NETWORK {
     int generateProxy(const char idl_filename[], const char outputFilepath[]) {
@@ -75,11 +78,11 @@ namespace C150NETWORK {
         if (outputFilepath == nullptr || strlen(outputFilepath) == 0) {
             ss << idl_filename << ".proxy.cpp";
         } else {
-            if (idl_filename_str.find_last_of('/') != string::npos) {
-                idl_filename_str = idl_filename_str.substr(idl_filename_str.find_last_of('/') + 1);
+            if (idl_filename_str.find_last_of('/" << endl; != string::npos) {
+                idl_filename_str = idl_filename_str.substr(idl_filename_str.find_last_of('/" << endl; + 1);
             }
             ss << outputFilepath;
-            if (outputFilepath[strlen(outputFilepath) - 1] != '/') {
+            if (outputFilepath[strlen(outputFilepath) - 1] != '/" << endl; {
                 ss << '/';
             }
             ss << idl_filename_str << ".proxy.cpp";
@@ -99,8 +102,8 @@ namespace C150NETWORK {
         output << "#include \"rpcproxyhelper.h\"" << endl;
         output << endl;
         string idl_filename_string(idl_filename);
-        if (idl_filename_string.find_last_of('/') != string::npos) {
-            idl_filename_string = idl_filename_string.substr(idl_filename_string.find_last_of('/') + 1);
+        if (idl_filename_string.find_last_of('/'; != string::npos) {
+            idl_filename_string = idl_filename_string.substr(idl_filename_string.find_last_of('/' + 1);
         }
         output << "#include \"" << idl_filename_string << "\"" << endl;
         output << endl;
@@ -108,6 +111,7 @@ namespace C150NETWORK {
         output << "#include <cstring>" << endl;
         output << "#include <string>" << endl;
         output << "#include \"c150debug.h\"" << endl;
+        output << "#include \"base64.hpp\"" << endl;
         output << endl;
         output << "using namespace C150NETWORK;" << endl;
         output << endl;
@@ -126,6 +130,105 @@ namespace C150NETWORK {
         output << "// ======================================================================\n";
         output << endl;
 
+        output << "string string64_to_string(string *val) {\n"
+               << "  return base64_encode(*val);\n"
+               << "}\n"
+               << "void parse_string(string *value, string arg) {\n"
+               << "  *value = arg;\n"
+               << "}\n";
+        output << "string string64_to_int(int *val) {\n"
+               << "  return base64_encode(to_string(*val));\n"
+               << "}\n"
+               << "void parse_int(int *value, string arg) {\n"
+               << "  *value = stoi(arg);\n"
+               << "}\n"
+               << "string string64_to_float(float *val) {\n"
+               << "  return base64_encode(to_string(*val));\n"
+               << "}\n";
+        output << "void parse_float(float *value, string arg) {\n"
+               << "  *value = stof(arg);\n"
+               << "}\n";
+        return 0;
+    }
+
+    int writeStubTypeParsers(stringstream& output, const Declarations& parseTree) {
+        for (auto& type : parseTree.types) {
+            if (type.first == "int" || type.first == "float" || type.first == "string" || type.first == "void") {
+                continue;
+            }
+            auto& typeDecl = type.second;
+
+            stringstream encDecl, decDecl;
+            string val = "val";
+            
+            if (typeDecl->isArray()) {
+                string typeName = typeDecl->getName();
+                typeName = typeName.substr(typeName.find_last_of('_') + 1);
+                for (int i = 0; i < typeName.size(); i++) {
+                    if (typeName[i] == '[' || typeName[i] == ']') {
+                        typeName[i] = '_';
+                    }
+                }
+
+                string rawType(typeDecl->getName());
+                string arrayType = rawType.substr(2, rawType.size() - 2);
+                // cout << "array type: " << arrayType << endl;
+                int idx = arrayType.find_first_of('[');
+                string dataType = arrayType.substr(0, idx);
+                string arrayIdx = arrayType.substr(idx, arrayType.size() - idx + 1);
+
+                encDecl << "string string64_to_" << typeName << "(" << dataType << " val" << arrayIdx << ") {\n";
+                decDecl << "void parse_" << typeName << "(" << dataType << " value" << arrayIdx << ", string arg" << ") {\n";
+            } else {
+                encDecl << "string string64_to_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val) {\n";
+                decDecl << "void parse_" << typeDecl->getName() << "(" << typeDecl->getName() << " *value, string arg) {\n";
+                val = "*(val)";
+            }
+
+            encDecl += "  stringstream ss;\n";
+            decDecl += "  stringstream args;\n  string arg64;\n  args.str(arg);\n";
+
+            if (typeDecl->isStruct()) {
+                for (auto& member: typeDecl->getStructMembers()) {
+                    decDecl += "  args >> arg64;\n";
+                    if (member->getType()->isArray()) {
+                        encDecl << "  ss << " << getEncDecl(member) << "(" << val << "." << member->getName() << ") << ' ';\n";
+                        decDecl << "  " << getDecDecl(member) << "((*val)." << member->getName() << ", base64_decode(arg64));\n";
+                    } else {
+                        encDecl << "  ss << " << getEncDecl(member) << "(&("  
+                                << val << "." << member->getName() << ")) << ' ';\n";
+                        decDecl << "   " << getDecDecl(member) << "(&(" << val << "." <<  member->getName() <<"), base64_decode(arg64));\n";
+                    }
+                }
+            } else {
+                encDecl << "  for(int i = 0; i < " << typeDecl->getArrayBound() << "; i++) {\n";
+                if (typeDecl->isArray()) {
+                    encDecl << "    ss << " << getEncDecl(typeDecl) << "(" << val << "[i]) << ' ';" << endl;
+                }
+                else {
+                    encDecl << "    ss << " << getEncDecl(typeDecl) << " << (&(" << val <<"[i])) << ' ';" << endl;
+                }
+                encDecl << "  }\n";
+
+                decDecl << "  for(int i = 0; i < " << typeDecl->getArrayBound() << "; i++) {" << endl;
+                decDecl << "    args >> arg64;" << endl;
+                if (typeDecl->isArray()) {
+                    decDecl << "    " << getDecDecl(typeDecl) << "(" << val << "[i], base64_decode(arg64));" << endl;
+                }
+                else {
+                    decDecl << "    " << getDecDecl(typeDecl) << "(&(" << val << "[i]), base64_decode(arg64));" << endl;
+                }
+                decDecl << "  }" << endl;
+            }
+
+            encDecl << "  return base64_encode(ss.str());" << endl;
+            encDecl << "}" << endl;
+
+            decDecl << "}" << endl;
+        }
+
+        output << encDecl.str();
+        output << decDecl.str();
         return 0;
     }
 
@@ -199,8 +302,51 @@ namespace C150NETWORK {
                 if (i != members.size() - 1) {
                     output << ", ";
                 }
+
+
             }
             output << ") {" << endl;
+            output << "  *GRADING << \"proxy: Called \"" << function.first << endl;
+            output << "  stringstream args;" << endl;
+            output << "  args << ' ';"  << endl;
+
+            for (auto& arg: function.second->getArgumentVector()) {
+                output << "  *GRADING << \"proxy: encoding argument\" " << arg->getName() << " << endl;" << endl;
+                if (arg->getType()->isArray()) {
+                    output << "  args << " << getEncDecl(arg->getType()) << "(" << arg->getName() << ")" << "' ';" << endl;
+                } else {
+                    output << "  args << " << getEncDecl(arg->getType()) << "(&" << arg->getName() << ") ;" << endl;
+                }
+            }
+
+            output << "  string outgoing = " << function.first << " + base64_encode(args.str());" << endl;
+            output << "  RPCPROXYSOCKET->write(outgoing.c_str(), strlen(outgoing.c_str()) + 1);" << endl;
+            output << "  *GRADING << \"proxy: sending to client \"  << outgoing" << endl;
+            output << "  c150debug->printf(C150RPCDEBUG, \"proxy: %s invoked\");" << endl;
+            output << "  // reads the response from the socket." << endl;
+            output << "  stringstream ret;" << endl;
+            output << "  string raw = readFromStream();" << endl;
+            output << "  ret.str(raw);" << endl;
+            output << "  string name;" << endl;
+            output << "  ret >> name;" << endl;
+            output << "  if (name != \"" << function.first << "\") {" << endl;
+            output << "    *GRADING << \"proxy: Invalid response from server in !\" << name." << endl; 
+            output << "  }" << endl;
+            output << "// parses the return value if necessary" << endl;
+            if (function.second->getReturnType() != "void") {
+                output << "  string msg;" << endl;
+                output << "  ret >> msg;" << endl;
+                output << "  *GRADING << \"proxy: function " << function.first << "returned with - \" << msg." << endl;
+                output << "  " << function.second->getReturnType()->getName() << "retval;" << endl;
+                output << "  " << function.second->getReturnType()->getName() << "(&retval, base64_decode(msg));" << endl;
+                output << "  return retval;" << endl;
+            } else {
+                output << "  *GRADING << \"Void function " <<  << " returned\"" << endl;
+                output << "  return;" << endl;
+            }
+            output << "}" << endl;
+
+            /*
             output << "  char readBuffer[5];  // to read magic value DONE + null\n";
             output << "  //\n";
             output << "  // Send the Remote Call\n";
@@ -222,6 +368,7 @@ namespace C150NETWORK {
             output << "  c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".proxy.cpp: " << function.first << "() successful return from remote call\");\n";
             output << "}" << endl;
             output << endl;
+            */
         }
 
         return 0;
