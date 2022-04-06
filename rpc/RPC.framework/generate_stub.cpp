@@ -22,6 +22,7 @@ using namespace C150NETWORK;
 namespace C150NETWORK{
     int writeStubHeader(stringstream& output, const char idl_filename[]);
     int writeStructDefinitions(stringstream& output, const Declarations& parseTree);
+    int writeStubTypeParsers(stringstream& output, const Declarations& parseTree);
     int writeStubFunctions(stringstream& output, const Declarations& parseTree);
     int writeStubBadFunction(stringstream& output, const char idl_filename[]);
     int writeStubDispatcher(stringstream& output, const Declarations& parseTree);
@@ -224,6 +225,7 @@ namespace C150NETWORK {
         output << "void parse_float(float *value, string arg) {\n"
                << "  *value = stof(arg);\n"
                << "}\n";
+        stringstream encDecl, decDecl;
 
         for (auto& type : parseTree.types) {
             if (type.first == "int" || type.first == "float" || type.first == "string" || type.first == "void") {
@@ -231,13 +233,14 @@ namespace C150NETWORK {
             }
             auto& typeDecl = type.second;
 
-            stringstream encDecl, decDecl;
             string val = "val";
+            encDecl.clear();
+            decDecl.clear();
             
             if (typeDecl->isArray()) {
                 string typeName = typeDecl->getName();
                 typeName = typeName.substr(typeName.find_last_of('_') + 1);
-                for (int i = 0; i < typeName.size(); i++) {
+                for (size_t i = 0; i < typeName.size(); i++) {
                     if (typeName[i] == '[' || typeName[i] == ']') {
                         typeName[i] = '_';
                     }
@@ -258,19 +261,19 @@ namespace C150NETWORK {
                 val = "*(val)";
             }
 
-            encDecl += "  stringstream ss;\n";
-            decDecl += "  stringstream args;\n  string arg64;\n  args.str(arg);\n";
+            encDecl << "  stringstream ss;\n";
+            decDecl << "  stringstream args;\n  string arg64;\n  args.str(arg);\n";
 
             if (typeDecl->isStruct()) {
                 for (auto& member: typeDecl->getStructMembers()) {
-                    decDecl += "  args >> arg64;\n";
+                    decDecl << "  args >> arg64;\n";
                     if (member->getType()->isArray()) {
-                        encDecl << "  ss << " << getEncDecl(member) << "(" << val << "." << member->getName() << ") << ' ';\n";
-                        decDecl << "  " << getDecDecl(member) << "((*val)." << member->getName() << ", base64_decode(arg64));\n";
+                        encDecl << "  ss << " << getEncDecl(member->getType()) << "(" << val << "." << member->getName() << ") << ' ';\n";
+                        decDecl << "  " << getDecDecl(member->getType()) << "((*val)." << member->getName() << ", base64_decode(arg64));\n";
                     } else {
-                        encDecl << "  ss << " << getEncDecl(member) << "(&("  
+                        encDecl << "  ss << " << getEncDecl(member->getType()) << "(&("  
                                 << val << "." << member->getName() << ")) << ' ';\n";
-                        decDecl << "   " << getDecDecl(member) << "(&(" << val << "." <<  member->getName() <<"), base64_decode(arg64));\n";
+                        decDecl << "   " << getDecDecl(member->getType()) << "(&(" << val << "." <<  member->getName() <<"), base64_decode(arg64));\n";
                     }
                 }
             } else {
