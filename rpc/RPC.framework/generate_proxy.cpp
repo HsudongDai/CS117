@@ -28,15 +28,15 @@ namespace C150NETWORK {
 }
 
 
-int main(int argc, char* argv[]) {
-    if (argc != 3) {
-        cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
-       return -1;
-    }
+// int main(int argc, char* argv[]) {
+//     if (argc != 3) {
+//         cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
+//        return -1;
+//     }
 
-    generateProxy(argv[1], argv[2]);
-    return 0;
-}
+//     generateProxy(argv[1], argv[2]);
+//     return 0;
+// }
 
 namespace C150NETWORK {
     int generateProxy(const char idl_filename[], const char outputFilepath[]) {
@@ -63,6 +63,9 @@ namespace C150NETWORK {
             }
             if (writeProxyStructDefinitions(output, parseTree) != 0) {
                 throw C150Exception("Fail in writing proxy struct definitions");
+            }
+            if (writeProxyTypeParsers(output, parseTree) != 0) {
+                throw C150Exception("Fail in writing proxy type parsers");
             }
             if (writeProxyFunctions(output, parseTree, idl_filename) != 0) {
                 throw C150Exception("Fail in writing proxy functions");

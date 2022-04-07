@@ -31,13 +31,13 @@ namespace C150NETWORK{
 }
 
 // left for test only, should not be compiled when not tested separately
-int main(int argc, char* argv[]) {
-    if (argc != 3) {
-        cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
-        return -1;
-    }
-    return generateStub(argv[1], argv[2]);
-}
+// int main(int argc, char* argv[]) {
+//     if (argc != 3) {
+//         cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
+//         return -1;
+//     }
+//     return generateStub(argv[1], argv[2]);
+// }
 
 namespace C150NETWORK {
     int generateStub(const char idl_filename[], const char outputFilepath[]) {
