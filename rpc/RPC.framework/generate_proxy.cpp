@@ -78,11 +78,11 @@ namespace C150NETWORK {
         if (outputFilepath == nullptr || strlen(outputFilepath) == 0) {
             ss << idl_filename << ".proxy.cpp";
         } else {
-            if (idl_filename_str.find_last_of('/" << endl; != string::npos) {
-                idl_filename_str = idl_filename_str.substr(idl_filename_str.find_last_of('/" << endl; + 1);
+            if (idl_filename_str.find_last_of('/') != string::npos) {
+                idl_filename_str = idl_filename_str.substr(idl_filename_str.find_last_of('/') + 1);
             }
             ss << outputFilepath;
-            if (outputFilepath[strlen(outputFilepath) - 1] != '/" << endl; {
+            if (outputFilepath[strlen(outputFilepath) - 1] != '/') {
                 ss << '/';
             }
             ss << idl_filename_str << ".proxy.cpp";
@@ -102,7 +102,7 @@ namespace C150NETWORK {
         output << "#include \"rpcproxyhelper.h\"" << endl;
         output << endl;
         string idl_filename_string(idl_filename);
-        if (idl_filename_string.find_last_of('/'; != string::npos) {
+        if (idl_filename_string.find_last_of('/') != string::npos) {
             idl_filename_string = idl_filename_string.substr(idl_filename_string.find_last_of('/' + 1);
         }
         output << "#include \"" << idl_filename_string << "\"" << endl;
@@ -164,7 +164,7 @@ namespace C150NETWORK {
             if (typeDecl->isArray()) {
                 string typeName = typeDecl->getName();
                 typeName = typeName.substr(typeName.find_last_of('_') + 1);
-                for (int i = 0; i < typeName.size(); i++) {
+                for (size_t i = 0; i < typeName.size(); i++) {
                     if (typeName[i] == '[' || typeName[i] == ']') {
                         typeName[i] = '_';
                     }
@@ -185,19 +185,19 @@ namespace C150NETWORK {
                 val = "*(val)";
             }
 
-            encDecl += "  stringstream ss;\n";
-            decDecl += "  stringstream args;\n  string arg64;\n  args.str(arg);\n";
+            encDecl << "  stringstream ss;\n";
+            decDecl << "  stringstream args;\n  string arg64;\n  args.str(arg);\n";
 
             if (typeDecl->isStruct()) {
                 for (auto& member: typeDecl->getStructMembers()) {
-                    decDecl += "  args >> arg64;\n";
+                    decDecl << "  args >> arg64;\n";
                     if (member->getType()->isArray()) {
-                        encDecl << "  ss << " << getEncDecl(member) << "(" << val << "." << member->getName() << ") << ' ';\n";
-                        decDecl << "  " << getDecDecl(member) << "((*val)." << member->getName() << ", base64_decode(arg64));\n";
+                        encDecl << "  ss << " << getEncDecl(member->getType()) << "(" << val << "." << member->getName() << ") << ' ';\n";
+                        decDecl << "  " << getDecDecl(member->getType()) << "((*val)." << member->getName() << ", base64_decode(arg64));\n";
                     } else {
-                        encDecl << "  ss << " << getEncDecl(member) << "(&("  
+                        encDecl << "  ss << " << getEncDecl(member->getType()) << "(&("  
                                 << val << "." << member->getName() << ")) << ' ';\n";
-                        decDecl << "   " << getDecDecl(member) << "(&(" << val << "." <<  member->getName() <<"), base64_decode(arg64));\n";
+                        decDecl << "   " << getDecDecl(member->getType()) << "(&(" << val << "." <<  member->getName() <<"), base64_decode(arg64));\n";
                     }
                 }
             } else {
@@ -341,7 +341,7 @@ namespace C150NETWORK {
                 output << "  " << function.second->getReturnType()->getName() << "(&retval, base64_decode(msg));" << endl;
                 output << "  return retval;" << endl;
             } else {
-                output << "  *GRADING << \"Void function " <<  << " returned\"" << endl;
+                output << "  *GRADING << \"Void function " << function.first << " returned\"" << endl;
                 output << "  return;" << endl;
             }
             output << "}" << endl;
