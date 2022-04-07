@@ -103,7 +103,7 @@ namespace C150NETWORK {
         output << endl;
         string idl_filename_string(idl_filename);
         if (idl_filename_string.find_last_of('/') != string::npos) {
-            idl_filename_string = idl_filename_string.substr(idl_filename_string.find_last_of('/' + 1);
+            idl_filename_string = idl_filename_string.substr(idl_filename_string.find_last_of('/') + 1);
         }
         output << "#include \"" << idl_filename_string << "\"" << endl;
         output << endl;
@@ -152,13 +152,16 @@ namespace C150NETWORK {
     }
 
     int writeStubTypeParsers(stringstream& output, const Declarations& parseTree) {
+        stringstream encDecl, decDecl;
+        encDecl.clear();
+        decDecl.clear();
+
         for (auto& type : parseTree.types) {
             if (type.first == "int" || type.first == "float" || type.first == "string" || type.first == "void") {
                 continue;
             }
             auto& typeDecl = type.second;
 
-            stringstream encDecl, decDecl;
             string val = "val";
             
             if (typeDecl->isArray()) {
@@ -333,7 +336,7 @@ namespace C150NETWORK {
             output << "    *GRADING << \"proxy: Invalid response from server in !\" << name." << endl; 
             output << "  }" << endl;
             output << "// parses the return value if necessary" << endl;
-            if (function.second->getReturnType() != "void") {
+            if (function.second->getReturnType()->getName() != "void") {
                 output << "  string msg;" << endl;
                 output << "  ret >> msg;" << endl;
                 output << "  *GRADING << \"proxy: function " << function.first << "returned with - \" << msg." << endl;
