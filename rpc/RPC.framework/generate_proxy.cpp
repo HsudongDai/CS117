@@ -154,7 +154,7 @@ namespace C150NETWORK {
         return 0;
     }
 
-    int writeStubTypeParsers(stringstream& output, const Declarations& parseTree) {
+    int writeProxyTypeParsers(stringstream& output, const Declarations& parseTree) {
         stringstream encDecl, decDecl;
         encDecl.clear();
         decDecl.clear();
@@ -308,16 +308,15 @@ namespace C150NETWORK {
                 if (i != members.size() - 1) {
                     output << ", ";
                 }
-
-
             }
+
             output << ") {" << endl;
-            output << "  *GRADING << \"proxy: Called \"" << function.first << endl;
+            output << "  *GRADING << \"proxy: Called " << function.first << "\";" << endl;
             output << "  stringstream args;" << endl;
             output << "  args << ' ';"  << endl;
 
             for (auto& arg: function.second->getArgumentVector()) {
-                output << "  *GRADING << \"proxy: encoding argument\" " << arg->getName() << " << endl;" << endl;
+                output << "  *GRADING << \"proxy: encoding argument\" << " << arg->getName() << " << endl;" << endl;
                 if (arg->getType()->isArray()) {
                     output << "  args << " << getEncDecl(arg->getType()) << "(" << arg->getName() << ")" << "' ';" << endl;
                 } else {
@@ -325,10 +324,10 @@ namespace C150NETWORK {
                 }
             }
 
-            output << "  string outgoing = " << function.first << " + base64_encode(args.str());" << endl;
+            output << "  string outgoing = \"" << function.first << " \" + base64_encode(args.str());" << endl;
             output << "  RPCPROXYSOCKET->write(outgoing.c_str(), strlen(outgoing.c_str()) + 1);" << endl;
             output << "  *GRADING << \"proxy: sending to client \"  << outgoing" << endl;
-            output << "  c150debug->printf(C150RPCDEBUG, \"proxy: %s invoked\");" << endl;
+            output << "  c150debug->printf(C150RPCDEBUG, \"proxy:" << function.first << " invoked.\");" << endl;
             output << "  // reads the response from the socket." << endl;
             output << "  stringstream ret;" << endl;
             output << "  string raw = readFromStream();" << endl;
@@ -343,7 +342,7 @@ namespace C150NETWORK {
                 output << "  string msg;" << endl;
                 output << "  ret >> msg;" << endl;
                 output << "  *GRADING << \"proxy: function " << function.first << "returned with - \" << msg." << endl;
-                output << "  " << function.second->getReturnType()->getName() << "retval;" << endl;
+                output << "  " << function.second->getReturnType()->getName() << " retval;" << endl;
                 output << "  " << function.second->getReturnType()->getName() << "(&retval, base64_decode(msg));" << endl;
                 output << "  return retval;" << endl;
             } else {
