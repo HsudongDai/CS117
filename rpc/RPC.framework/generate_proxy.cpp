@@ -12,9 +12,9 @@
 #include "declarations.h"
 #include "functiondeclaration.h"
 #include "typedeclaration.h"
-#include "base64.h"
+#include "base64.hpp"
 
-#include "utility.h"
+#include "utility.hpp"
 #include "idl_to_json.hpp"
 
 using namespace std;

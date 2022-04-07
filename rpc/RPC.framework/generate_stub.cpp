@@ -137,7 +137,7 @@ namespace C150NETWORK {
         output << endl;
         output << "using namespace C150NETWORK;" << endl;
         output << endl;
-        output << "void getFunctionNamefromStream();" << endl;
+        output << "void getFunctionNamefromStream(char *buffer, unsigned int bufSize);" << endl;
         output << endl;
 
         output << "// ======================================================================\n";
@@ -372,7 +372,7 @@ namespace C150NETWORK {
             output << "  c150debug->printf(C150RPCDEBUG,\"stub: " << function.first << "() has returned\");" << endl;
             output << "  *GRADING << \"stub: function " << function.first << " returned. Response to client - \" << response << endl;" << endl;
             output << "  RPCSTUBSOCKET->write(response.c_str(), strlen(response.c_str()) + 1);\n";
-            output << "}" << endl;
+            output << "}" << endl << endl;
             /*
             for (size_t i = 0; i < members.size(); i++) {
                 auto member = members[i];
