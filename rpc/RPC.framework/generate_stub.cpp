@@ -350,7 +350,7 @@ namespace C150NETWORK {
             // create the response string if necessary and call the function
             if (function.second->getReturnType()->getName() == "void") {
                 output << "  " << function.first << "(";
-                for (auto& member = members.begin(); head != members.end(); head++) {
+                for (auto& member = members.begin(); member != members.end(); member++) {
                     output << member->getName();
                     if (member != members.end()-1) {
                         output << ", ";
@@ -359,7 +359,7 @@ namespace C150NETWORK {
                 output << ");" << endl;
             } else {
                 output << "  " << function.second->getReturnType()->getName() << " retval = " << function.first << "(";
-                for (auto& member = members.begin(); head != members.end(); head++) {
+                for (auto& member = members.begin(); member != members.end(); member++) {
                     output << member->getName();
                     if (member != members.end()-1) {
                         output << ", ";
