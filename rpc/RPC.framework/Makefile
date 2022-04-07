@@ -55,9 +55,9 @@ generate_proxy: generate_proxy.o $(INCLUDES) $(C150AR) $(C150IDSRPCAR)
 # Compile the rpcgenerate program
 rpcgenerate: rpcgenerate.o generate_stub.o generate_proxy.o utility.o $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
 	$(CPP) $(CPPFLAGS) -c utility.cpp -o utility.o
-	$(CPP) -o generate_proxy.o -c generate_proxy.cpp $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
-	$(CPP) -o generate_stub.o -c generate_stub.cpp $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
-	$(CPP) -o rpcgenerate.o -c rpcgenerate.cpp $(CPPFLAGS) $(C150AR) $(C150IDSRPCAR)
+	$(CPP) -o generate_proxy.o -c generate_proxy.cpp $(CPPFLAGS)
+	$(CPP) -o generate_stub.o -c generate_stub.cpp $(CPPFLAGS) 
+	$(CPP) -o rpcgenerate.o -c rpcgenerate.cpp $(CPPFLAGS)
 	$(CPP) -o rpcgenerate utility.o generate_proxy.o generate_stub.o rpcgenerate.o $(C150AR) $(C150IDSRPCAR) $(CPPFLAGS)
 
 %.o:%.cpp  $(INCLUDES)
