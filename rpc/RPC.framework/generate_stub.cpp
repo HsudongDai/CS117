@@ -331,7 +331,7 @@ namespace C150NETWORK {
                 // names.append(a["name"])
                 output << "  *GRADING << \"stub: parsing arg - " << member->getName() << "\" << endl;\n";
                 if (member->getType()->isArray()) {
-                    ArrayDecl& decl = getArrayDecl(member->getType());
+                    ArrayDecl decl = getArrayDecl(member->getType());
                     output << "  " << decl.type << " " << member->getName() << decl.idx << ";\n";
                 } else {
                     output << "  " << member->getType()->getName() << " " << member->getName() << ";\n";
@@ -350,7 +350,7 @@ namespace C150NETWORK {
             // create the response string if necessary and call the function
             if (function.second->getReturnType()->getName() == "void") {
                 output << "  " << function.first << "(";
-                for (auto& member: members) {
+                for (auto& member = members.begin(); head != members.end(); head++) {
                     output << member->getName();
                     if (member != members.end()-1) {
                         output << ", ";
@@ -359,7 +359,7 @@ namespace C150NETWORK {
                 output << ");" << endl;
             } else {
                 output << "  " << function.second->getReturnType()->getName() << " retval = " << function.first << "(";
-                for (auto& member: members) {
+                for (auto& member = members.begin(); head != members.end(); head++) {
                     output << member->getName();
                     if (member != members.end()-1) {
                         output << ", ";
@@ -370,7 +370,7 @@ namespace C150NETWORK {
             }
             // encode and return the results of the function to the clear
             output << "  c150debug->printf(C150RPCDEBUG,\"stub: " << function.first << "() has returned\");" << endl;
-            output << "  *GRADING << \"stub: function " << << " returned. Response to client - \" << response << endl;" << endl;
+            output << "  *GRADING << \"stub: function " << function.first << " returned. Response to client - \" << response << endl;" << endl;
             output << "  RPCSTUBSOCKET->write(response.c_str(), strlen(response.c_str()) + 1);\n";
             output << "}" << endl;
             /*
