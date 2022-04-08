@@ -451,9 +451,9 @@ namespace C150NETWORK {
             // at this time there would be no more functions to write
             // simply wriye the bad function
 
-            output << "void getFunctionNamefromStream() {\n";
-            output << "  char functionName[50];\n";
-            output << "  RPCSTUBSOCKET->read(functionName, 50);\n";
+            output << "void dispatchFunction() {\n";
+            output << "  char functionNameBuffer[50];\n";
+            output << "  getFunctionNameFromStream(functionNameBuffer,sizeof(functionNameBuffer));\n";
             output << "  if (!RPCSTUBSOCKET-> eof()) {\n";
             output << "    __badFunction();\n";
             output << "  }\n";
@@ -473,9 +473,19 @@ namespace C150NETWORK {
         output << "// ======================================================================\n";
         output << endl;
 
-        output << "void getFunctionNamefromStream() {\n";
-        output << "  char functionName[50];\n";
-        output << "  RPCSTUBSOCKET->read(functionName, 50);\n";
+        output << "void dispatchFunction() {\n";
+        output << "  char functionNameBuffer[50];\n";
+        output << "  //\n";
+        output << "  // Read the function name from the stream -- note\n";
+        output << "  // REPLACE THIS WITH YOUR OWN LOGIC DEPENDING ON THE\n"; 
+        output << "  // WIRE FORMAT YOU USE\n";
+        output << "  //\n";
+        output << "  getFunctionNameFromStream(functionNameBuffer,sizeof(functionNameBuffer));\n";
+
+        //
+        // We've read the function name, call the stub for the right one
+        // The stub will invoke the function and send response.
+        //
         output << "  if (!RPCSTUBSOCKET-> eof()) {\n";
         output << "    if (strcmp(functionName, \"" << fiter->first << "\") == 0) {\n";
         output << "      __" << fiter->first << "();\n";
@@ -493,26 +503,21 @@ namespace C150NETWORK {
         return 0;
     }
 
-    int writeStubGetFunctionNameFromStream(stringstream& output,  const char idl_filename[]) {
-        if (idl_filename == nullptr) {
-            throw C150Exception("write_get_function_name_from_stream: output stream is null");
-            return -1;
-        }
-
+    int writeStubGetFunctionNameFromStream() {
         output << "// ======================================================================\n";
         output << "//           GET_FUNCTION_NAME_FROM_STREAM\n";
         output << "//\n";
-        output << "//    This routine reads the function name from the input stream.\n";
+        output << "//    This routine reads the variable from the input stream.\n";
         output << "//\n";
         output << "// ======================================================================\n";
         output << endl;
-
-        output << "void getFunctionNameFromStream(char *buffer, unsigned int bufSize) {\n";
-
+]
+        output << "void getFunctionNamefromStream(char *buffer, unsigned int bufSize) {\n";
         output << "  unsigned int i;\n"
-            << "  char *bufp;    // next char to read\n"
-            << "  bool readnull;\n"
-            << "  ssize_t readlen;             // amount of data read from socket\n";
+               << "  char bufc;    // next char to read\n"
+               << "  stringstream ss;\n"
+               << "  bool readnull;\n"
+               << "  ssize_t readlen;             // amount of data read from socket\n";
         
         output << "  //\n";
         output << "  // Read a message from the stream.\n";
@@ -520,7 +525,7 @@ namespace C150NETWORK {
         output << "  //\n"
                << "  readnull = false;\n"
                << "  bufp = buffer;\n"
-               << "  for (int i = 0; i < bufSize; i++) {\n"
+               << "  for (i = 0; i < bufSize; i++) {\n"
                << "    readlen = RPCSTUBSOCKET-> read(bufp, 1);  // read a byte\n"
                << "    // check for eof or error\n"
                << "    if (readlen == 0) {\n"
@@ -562,6 +567,7 @@ namespace C150NETWORK {
                << "  // Note that eof may be set here for our caller to check\n"
                << "  //\n"
                << "}\n";
+        
 
         return 0;
     }

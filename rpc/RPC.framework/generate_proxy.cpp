@@ -326,7 +326,7 @@ namespace C150NETWORK {
 
             output << "  string outgoing = \"" << function.first << " \" + base64_encode(args.str());" << endl;
             output << "  RPCPROXYSOCKET->write(outgoing.c_str(), strlen(outgoing.c_str()) + 1);" << endl;
-            output << "  *GRADING << \"proxy: sending to client \"  << outgoing;" << endl;
+            output << "  *GRADING << \"proxy: sending to client \"  << outgoing ;" << endl;
             output << "  c150debug->printf(C150RPCDEBUG, \"proxy:" << function.first << " invoked.\");" << endl;
             output << "  // reads the response from the socket." << endl;
             output << "  stringstream ret;" << endl;
