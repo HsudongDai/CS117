@@ -71,6 +71,9 @@ namespace C150NETWORK {
             if (writeProxyFunctions(output, parseTree, idl_filename) != 0) {
                 throw C150Exception("Fail in writing proxy functions");
             }
+            if (writeProxyReadFromStream(output) != 0) {
+                throw C150Exception("Fail in writing proxy readFromStream");
+            }
         } catch (C150Exception& e) {
             c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
             printf("Caught C150Exception: %s", e.formattedExplanation().c_str()	);

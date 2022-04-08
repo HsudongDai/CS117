@@ -81,7 +81,7 @@ namespace C150NETWORK {
             if (writeStubGetFunctionNameFromStream(stub_file, idl_filename) != 0) {
                 throw C150Exception("Fail in writing stub getFunctionNameFromStream");
             } 
-            if (writeReadFromStream(stub_file) != 0) {
+            if (writeStubReadFromStream(stub_file) != 0) {
                 throw C150Exception("Fail in writing stub readFromStream");
             }
         } catch (C150Exception& e) {
