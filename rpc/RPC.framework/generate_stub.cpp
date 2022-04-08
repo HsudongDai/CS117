@@ -209,22 +209,22 @@ namespace C150NETWORK {
     int writeStubTypeParsers(stringstream& output, const Declarations& parseTree) {
         output << "string string64_to_string(string *val) {\n"
                << "  return base64_encode(*val);\n"
-               << "}\n"
+               << "}\n\n"
                << "void parse_string(string *value, string arg) {\n"
                << "  *value = arg;\n"
-               << "}\n";
+               << "}\n\n";
         output << "string string64_to_int(int *val) {\n"
                << "  return base64_encode(to_string(*val));\n"
-               << "}\n"
+               << "}\n\n"
                << "void parse_int(int *value, string arg) {\n"
                << "  *value = stoi(arg);\n"
-               << "}\n"
+               << "}\n\n"
                << "string string64_to_float(float *val) {\n"
                << "  return base64_encode(to_string(*val));\n"
-               << "}\n";
+               << "}\n\n";
         output << "void parse_float(float *value, string arg) {\n"
                << "  *value = stof(arg);\n"
-               << "}\n";
+               << "}\n\n";
         stringstream encDecl, decDecl;
 
         for (auto& type : parseTree.types) {
@@ -366,7 +366,7 @@ namespace C150NETWORK {
                     }
                 }
                 output << ");" << endl;
-                output << "  response = response + " " + " << getEncDecl(function.second->getReturnType()) << "(&retval);\n";
+                output << "  response = response + ' ' + " << getEncDecl(function.second->getReturnType()) << "(&retval);\n";
             }
             // encode and return the results of the function to the clear
             output << "  c150debug->printf(C150RPCDEBUG,\"stub: " << function.first << "() has returned\");" << endl;
