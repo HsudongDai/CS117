@@ -349,7 +349,7 @@ namespace C150NETWORK {
                 output << "  *GRADING << \"Void function " << function.first << " returned\"" << endl;
                 output << "  return;" << endl;
             }
-            output << "}" << endl;
+            output << "}" << endl << endl;
 
             /*
             output << "  char readBuffer[5];  // to read magic value DONE + null\n";
