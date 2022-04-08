@@ -134,7 +134,7 @@ namespace C150NETWORK {
 
         output << "#include \"" << idl_filename_string << "\"" << endl;
         output << endl;
-        output << "#include \"rpcproxyhelper.h\"" << endl;
+        output << "#include \"rpcstubhelper.h\"" << endl;
         output << "#include \"c150debug.h\"" << endl;
         output << "#include <string>" << endl;
         output << "#include \"base64.hpp\"" << endl;
@@ -325,7 +325,7 @@ namespace C150NETWORK {
             // declares the stub function and the inputstream to read arguments
             output << "void __" << function.first << "(string args64) {\n";
             output << "  c150debug->printf(C150RPCDEBUG, \"called " << function.first << "with %s\", args64.c_str());\n";
-            output << "  *GRADING << \"stub: called __" << function.first << "with base64string of \" << args64 << endl;\"\n";
+            output << "  *GRADING << \"stub: called __" << function.first << "with base64string of \" << args64 << endl;\n";
             output << "  stringstream args;\n";
             output << "  string arg64;\n";
             output << "  args.str(base64_decode(args64));\n";
@@ -460,7 +460,7 @@ namespace C150NETWORK {
             output << "  char functionNameBuffer[50];\n";
             output << "  getFunctionNameFromStream(functionNameBuffer,sizeof(functionNameBuffer));\n";
             output << "  if (!RPCSTUBSOCKET-> eof()) {\n";
-            output << "    __badFunction();\n";
+            output << "    __badFunction(functionNameBuffer);\n";
             output << "  }\n";
             output << "}\n";
 
@@ -479,27 +479,35 @@ namespace C150NETWORK {
         output << endl;
 
         output << "void dispatchFunction() {\n";
-        output << "  char functionNameBuffer[50];\n";
+        output << "  stringstream ss;\n";
+        output << "  string name;" << endl;
+        output << "  string args\n";
+
+        output << "  ss.str(readFromStream());\n";
+        output << "  ss >> name;\n";
+        output << "  ss >> args;\n";
+        output << "  const char* functionNameBuffer = name.c_str();\n";
         output << "  //\n";
         output << "  // Read the function name from the stream -- note\n";
         output << "  // REPLACE THIS WITH YOUR OWN LOGIC DEPENDING ON THE\n"; 
         output << "  // WIRE FORMAT YOU USE\n";
         output << "  //\n";
-        output << "  getFunctionNameFromStream(functionNameBuffer,sizeof(functionNameBuffer));\n";
 
         //
         // We've read the function name, call the stub for the right one
         // The stub will invoke the function and send response.
         //
         output << "  if (!RPCSTUBSOCKET-> eof()) {\n";
-        output << "    if (strcmp(functionName, \"" << fiter->first << "\") == 0) {\n";
-        output << "      __" << fiter->first << "();\n";
+        output << "    if (strcmp(functionNameBuffer, \"" << fiter->first << "\") == 0) {\n";
+        output << "      __" << fiter->first << "("
+    
+        output << ");\n";
         for (++fiter; fiter != parseTree.functions.end(); ++fiter) {
-            output << "    } else if (strcmp(functionName, \"" << fiter->first << "\") == 0) {\n";
-            output << "      __" << fiter->first << "();\n";
+            output << "    } else if (strcmp(functionNameBuffer, \"" << fiter->first << "\") == 0) {\n";
+            output << "      __" << fiter->first << "(args);\n";
         }
         output << "    } else {\n";
-        output << "      __badFunction();\n";
+        output << "      __badFunction(functionNameBuffer);\n";
         output << "    }\n";
         output << "  }\n";
         output << "}\n";
