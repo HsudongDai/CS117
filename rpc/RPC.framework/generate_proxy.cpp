@@ -348,7 +348,7 @@ namespace C150NETWORK {
                 output << "  ret >> msg;" << endl;
                 output << "  *GRADING << \"proxy: function " << function.first << "returned with - \" << msg;" << endl;
                 output << "  " << function.second->getReturnType()->getName() << " retval;" << endl;
-                output << "  " << getDecDecl(function.second->getReturnType()->getName()) << "(&retval, base64_decode(msg));" << endl;
+                output << "  " << getDecDecl(function.second->getReturnType()) << "(&retval, base64_decode(msg));" << endl;
                 output << "  return retval;" << endl;
             } else {
                 output << "  *GRADING << \"Void function " << function.first << " returned\"" << endl;
