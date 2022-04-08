@@ -601,7 +601,7 @@ namespace C150NETWORK {
         output << "        }\n\n";
 
         output << "        // check for null or space\n";
-        output << "        if (bufc == '\0') {\n";
+        output << "        if (bufc == '\\0') {\n";
         output << "            return name.str();\n";
         output << "        }\n";
         output << "        name << bufc;\n";

@@ -391,7 +391,7 @@ namespace C150NETWORK {
         output << "    ssize_t readlen;            // amount of data read from socket\n\n";
 
         output << "    while(1) {\n";
-        output << "        readlen = RPCSTUBSOCKET-> read(&bufc, 1);  // read a byte\n";
+        output << "        readlen = RPCPROXYSOCKET-> read(&bufc, 1);  // read a byte\n";
 
         output << "        //\n";
         output << "        // With TCP streams, we should never get a 0 length read except with\n";
@@ -399,7 +399,7 @@ namespace C150NETWORK {
         output << "        //\n";
         output << "        if (readlen == 0) { \n";
         output << "            c150debug->printf(C150RPCDEBUG,\"stub: read zero length message, checking EOF\");\n";
-        output << "            if (RPCSTUBSOCKET-> eof()) {\n";
+        output << "            if (RPCPROXYSOCKET-> eof()) {\n";
         output << "                c150debug->printf(C150RPCDEBUG, \"stub: EOF signaled on input\");\n";
         output << "                return name.str();\n";
         output << "            } else { \n";
@@ -408,7 +408,7 @@ namespace C150NETWORK {
         output << "        }\n\n";
 
         output << "        // check for null or space\n";
-        output << "        if (bufc == '\0') {\n";
+        output << "        if (bufc == '\\0') {\n";
         output << "            return name.str();\n";
         output << "        }\n";
         output << "        name << bufc;\n";
