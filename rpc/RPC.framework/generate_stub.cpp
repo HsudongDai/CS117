@@ -503,7 +503,7 @@ namespace C150NETWORK {
         return 0;
     }
 
-    int writeStubGetFunctionNameFromStream() {
+    int writeStubGetFunctionNameFromStream(stringstream& output, const Declarations& parseTree) {
         output << "// ======================================================================\n";
         output << "//           GET_FUNCTION_NAME_FROM_STREAM\n";
         output << "//\n";
@@ -511,7 +511,7 @@ namespace C150NETWORK {
         output << "//\n";
         output << "// ======================================================================\n";
         output << endl;
-]
+
         output << "void getFunctionNamefromStream(char *buffer, unsigned int bufSize) {\n";
         output << "  unsigned int i;\n"
                << "  char bufc;    // next char to read\n"
