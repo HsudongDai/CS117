@@ -27,6 +27,7 @@ namespace C150NETWORK{
     int writeStubBadFunction(stringstream& output, const char idl_filename[]);
     int writeStubDispatcher(stringstream& output, const Declarations& parseTree);
     int writeStubGetFunctionNameFromStream(stringstream& output, const char idl_filename[]);
+    int writeStubReadFromStream(stringstream& output);
     int generateStub(const char idl_filename[], const char outputFilepath[]);
 }
 

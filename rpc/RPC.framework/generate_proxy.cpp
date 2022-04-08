@@ -24,6 +24,7 @@ namespace C150NETWORK {
     int writeProxyStructDefinitions(stringstream& output, const Declarations& parseTree);
     int writeProxyTypeParsers(stringstream& output, const Declarations& parseTree);
     int writeProxyFunctions(stringstream& output, const Declarations& parseTree, const char idl_filename[]);
+    int writeProxyReadFromStream(stringstream& output);
     int generateProxy(const char idl_filename[], const char outputFilepath[]); 
 }
 
@@ -118,6 +119,7 @@ namespace C150NETWORK {
         output << endl;
         output << "using namespace C150NETWORK;" << endl;
         output << endl;
+        output << "string readFromStream();" << endl << endl;
 
         output << "// ======================================================================\n";
         output << "//                             PROXY\n";
@@ -343,7 +345,7 @@ namespace C150NETWORK {
                 output << "  ret >> msg;" << endl;
                 output << "  *GRADING << \"proxy: function " << function.first << "returned with - \" << msg;" << endl;
                 output << "  " << function.second->getReturnType()->getName() << " retval;" << endl;
-                output << "  " << function.second->getReturnType()->getName() << "(&retval, base64_decode(msg));" << endl;
+                output << "  " << getDecDecl(function.second->getReturnType()->getName()) << "(&retval, base64_decode(msg));" << endl;
                 output << "  return retval;" << endl;
             } else {
                 output << "  *GRADING << \"Void function " << function.first << " returned\"" << endl;
@@ -375,6 +377,41 @@ namespace C150NETWORK {
             output << endl;
             */
         }
+
+        return 0;
+    }
+
+    int writeProxyReadFromStream(stringstream& output) {
+        output << "string readFromStream() {\n";
+        output << "    stringstream name;          // name to build\n";
+        output << "    char bufc;                  // next char to read\n";
+        output << "    ssize_t readlen;            // amount of data read from socket\n\n";
+
+        output << "    while(1) {\n";
+        output << "        readlen = RPCSTUBSOCKET-> read(&bufc, 1);  // read a byte\n";
+
+        output << "        //\n";
+        output << "        // With TCP streams, we should never get a 0 length read except with\n";
+        output << "        // timeouts (which we're not setting in pingstreamserver) or EOF\n";
+        output << "        //\n";
+        output << "        if (readlen == 0) { \n";
+        output << "            c150debug->printf(C150RPCDEBUG,\"stub: read zero length message, checking EOF\");\n";
+        output << "            if (RPCSTUBSOCKET-> eof()) {\n";
+        output << "                c150debug->printf(C150RPCDEBUG, \"stub: EOF signaled on input\");\n";
+        output << "                return name.str();\n";
+        output << "            } else { \n";
+        output << "                throw C150Exception(\"stub: unexpected zero length read without eof\");\n";
+        output << "            }\n";
+        output << "        }\n\n";
+
+        output << "        // check for null or space\n";
+        output << "        if (bufc == '\0') {\n";
+        output << "            return name.str();\n";
+        output << "        }\n";
+        output << "        name << bufc;\n";
+        output << "    }\n";
+        output << "    throw C150Exception(\"readFromString: This should never be thrown.\");\n";
+        output << "}\n"
 
         return 0;
     }

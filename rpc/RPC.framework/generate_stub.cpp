@@ -27,6 +27,7 @@ namespace C150NETWORK{
     int writeStubBadFunction(stringstream& output, const char idl_filename[]);
     int writeStubDispatcher(stringstream& output, const Declarations& parseTree);
     int writeStubGetFunctionNameFromStream(stringstream& output, const char idl_filename[]);
+    int writeStubReadFromStream(stringstream& output);
     int generateStub(const char idl_filename[], const char outputFilepath[]);
 }
 
@@ -79,6 +80,9 @@ namespace C150NETWORK {
             }
             if (writeStubGetFunctionNameFromStream(stub_file, idl_filename) != 0) {
                 throw C150Exception("Fail in writing stub getFunctionNameFromStream");
+            } 
+            if (writeReadFromStream(stub_file) != 0) {
+                throw C150Exception("Fail in writing stub readFromStream");
             }
         } catch (C150Exception& e) {
             c150debug->printf(C150APPLICATION, "Caught C150Exception: %s", e.formattedExplanation());
@@ -138,6 +142,7 @@ namespace C150NETWORK {
         output << "using namespace C150NETWORK;" << endl;
         output << endl;
         output << "void getFunctionNamefromStream(char *buffer, unsigned int bufSize);" << endl;
+        output << "string readFromStream();" << endl;
         output << endl;
 
         output << "// ======================================================================\n";
@@ -568,6 +573,41 @@ namespace C150NETWORK {
                << "  //\n"
                << "}\n";
         
+
+        return 0;
+    }
+
+    int writeStubReadFromStream(stringstream& output) {
+        output << "string readFromStream() {\n";
+        output << "    stringstream name;          // name to build\n";
+        output << "    char bufc;                  // next char to read\n";
+        output << "    ssize_t readlen;            // amount of data read from socket\n\n";
+
+        output << "    while(1) {\n";
+        output << "        readlen = RPCSTUBSOCKET-> read(&bufc, 1);  // read a byte\n";
+
+        output << "        //\n";
+        output << "        // With TCP streams, we should never get a 0 length read except with\n";
+        output << "        // timeouts (which we're not setting in pingstreamserver) or EOF\n";
+        output << "        //\n";
+        output << "        if (readlen == 0) { \n";
+        output << "            c150debug->printf(C150RPCDEBUG,\"stub: read zero length message, checking EOF\");\n";
+        output << "            if (RPCSTUBSOCKET-> eof()) {\n";
+        output << "                c150debug->printf(C150RPCDEBUG, \"stub: EOF signaled on input\");\n";
+        output << "                return name.str();\n";
+        output << "            } else { \n";
+        output << "                throw C150Exception(\"stub: unexpected zero length read without eof\");\n";
+        output << "            }\n";
+        output << "        }\n\n";
+
+        output << "        // check for null or space\n";
+        output << "        if (bufc == '\0') {\n";
+        output << "            return name.str();\n";
+        output << "        }\n";
+        output << "        name << bufc;\n";
+        output << "    }\n";
+        output << "    throw C150Exception(\"readFromString: This should never be thrown.\");\n";
+        output << "}\n"
 
         return 0;
     }
