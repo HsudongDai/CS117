@@ -503,7 +503,7 @@ namespace C150NETWORK {
         return 0;
     }
 
-    int writeStubGetFunctionNameFromStream(stringstream& output, const Declarations& parseTree) {
+    int writeStubGetFunctionNameFromStream(stringstream& output, const char idl_filename[]) {
         output << "// ======================================================================\n";
         output << "//           GET_FUNCTION_NAME_FROM_STREAM\n";
         output << "//\n";
