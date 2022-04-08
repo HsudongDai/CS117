@@ -411,7 +411,7 @@ namespace C150NETWORK {
         output << "        name << bufc;\n";
         output << "    }\n";
         output << "    throw C150Exception(\"readFromString: This should never be thrown.\");\n";
-        output << "}\n"
+        output << "}\n";
 
         return 0;
     }
