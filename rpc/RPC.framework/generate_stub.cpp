@@ -325,7 +325,7 @@ namespace C150NETWORK {
             auto& members = function.second->getArgumentVector();
 
             // declares the stub function and the inputstream to read arguments
-            
+
             output << "void __" << function.first << "(string args64) {\n";
             output << "  c150debug->printf(C150RPCDEBUG, \"called " << function.first << "with %s\", args64.c_str());\n";
             output << "  *GRADING << \"stub: called __" << function.first << "with base64string of \" << args64 << endl;\n";
@@ -460,7 +460,7 @@ namespace C150NETWORK {
         //
         output << "  if (!RPCSTUBSOCKET-> eof()) {\n";
         output << "    if (strcmp(functionNameBuffer, \"" << fiter->first << "\") == 0) {\n";
-        output << "      __" << fiter->first << "("
+        output << "      __" << fiter->first << "(";
     
         output << ");\n";
         for (++fiter; fiter != parseTree.functions.end(); ++fiter) {
