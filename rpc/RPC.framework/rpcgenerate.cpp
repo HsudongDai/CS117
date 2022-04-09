@@ -29,9 +29,11 @@ int rpcGenerate(const char idl_filename[], const char filepath[]) {
             throw C150Exception("rpcGenerate: filepath or is NULL or empty");
         }
 
+        // generate the stub file
         if (generateStub(idl_filename, filepath) != 0) {
             throw C150Exception("rpcGenerate: generateStub failed");
         }
+        // generate the proxy file
         if (generateProxy(idl_filename, filepath) != 0) {
             throw C150Exception("rpcGenerate: generateProxy failed");
         }

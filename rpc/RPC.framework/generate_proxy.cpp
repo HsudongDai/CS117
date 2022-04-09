@@ -20,15 +20,21 @@
 using namespace std;
 
 namespace C150NETWORK {
+    // all these functions are used to generate a separate part of the proxy file
+    // just like their names suggest. They are highly independent of each other.
+    // You can combine them to generate a complete proxy file.
     int writeProxyHeader(stringstream& output, const char idl_filename[]);
     int writeProxyStructDefinitions(stringstream& output, const Declarations& parseTree);
     int writeProxyTypeParsers(stringstream& output, const Declarations& parseTree);
     int writeProxyFunctions(stringstream& output, const Declarations& parseTree, const char idl_filename[]);
     int writeProxyReadFromStream(stringstream& output);
+
+    // if you don't want to use manually, this function will generate the proxy file
+    // by one click.
     int generateProxy(const char idl_filename[], const char outputFilepath[]); 
 }
 
-
+// for test-purpose only
 // int main(int argc, char* argv[]) {
 //     if (argc != 3) {
 //         cout << "Usage: " << argv[0] << " <idl_filename> <output_filepath>" << endl;
@@ -41,7 +47,7 @@ namespace C150NETWORK {
 
 namespace C150NETWORK {
     int generateProxy(const char idl_filename[], const char outputFilepath[]) {
-        ifstream idlFile(idl_filename);        // open 
+        ifstream idlFile(idl_filename);        // open the idl file
 
         if (!idlFile.is_open()) {
             stringstream ss;
@@ -80,11 +86,16 @@ namespace C150NETWORK {
             return -3;
         }       
 
+        // this is to remove the extension from the filename
         string idl_filename_str(idl_filename, strlen(idl_filename) - 4);
         stringstream ss;
+
+        // generate the output file name
+        // when the output file path is not specified, the output file is the same as the idl file but with a .proxy.cpp extension
         if (outputFilepath == nullptr || strlen(outputFilepath) == 0) {
             ss << idl_filename << ".proxy.cpp";
-        } else {
+        // else we need to put the path together with the filename
+        else {
             if (idl_filename_str.find_last_of('/') != string::npos) {
                 idl_filename_str = idl_filename_str.substr(idl_filename_str.find_last_of('/') + 1);
             }
@@ -138,22 +149,23 @@ namespace C150NETWORK {
         output << "// ======================================================================\n";
         output << endl;
 
+        // these type-parsers are used for 
         output << "string string64_to_string(string *val) {\n"
                << "  return base64_encode(*val);\n"
                << "}\n\n"
-               << "void parse_string(string *value, string arg) {\n"
-               << "  *value = arg;\n"
-               << "}\n\n";
-        output << "string string64_to_int(int *val) {\n"
+               << "string string64_to_int(int *val) {\n"
                << "  return base64_encode(to_string(*val));\n"
-               << "}\n\n"
-               << "void parse_int(int *value, string arg) {\n"
-               << "  *value = stoi(arg);\n"
                << "}\n\n"
                << "string string64_to_float(float *val) {\n"
                << "  return base64_encode(to_string(*val));\n"
                << "}\n\n";
-        output << "void parse_float(float *value, string arg) {\n"
+        output << "void parse_string(string *value, string arg) {\n"
+               << "  *value = arg;\n"
+               << "}\n\n"
+               << "void parse_int(int *value, string arg) {\n"
+               << "  *value = stoi(arg);\n"
+               << "}\n\n"
+               << "void parse_float(float *value, string arg) {\n"
                << "  *value = stof(arg);\n"
                << "}\n\n";
         return 0;
@@ -355,30 +367,6 @@ namespace C150NETWORK {
                 output << "  return;" << endl;
             }
             output << "}" << endl << endl;
-
-            /*
-            output << "  char readBuffer[5];  // to read magic value DONE + null\n";
-            output << "  //\n";
-            output << "  // Send the Remote Call\n";
-            output << "  //\n";
-            output << "  c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".proxy.cpp: " << function.first << " invoked\");\n";
-            output << "  RPCPROXYSOCKET->write(" << function.first << ", strlen(" << function.first << ")+1); // write function name including null\n";
-            output << "  //\n";
-            output << "  // Read the response\n";
-            output << "  //\n";
-            output << "  c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".proxy.cpp: " << function.first << "() invocation sent, waiting for response\");\n";
-            output << "  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer)); // only legal response is DONE\n";
-
-            output << "  //\n";
-            output << "  // Check the response\n";
-            output << "  //\n";
-            output << "  if (strncmp(readBuffer, \"DONE\", sizeof(readBuffer)) != 0) {\n";
-            output << "    throw C150Exception(\"" << idl_filename_string << ".proxy: " << function.first << "() received invalid response from the server\");\n";
-            output << "  }\n";
-            output << "  c150debug->printf(C150RPCDEBUG, \"" << idl_filename_string << ".proxy.cpp: " << function.first << "() successful return from remote call\");\n";
-            output << "}" << endl;
-            output << endl;
-            */
         }
 
         return 0;
@@ -386,34 +374,34 @@ namespace C150NETWORK {
 
     int writeProxyReadFromStream(stringstream& output) {
         output << "string readFromStream() {\n";
-        output << "    stringstream name;          // name to build\n";
-        output << "    char bufc;                  // next char to read\n";
-        output << "    ssize_t readlen;            // amount of data read from socket\n\n";
+        output << "  stringstream name;          // name to build\n";
+        output << "  char bufc;                  // next char to read\n";
+        output << "  ssize_t readlen;            // amount of data read from socket\n\n";
 
-        output << "    while(1) {\n";
-        output << "        readlen = RPCPROXYSOCKET-> read(&bufc, 1);  // read a byte\n";
+        output << "  while(1) {\n";
+        output << "    readlen = RPCPROXYSOCKET-> read(&bufc, 1);  // read a byte\n";
 
-        output << "        //\n";
-        output << "        // With TCP streams, we should never get a 0 length read except with\n";
-        output << "        // timeouts (which we're not setting in pingstreamserver) or EOF\n";
-        output << "        //\n";
-        output << "        if (readlen == 0) { \n";
-        output << "            c150debug->printf(C150RPCDEBUG,\"stub: read zero length message, checking EOF\");\n";
-        output << "            if (RPCPROXYSOCKET-> eof()) {\n";
-        output << "                c150debug->printf(C150RPCDEBUG, \"stub: EOF signaled on input\");\n";
-        output << "                return name.str();\n";
-        output << "            } else { \n";
-        output << "                throw C150Exception(\"stub: unexpected zero length read without eof\");\n";
-        output << "            }\n";
-        output << "        }\n\n";
+        output << "    //\n";
+        output << "    // With TCP streams, we should never get a 0 length read except with\n";
+        output << "    // timeouts (which we're not setting in pingstreamserver) or EOF\n";
+        output << "    //\n";
+        output << "    if (readlen == 0) { \n";
+        output << "      c150debug->printf(C150RPCDEBUG,\"stub: read zero length message, checking EOF\");\n";
+        output << "      if (RPCPROXYSOCKET-> eof()) {\n";
+        output << "        c150debug->printf(C150RPCDEBUG, \"stub: EOF signaled on input\");\n";
+        output << "        return name.str();\n";
+        output << "      } else { \n";
+        output << "          throw C150Exception(\"stub: unexpected zero length read without eof\");\n";
+        output << "      }\n";
+        output << "    }\n\n";
 
-        output << "        // check for null or space\n";
-        output << "        if (bufc == '\\0') {\n";
-        output << "            return name.str();\n";
-        output << "        }\n";
-        output << "        name << bufc;\n";
-        output << "    }\n";
-        output << "    throw C150Exception(\"readFromString: This should never be thrown.\");\n";
+        output << "    // check for null or space\n";
+        output << "    if (bufc == '\\0') {\n";
+        output << "      return name.str();\n";
+        output << "　   }\n";
+        output << "    name << bufc;\n";
+        output << "  }\n";
+        output << "  throw C150Exception(\"readFromString: This should never be thrown.\");\n";
         output << "}\n";
 
         return 0;

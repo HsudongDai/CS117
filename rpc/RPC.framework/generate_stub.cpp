@@ -215,19 +215,19 @@ namespace C150NETWORK {
         output << "string string64_to_string(string *val) {\n"
                << "  return base64_encode(*val);\n"
                << "}\n\n"
-               << "void parse_string(string *value, string arg) {\n"
-               << "  *value = arg;\n"
-               << "}\n\n";
-        output << "string string64_to_int(int *val) {\n"
+               << "string string64_to_int(int *val) {\n"
                << "  return base64_encode(to_string(*val));\n"
-               << "}\n\n"
-               << "void parse_int(int *value, string arg) {\n"
-               << "  *value = stoi(arg);\n"
                << "}\n\n"
                << "string string64_to_float(float *val) {\n"
                << "  return base64_encode(to_string(*val));\n"
                << "}\n\n";
-        output << "void parse_float(float *value, string arg) {\n"
+        output << "void parse_string(string *value, string arg) {\n"
+               << "  *value = arg;\n"
+               << "}\n\n"
+               << "void parse_int(int *value, string arg) {\n"
+               << "  *value = stoi(arg);\n"
+               << "}\n\n"
+               << "void parse_float(float *value, string arg) {\n"
                << "  *value = stof(arg);\n"
                << "}\n\n";
         stringstream encDecl, decDecl;
@@ -242,6 +242,8 @@ namespace C150NETWORK {
             encDecl.clear();
             decDecl.clear();
             
+            // if the type is an array, we need to replace the square brackets with
+            // a legal character, here we use the '_'
             if (typeDecl->isArray()) {
                 string typeName = typeDecl->getName();
                 typeName = typeName.substr(typeName.find_last_of('_') + 1);
@@ -287,7 +289,7 @@ namespace C150NETWORK {
                     encDecl << "    ss << " << getEncDecl(typeDecl) << "(" << val << "[i]) << ' ';" << endl;
                 }
                 else {
-                    encDecl << "    s << " << getEncDecl(typeDecl) << " << (&(" << val <<"[i])) << ' ';" << endl;
+                    encDecl << "    ss << " << getEncDecl(typeDecl) << " << (&(" << val <<"[i])) << ' ';" << endl;
                 }
                 encDecl << "  }\n";
 
@@ -323,17 +325,17 @@ namespace C150NETWORK {
             auto& members = function.second->getArgumentVector();
 
             // declares the stub function and the inputstream to read arguments
+            
             output << "void __" << function.first << "(string args64) {\n";
             output << "  c150debug->printf(C150RPCDEBUG, \"called " << function.first << "with %s\", args64.c_str());\n";
             output << "  *GRADING << \"stub: called __" << function.first << "with base64string of \" << args64 << endl;\n";
             output << "  stringstream args;\n";
             output << "  string arg64;\n";
             output << "  args.str(base64_decode(args64));\n";
-            // names = []
-            //  generates code to read each base64 encoded string from the argument string,
-            //  it then parses the decoded argument into the correct memory location
+
+            // since we know the structure of the arguments, we can parse them from the
+            // stream one by one and pass them to the function
             for (auto& member: members) {
-                // names.append(a["name"])
                 output << "  *GRADING << \"stub: parsing arg - " << member->getName() << "\" << endl;\n";
                 if (member->getType()->isArray()) {
                     ArrayDecl decl = getArrayDecl(member->getType());
@@ -342,17 +344,17 @@ namespace C150NETWORK {
                     output << "  " << member->getType()->getName() << " " << member->getName() << ";\n";
                 }
                 output << "  args >> arg64;\n";
-                // arrays need to be passed by value into their parse functions because
-                // the compiler didn't like it other ways
+                // if the arg is an array, it'd be better to parse the element of the array
+                // one by one
                 if (member->getType()->isArray()) {
                     output << "  " << getDecDecl(member->getType()) << "(" << member->getName() << ", base64_decode(arg64));" << endl;
                 } else {
                     output << "  " << getDecDecl(member->getType()) << "(&" << member->getName() << ", base64_decode(arg64));" << endl;
                 }
             }
-            output << "  string response = \"" << function.first << "\";\n";
+            output << "  string resp = \"" << function.first << "\";\n";
             output << "  c150debug->printf(C150RPCDEBUG,\"stub: invoking "<< function.first << "()\");\n";
-            // create the response string if necessary and call the function
+            // use the parsed args to call the function
             if (function.second->getReturnType()->getName() == "void") {
                 output << "  " << function.first << "(";
                 for (size_t i = 0; i < members.size(); i++) {
@@ -371,54 +373,13 @@ namespace C150NETWORK {
                     }
                 }
                 output << ");" << endl;
-                output << "  response = response + ' ' + " << getEncDecl(function.second->getReturnType()) << "(&retval);\n";
+                output << "  resp = resp + ' ' + " << getEncDecl(function.second->getReturnType()) << "(&retval);\n";
             }
-            // encode and return the results of the function to the clear
+            // encode and return the results of the function, and write back to the client
             output << "  c150debug->printf(C150RPCDEBUG,\"stub: " << function.first << "() has returned\");" << endl;
-            output << "  *GRADING << \"stub: function " << function.first << " returned. Response to client - \" << response << endl;" << endl;
-            output << "  RPCSTUBSOCKET->write(response.c_str(), strlen(response.c_str()) + 1);\n";
+            output << "  *GRADING << \"stub: function " << function.first << " returned. Response to client - \" << resp << endl;" << endl;
+            output << "  RPCSTUBSOCKET->write(resp.c_str(), strlen(resp.c_str()) + 1);\n";
             output << "}" << endl << endl;
-            /*
-            for (size_t i = 0; i < members.size(); i++) {
-                auto member = members[i];
-                if (member->getType()->isArray()) {
-                    string rawType(member->getType()->getName());
-                    string arrayType = rawType.substr(2, rawType.size() - 2);
-                    // cout << "array type: " << arrayType << endl;
-                    int idx = arrayType.find("[");
-                    string dataType = arrayType.substr(0, idx);
-                    string arrayIdx = arrayType.substr(idx, arrayType.size() - idx + 1);
-                    output << dataType << " " << member->getName() << arrayIdx;
-                } else {
-                    output << member->getType()->getName() << " " << member->getName();
-                }
-                if (i != members.size() - 1) {
-                    output << ", ";
-                }
-            }
-            output << ") {\n";
-            output << "  char doneBuffer[5] = \"DONE\";  // to write magic value DONE + null\n";
-            output << "  //\n";
-            output << "  // Time to actually call the function \n";
-            output << "  //\n";
-            output << "  c150debug->printf(C150RPCDEBUG,\"simplefunction.stub.cpp: invoking " << function.first << "()\");\n";
-            output << "  " << function.first << "(";
-            for (size_t i = 0; i < members.size(); i++) {
-                auto member = members[i];
-                output << member->getName();
-                if (i < members.size() - 1) {
-                    output << ", ";
-                }
-            }
-            output << ");\n";
-            output << "  //\n";
-            output << "  // Send the response to the client\n";
-            output << "  //\n";
-            output << "  // If " << function.first << " returned something other than void, this is\n";
-            output << "  // where we'd send the return " << function.second->getReturnType()->getName() << " to the client\n";
-            output << "  RPCSTUBSOCKET->write(doneBuffer, 5);\n";
-            output << "}\n\n";
-            */
         }  
         return 0;
     }
