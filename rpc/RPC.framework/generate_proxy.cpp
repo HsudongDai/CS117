@@ -94,6 +94,7 @@ namespace C150NETWORK {
         // when the output file path is not specified, the output file is the same as the idl file but with a .proxy.cpp extension
         if (outputFilepath == nullptr || strlen(outputFilepath) == 0) {
             ss << idl_filename << ".proxy.cpp";
+        }
         // else we need to put the path together with the filename
         else {
             if (idl_filename_str.find_last_of('/') != string::npos) {
