@@ -399,7 +399,7 @@ namespace C150NETWORK {
         output << "    // check for null or space\n";
         output << "    if (bufc == '\\0') {\n";
         output << "      return name.str();\n";
-        output << "　   }\n";
+        output << "    }\n";
         output << "    name << bufc;\n";
         output << "  }\n";
         output << "  throw C150Exception(\"readFromString: This should never be thrown.\");\n";

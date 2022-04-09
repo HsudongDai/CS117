@@ -442,12 +442,12 @@ namespace C150NETWORK {
         output << "void dispatchFunction() {\n";
         output << "  stringstream ss;\n";
         output << "  string name;" << endl;
-        output << "  string args\n";
+        output << "  string args;\n";
 
         output << "  ss.str(readFromStream());\n";
         output << "  ss >> name;\n";
         output << "  ss >> args;\n";
-        output << "  const char* functionNameBuffer = name.c_str();\n";
+        output << "  char* functionNameBuffer = name.c_str();\n";
         output << "  //\n";
         output << "  // Read the function name from the stream -- note\n";
         output << "  // REPLACE THIS WITH YOUR OWN LOGIC DEPENDING ON THE\n"; 
@@ -460,9 +460,8 @@ namespace C150NETWORK {
         //
         output << "  if (!RPCSTUBSOCKET-> eof()) {\n";
         output << "    if (strcmp(functionNameBuffer, \"" << fiter->first << "\") == 0) {\n";
-        output << "      __" << fiter->first << "(";
+        output << "      __" << fiter->first << "(args);\n";
     
-        output << ");\n";
         for (++fiter; fiter != parseTree.functions.end(); ++fiter) {
             output << "    } else if (strcmp(functionNameBuffer, \"" << fiter->first << "\") == 0) {\n";
             output << "      __" << fiter->first << "(args);\n";
@@ -488,7 +487,7 @@ namespace C150NETWORK {
 
         output << "void getFunctionNamefromStream(char *buffer, unsigned int bufSize) {\n";
         output << "  unsigned int i;\n"
-               << "  char bufc;    // next char to read\n"
+               << "  char* bufp;    // next char to read\n"
                << "  stringstream ss;\n"
                << "  bool readnull;\n"
                << "  ssize_t readlen;             // amount of data read from socket\n";
