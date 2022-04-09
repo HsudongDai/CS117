@@ -447,7 +447,7 @@ namespace C150NETWORK {
         output << "  ss.str(readFromStream());\n";
         output << "  ss >> name;\n";
         output << "  ss >> args;\n";
-        output << "  char* functionNameBuffer = name.c_str();\n";
+        output << "  char* functionNameBuffer = (char*) name.c_str();\n";
         output << "  //\n";
         output << "  // Read the function name from the stream -- note\n";
         output << "  // REPLACE THIS WITH YOUR OWN LOGIC DEPENDING ON THE\n"; 
