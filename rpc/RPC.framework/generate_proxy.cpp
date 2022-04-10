@@ -329,7 +329,7 @@ namespace C150NETWORK {
             }
 
             output << ") {" << endl;
-            output << "  *GRADING << \"proxy: Called " << function.first << "\"\n;" << endl;
+            output << "  *GRADING << \"proxy: Called " << function.first << "\";\n" << endl;
             output << "  stringstream args;" << endl;
             output << "  args << ' ';"  << endl;
 

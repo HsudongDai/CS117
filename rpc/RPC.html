@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<!-- 
+ **********************************************************
+
+             TUFTS CS 117 HOMEWORK ASSIGNMENT
+
+        Fill in your name, e-mail and answers to questions
+        in the sections provided below.
+
+          All questions are marked up: <li class="q">
+          All answers are marked up:   <li class="a">
+
+
+     PLEASE DO NOT MODIFY ANY THING OTHER THAN THE 
+     NAME, E-MAIL, AND ANSWER FIELDS (you may also add
+     css declarations in the <head> if you need them,
+     but usually you won't.
+
+ **********************************************************
+ -->
+
+
+<html lang="en">
+<head>
+<meta charset="utf-8"> 
+<title>Tufts CS 117 Assignment &#8212; Remote Procedure Call Project Report</title>
+<link rel="stylesheet" type="text/css" href="https://www.cs.tufts.edu/comp/117/style/homework.css" />
+</head>
+
+<body class="homework">
+
+
+<!-- ******************************************************
+	   YOU MUST FILL IN YOUR NAME, UTLN AND EMAIL BELOW!!
+         (You may copy this from an earlier assignment
+                         if you like)
+
+     ****************************************************** -->
+
+
+<div class="student">
+<p>
+<span class="label">Student1 name: </span>
+Xudong Dai
+<br>
+
+<span class="label">UTLN: </span>xdai03
+
+<br>
+
+<span class="label">E-mail: xdai03@cs.tufts.edu</span>
+<!-- DON'T FORGET UP UPDATE THE MAILTO: URI BELOW ALONG WITH
+     YOUR EMAIL IN THE ANCHOR.  IT SHOULD LOOK LIKE:
+ <a href="mailto:lady.gaga@cs.tufts.edu">lady.gaga@cs.tufts.edu</a>
+--> 
+
+<a href="mailto:xdai03@cs.tufts.edu">xdai03@cs.tufts.edu</a>
+<br>
+<br>
+<br>
+<span class="label">Student2 name: </span>Xiaochen Guo
+<br>
+<span class="label">UTLN: </span>
+xguo13
+<br>
+
+<span class="label">E-mail: </span> xguo13@cs.tufts.edu
+<!-- DON'T FORGET UP UPDATE THE MAILTO: URI BELOW ALONG WITH
+     YOUR EMAIL IN THE ANCHOR.  IT SHOULD LOOK LIKE:
+ <a href="mailto:lady.gaga@cs.tufts.edu">lady.gaga@cs.tufts.edu</a>
+--> 
+
+<a href="mailto:xguo13@cs.tufts.edu">xguo13@cs.tufts.edu</a>
+
+<br>
+</p>
+</div>
+
+
+
+
+<div class="UpperLeftHeader">
+<p>Tufts CS 117 (Spring 2022):
+<br>
+Internet-scale Distributed Systems
+</p>
+</div>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - -
+		HOMEWORK TITLE
+  - -  - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+<div class="headerdiv">
+<h1>
+Tufts CS 117:<br>
+RPC Project Report
+</h1>
+</div>
+
+<!-- ******************************************************
+
+              PLEASE ANSWER QUESTIONS IN THE SECTIONS
+	      LABELED class="a" (for answer)
+
+     ****************************************************** -->
+
+
+
+
+<div class="main">
+
+<h2 id="questions">Questions</h2>
+<!-- - - - - - - - - - - - - - - - - - - - - - - -
+		QUESTION
+  - -  - - - - - - - - - - - - - - - - - - - - - - -->
+<div class="qa">
+
+<ol class="qa">
+<li class="q">Did you implement an rpcgenerate program and does it handle all legal IDL files? If not, which test cases should we try in your submission directory?</li>
+<li class="a">
+In my tests, my program can deal with all the idls provided in the RPC.samples. It can correcltly deal with structs, arrays and arrays of struct.
+</li>
+
+<li class="q">What programming language did you use for your rpcgenerate program?</li>
+<li class="a">
+Put an X in the space next to your choice:
+<ul>
+  <li style="text-decoration:underline;">__X__ C++ (using the provided type framework)</li>
+  <li>_____ Python (using the provided <code>idl_to_json</code>)</li>
+  <li>_____ Ruby (using the provided <code>idl_to_json</code>)</li>
+</ul>
+</li>
+
+<li class="q">Briefly explain the protocol you use over TCP to request function calls and return the results.</li>
+<li class="a">
+It is a simple one. We simply encode every function call and return as a string. The string is then sent over TCP. The server then decodes the string and calls the function. The result is then encoded and sent back to the client.<br><br>
+To the encoding, the function name is put at the beginning. The for every parameter, no matter what type it is, is encoded as a BASE64 string using a public BASE64 library. Since it is not a library used to serialize or parse data, we turned to GitHub and picked up a high-ranked one for convenience. Each string is separated with a space character and concatenated together.<br><br>
+The order of the encoded data is serial, following the appearing order of the parameters or struct members, and the indices of arrays.
+</li>
+
+<li class="q">Did you get help from anyone other than your teammate? If "yes", then briefly explain who helped you and how.</li>
+<li class="a">
+We discussed the protocol with Rui Yao and Erli Cai. We got inspired by the encoding. We tried to design a 4-byte header for each argument and make the stream self-expressed. They inspired us that we can have a consensus on both sides, so the server can know the mapping between the each byte and argument and the client can output everything into the stream.
+</li>
+
+
+<li class="q">(optional) Do you have any other comments on this assignment (e.g. was it worthwhile, what did you learn from it, do you have suggestions for improvment if the course is offered again)?</li>
+<li class="a">
+I learned a lot about the binary protocol of RPC. I've read the documents of protobuf and it is highly efficient, but it would be a little too complex for the assignment. <br><br>
+Besides, I learned the designing concept of proxies. Using a well-designed unified interface, we can make the system more user-friendly.
+</li>
+
+</ol>
+
+<!-- * * * * * * * * * * * * * * * * * * * * * -->
+<!--         ADDITIONAL INFORMATION            -->
+<!-- * * * * * * * * * * * * * * * * * * * * * -->
+
+<h2 id="reportbody">ADDITIONAL iNFORMATION</h2>
+
+<!-- Delete the entire paragraph below 
+     and replace it with your report. (Do NOT
+     keep the color:grey styling on your report! :-) -->
+
+<p>...put any additional information here, with a brief indication that no additional explanation is needed...</p>
+
+</div>
+</div>
+</body>
+</html>
