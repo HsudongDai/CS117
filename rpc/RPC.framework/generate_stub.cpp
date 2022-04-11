@@ -285,7 +285,7 @@ namespace C150NETWORK {
                 }
             } else {
                 encDecl << "  for(int i = 0; i < " << typeDecl->getArrayBound() << "; i++) {\n";
-                if (typeDecl->isArray()) {
+                if (typeDecl->getArrayMemberType()->isArray()) {
                     encDecl << "    ss << " << getEncDecl(typeDecl->getArrayMemberType()) << "(" << val << "[i]) << ' ';" << endl;
                 }
                 else {
