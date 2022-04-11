@@ -69,6 +69,17 @@ rpcgenerate: rpcgenerate.o generate_stub.o generate_proxy.o utility.o $(C150AR) 
 
 %.proxy.cpp %.stub.cpp:%.idl
 	$(RPCGEN) $< 
+arithpro: arithmetic.proxy.o rpcproxyhelper.o  $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
+	$(CPP) $(CPPFLAGS) -c base64.cpp -o base64.o
+	$(CPP) $(CPPFLAGS) -c rpcproxyhelper.cpp -o rpcproxyhelper.o
+	$(CPP) $(CPPFLAGS) -c arithmetic.proxy.cpp -o arithmetic.proxy.o
+	$(CPP) $(CPPFLAGS) -o arithpro base64.o arithmetic.proxy.o rpcproxyhelper.o $(C150AR) $(C150IDSRPCAR) $(CPPFLAGS) 
+
+arithstb: arithmetic.stub.o $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
+	$(CPP) $(CPPFLAGS) -c base64.cpp -o base64.o
+	$(CPP) $(CPPFLAGS) -c rpcstubhelper.cpp -o rpcstubhelper.o
+	$(CPP) $(CPPFLAGS) -c arithmetic.stub.cpp -o arithmetic.stub.o
+	$(CPP) $(CPPFLAGS) -o arithstb base64.o arithmetic.stub.o rpcstubhelper.o $(C150AR) $(C150IDSRPCAR) $(CPPFLAGS) 
 
 %.o:%.cpp  $(INCLUDES)
 	$(CPP) -c  $(CPPFLAGS) $< 
