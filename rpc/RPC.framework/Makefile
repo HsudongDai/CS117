@@ -40,12 +40,15 @@ c150idsrpc.a: tokenizeddeclarations.o IDLToken.o tokenizeddeclaration.o declarat
 #
 #                   Housekeeping
 #
-########################################################################
+#######################################################################
 
+%client: %.o %.proxy.o rpcserver.o rpcproxyhelper.o %client.o %.proxy.cpp base64.o
+	$(CPP) -o $@ $@.o rpcproxyhelper.o $*.proxy.o base64.o $(C150AR) $(C150IDSRPCAR) 
+%server: %.o %.stub.o rpcserver.o rpcstubhelper.o %.stub.cpp base64.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+	$(CPP) -o $@ rpcserver.o $*.stub.o $*.o rpcstubhelper.o base64.o $(C150AR) $(C150IDSRPCAR) 
 
-# make .o from .cpp
 idl_to_json: idl_to_json_full.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-        $(CPP) -o idl_to_json idl_to_json_full.o $(C150AR) $(C150IDSRPCAR) 
+	$(CPP) -o idl_to_json idl_to_json_full.o $(C150AR) $(C150IDSRPCAR) 
 
 generate_stub: generate_stub.o $(INCLUDES) $(C150AR) $(C150IDSRPCAR)
 	$(CPP) $(CPPFLAGS) -c utility.cpp -o utility.o
@@ -63,14 +66,9 @@ rpcgenerate: rpcgenerate.o generate_stub.o generate_proxy.o utility.o $(C150AR) 
 	$(CPP) -o rpcgenerate.o -c rpcgenerate.cpp $(CPPFLAGS)
 	$(CPP) -o rpcgenerate utility.o generate_proxy.o generate_stub.o rpcgenerate.o $(C150AR) $(C150IDSRPCAR) $(CPPFLAGS)
 
-%client: %.o %.proxy.o rpcserver.o rpcproxyhelper.o %client.o %.proxy.o base64.o
-	$(CPP) -o $@ $@.o rpcproxyhelper.o $*.proxy.o base64.o $(C150AR) $(C150IDSRPCAR) 
-
-%server: %.o %.stub.o rpcserver.o rpcstubhelper.o %.stub.o base64.o
-	$(CPP) -o $@ rpcserver.o $*.stub.o $*.o rpcstubhelper.o base64.o $(C150AR) $(C150IDSRPCAR)
-
 %.proxy.cpp %.stub.cpp:%.idl
-	$(RPCGEN) $< 
+	$(RPCGEN) $<
+ 
 arithpro: arithmetic.proxy.o rpcproxyhelper.o  $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
 	$(CPP) $(CPPFLAGS) -c base64.cpp -o base64.o
 	$(CPP) $(CPPFLAGS) -c rpcproxyhelper.cpp -o rpcproxyhelper.o

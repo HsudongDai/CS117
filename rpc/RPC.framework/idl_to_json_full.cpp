@@ -67,7 +67,6 @@ const int INDENT = 4;            // Amount to indent each block of JSON
 //                       main
 //
 // --------------------------------------------------------------
-/*
 int 
 main(int argc, char *argv[])
 {
@@ -102,7 +101,7 @@ main(int argc, char *argv[])
 
     return 0;
 }
-*/
+
 // -----------------------------------------------------
 //
 //                  processIDLFile
