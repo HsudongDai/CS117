@@ -289,13 +289,13 @@ namespace C150NETWORK {
                     encDecl << "    ss << " << getEncDecl(typeDecl->getArrayMemberType()) << "(" << val << "[i]) << ' ';" << endl;
                 }
                 else {
-                    encDecl << "    ss << " << getEncDecl(typeDecl->getArrayMemberType()) << " << (&(" << val << "[i])) << ' ';" << endl;
+                    encDecl << "    ss << " << getEncDecl(typeDecl->getArrayMemberType()) << "(&(" << val << "[i])) << ' ';" << endl;
                 }
                 encDecl << "  }\n";
 
                 decDecl << "  for(int i = 0; i < " << typeDecl->getArrayBound() << "; i++) {" << endl;
                 decDecl << "    args >> arg64;" << endl;
-                if (typeDecl->isArray()) {
+                if (typeDecl->getArrayMemberType()->isArray()) {
                     decDecl << "    " << getDecDecl(typeDecl->getArrayMemberType()) << "(" << val << "[i], base64_decode(arg64));" << endl;
                 }
                 else {
