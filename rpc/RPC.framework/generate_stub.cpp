@@ -63,9 +63,9 @@ namespace C150NETWORK {
             if (writeStubHeader(stub_file, idl_filename) != 0) {
                 throw C150Exception("Fail in writing stub header");
             }
-            if (writeStructDefinitions(stub_file, parseTree) != 0) {
-                throw C150Exception("Fail in writing stub struct definitions");
-            }
+            // if (writeStructDefinitions(stub_file, parseTree) != 0) {
+            //     throw C150Exception("Fail in writing stub struct definitions");
+            // }
             if (writeStubTypeParsers(stub_file, parseTree) != 0) {
                 throw C150Exception("Fail in writing stub type parsers");
             }

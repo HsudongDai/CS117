@@ -68,9 +68,9 @@ namespace C150NETWORK {
             if (writeProxyHeader(output, idl_filename) != 0) {
                 throw C150Exception("Fail in writing proxy header");
             }
-            if (writeProxyStructDefinitions(output, parseTree) != 0) {
-                throw C150Exception("Fail in writing proxy struct definitions");
-            }
+            // if (writeProxyStructDefinitions(output, parseTree) != 0) {
+            //     throw C150Exception("Fail in writing proxy struct definitions");
+            // }
             if (writeProxyTypeParsers(output, parseTree) != 0) {
                 throw C150Exception("Fail in writing proxy type parsers");
             }
