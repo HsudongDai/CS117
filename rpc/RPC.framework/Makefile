@@ -43,7 +43,8 @@ c150idsrpc.a: tokenizeddeclarations.o IDLToken.o tokenizeddeclaration.o declarat
 #######################################################################
 
 %client: %.o %.proxy.o rpcserver.o rpcproxyhelper.o %client.o %.proxy.cpp base64.o
-	$(CPP) -o $@ $@.o rpcproxyhelper.o $*.proxy.o base64.o $(C150AR) $(C150IDSRPCAR) 
+	$(CPP) -o $@ $@.o rpcproxyhelper.o $*.proxy.o base64.o $(C150AR) $(C150IDSRPCAR)
+
 %server: %.o %.stub.o rpcserver.o rpcstubhelper.o %.stub.cpp base64.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
 	$(CPP) -o $@ rpcserver.o $*.stub.o $*.o rpcstubhelper.o base64.o $(C150AR) $(C150IDSRPCAR) 
 
