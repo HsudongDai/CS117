@@ -336,9 +336,9 @@ namespace C150NETWORK {
             for (auto& arg: function.second->getArgumentVector()) {
                 output << "  *GRADING << \"proxy: encoding argument \" << " << arg->getName() << " << endl;" << endl;
                 if (arg->getType()->isArray()) {
-                    output << "  args << " << getEncDecl(arg->getType()) << "(" << arg->getName() << ")" << "' ';" << endl;
+                    output << "  args << " << getEncDecl(arg->getType()) << "(" << arg->getName() << ")" << " << ' ';" << endl;
                 } else {
-                    output << "  args << " << getEncDecl(arg->getType()) << "(&" << arg->getName() << ")" << "' ';" << endl;
+                    output << "  args << " << getEncDecl(arg->getType()) << "(&" << arg->getName() << ")" << " << ' ';" << endl;
                 }
             }
 
