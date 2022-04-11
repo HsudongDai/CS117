@@ -338,11 +338,11 @@ namespace C150NETWORK {
                 if (arg->getType()->isArray()) {
                     output << "  args << " << getEncDecl(arg->getType()) << "(" << arg->getName() << ")" << "' ';" << endl;
                 } else {
-                    output << "  args << " << getEncDecl(arg->getType()) << "(&" << arg->getName() << ");" << endl;
+                    output << "  args << " << getEncDecl(arg->getType()) << "(&" << arg->getName() << ")" << "' ';" << endl;
                 }
             }
 
-            output << "  string resp = \"" << function.first << " \" + base64_encode(args.str()) << ' ';" << endl;
+            output << "  string resp = \"" << function.first << " \" + base64_encode(args.str());" << endl;
             output << "  RPCPROXYSOCKET->write(resp.c_str(), strlen(resp.c_str()) + 1);" << endl;
             output << "  *GRADING << \"proxy: sending to client \"  << resp;" << endl;
             output << "  c150debug->printf(C150RPCDEBUG, \"proxy:" << function.first << " invoked.\");" << endl;
