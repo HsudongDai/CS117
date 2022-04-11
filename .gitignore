@@ -14,3 +14,12 @@ GRADE*
 test.cpp
 test
 *_debug.txt
+rpc/RPC.samples/ari.demo.stub.cpp
+rpc/RPC.framework/demo.json
+rpc/RPC.samples/ari.demo.proxy.cpp
+rpc/RPC.samples/proxy.template.cpp
+.gitignore
+.gitignore
+rpc/RPC.samples/stub.template.cpp
+rpc/RPC.samples/rpcgenerate.py
+rpc/RPC.framework/demo2.json

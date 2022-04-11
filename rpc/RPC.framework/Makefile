@@ -44,6 +44,8 @@ c150idsrpc.a: tokenizeddeclarations.o IDLToken.o tokenizeddeclaration.o declarat
 
 
 # make .o from .cpp
+idl_to_json: idl_to_json_full.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+        $(CPP) -o idl_to_json idl_to_json_full.o $(C150AR) $(C150IDSRPCAR) 
 
 generate_stub: generate_stub.o $(INCLUDES) $(C150AR) $(C150IDSRPCAR)
 	$(CPP) $(CPPFLAGS) -c utility.cpp -o utility.o
