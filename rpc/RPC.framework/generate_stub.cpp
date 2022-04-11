@@ -305,9 +305,9 @@ namespace C150NETWORK {
             }
 
             encDecl << "  return base64_encode(ss.str());" << endl;
-            encDecl << "}" << endl;
+            encDecl << "}" << endl << endl;
 
-            decDecl << "}" << endl;
+            decDecl << "}" << endl << endl;
         }
 
         output << encDecl.str();

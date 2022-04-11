@@ -150,8 +150,11 @@ namespace C150NETWORK {
         output << "// ======================================================================\n";
         output << endl;
 
-        // these type-parsers are used for 
-        output << "string string64_to_string(string *val) {\n"
+        return 0;
+    }
+
+    int writeProxyTypeParsers(stringstream& output, const Declarations& parseTree) {
+         output << "string string64_to_string(string *val) {\n"
                << "  return base64_encode(*val);\n"
                << "}\n\n"
                << "string string64_to_int(int *val) {\n"
@@ -160,22 +163,16 @@ namespace C150NETWORK {
                << "string string64_to_float(float *val) {\n"
                << "  return base64_encode(to_string(*val));\n"
                << "}\n\n";
-        output << "void parse_string(string *val, string arg) {\n"
-               << "  *val = arg;\n"
+        output << "void parse_string(string *value, string arg) {\n"
+               << "  *value = arg;\n"
                << "}\n\n"
-               << "void parse_int(int *val, string arg) {\n"
-               << "  *val = stoi(arg);\n"
+               << "void parse_int(int *value, string arg) {\n"
+               << "  *value = stoi(arg);\n"
                << "}\n\n"
-               << "void parse_float(float *val, string arg) {\n"
-               << "  *val = stof(arg);\n"
+               << "void parse_float(float *value, string arg) {\n"
+               << "  *value = stof(arg);\n"
                << "}\n\n";
-        return 0;
-    }
-
-    int writeProxyTypeParsers(stringstream& output, const Declarations& parseTree) {
         stringstream encDecl, decDecl;
-        encDecl.clear();
-        decDecl.clear();
 
         for (auto& type : parseTree.types) {
             if (type.first == "int" || type.first == "float" || type.first == "string" || type.first == "void") {
@@ -184,7 +181,11 @@ namespace C150NETWORK {
             auto& typeDecl = type.second;
 
             string val = "val";
+            encDecl.clear();
+            decDecl.clear();
             
+            // if the type is an array, we need to replace the square brackets with
+            // a legal character, here we use the '_'
             if (typeDecl->isArray()) {
                 string typeName = typeDecl->getName();
                 typeName = typeName.substr(typeName.find_last_of('_') + 1);
@@ -206,7 +207,7 @@ namespace C150NETWORK {
             } else {
                 encDecl << "string string64_to_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val) {\n";
                 decDecl << "void parse_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val, string arg) {\n";
-                val = "*(val)";
+                val = "(*val)";
             }
 
             encDecl << "  stringstream ss;\n";
@@ -226,21 +227,21 @@ namespace C150NETWORK {
                 }
             } else {
                 encDecl << "  for(int i = 0; i < " << typeDecl->getArrayBound() << "; i++) {\n";
-                if (typeDecl->isArray()) {
-                    encDecl << "    ss << " << getEncDecl(typeDecl) << "(" << val << "[i]) << ' ';" << endl;
+                if (typeDecl->getArrayMemberType()->isArray()) {
+                    encDecl << "    ss << " << getEncDecl(typeDecl->getArrayMemberType()) << "(" << val << "[i]) << ' ';" << endl;
                 }
                 else {
-                    encDecl << "    ss << " << getEncDecl(typeDecl) << " << (&(" << val <<"[i])) << ' ';" << endl;
+                    encDecl << "    ss << " << getEncDecl(typeDecl->getArrayMemberType()) << "(&(" << val << "[i])) << ' ';" << endl;
                 }
                 encDecl << "  }\n";
 
                 decDecl << "  for(int i = 0; i < " << typeDecl->getArrayBound() << "; i++) {" << endl;
                 decDecl << "    args >> arg64;" << endl;
-                if (typeDecl->isArray()) {
-                    decDecl << "    " << getDecDecl(typeDecl) << "(" << val << "[i], base64_decode(arg64));" << endl;
+                if (typeDecl->getArrayMemberType()->isArray()) {
+                    decDecl << "    " << getDecDecl(typeDecl->getArrayMemberType()) << "(" << val << "[i], base64_decode(arg64));" << endl;
                 }
                 else {
-                    decDecl << "    " << getDecDecl(typeDecl) << "(&(" << val << "[i]), base64_decode(arg64));" << endl;
+                    decDecl << "    " << getDecDecl(typeDecl->getArrayMemberType()) << "(&(" << val << "[i]), base64_decode(arg64));" << endl;
                 }
                 decDecl << "  }" << endl;
             }
@@ -252,6 +253,7 @@ namespace C150NETWORK {
         }
 
         output << encDecl.str();
+        output << endl;
         output << decDecl.str();
         return 0;
     }
