@@ -286,20 +286,20 @@ namespace C150NETWORK {
             } else {
                 encDecl << "  for(int i = 0; i < " << typeDecl->getArrayBound() << "; i++) {\n";
                 if (typeDecl->isArray()) {
-                    encDecl << "    ss << " << getEncDecl(typeDecl) << "(" << val << "[i]) << ' ';" << endl;
+                    encDecl << "    ss << " << getEncDecl(typeDecl->getArrayMemberType()) << "(" << val << "[i]) << ' ';" << endl;
                 }
                 else {
-                    encDecl << "    ss << " << getEncDecl(typeDecl) << " << (&(" << val <<"[i])) << ' ';" << endl;
+                    encDecl << "    ss << " << getEncDecl(typeDecl->getArrayMemberType()) << " << (&(" << val << "[i])) << ' ';" << endl;
                 }
                 encDecl << "  }\n";
 
                 decDecl << "  for(int i = 0; i < " << typeDecl->getArrayBound() << "; i++) {" << endl;
                 decDecl << "    args >> arg64;" << endl;
                 if (typeDecl->isArray()) {
-                    decDecl << "    " << getDecDecl(typeDecl) << "(" << val << "[i], base64_decode(arg64));" << endl;
+                    decDecl << "    " << getDecDecl(typeDecl->getArrayMemberType()) << "(" << val << "[i], base64_decode(arg64));" << endl;
                 }
                 else {
-                    decDecl << "    " << getDecDecl(typeDecl) << "(&(" << val << "[i]), base64_decode(arg64));" << endl;
+                    decDecl << "    " << getDecDecl(typeDecl->getArrayMemberType()) << "(&(" << val << "[i]), base64_decode(arg64));" << endl;
                 }
                 decDecl << "  }" << endl;
             }
