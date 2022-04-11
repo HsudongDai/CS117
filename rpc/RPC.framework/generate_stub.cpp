@@ -265,7 +265,7 @@ namespace C150NETWORK {
             } else {
                 encDecl << "string string64_to_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val) {\n";
                 decDecl << "void parse_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val, string arg) {\n";
-                val = "*(val)";
+                val = "(*val)";
             }
 
             encDecl << "  stringstream ss;\n";
