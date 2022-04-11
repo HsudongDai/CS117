@@ -261,10 +261,10 @@ namespace C150NETWORK {
                 string arrayIdx = arrayType.substr(idx, arrayType.size() - idx + 1);
 
                 encDecl << "string string64_to_" << typeName << "(" << dataType << " val" << arrayIdx << ") {\n";
-                decDecl << "void parse_" << typeName << "(" << dataType << " value" << arrayIdx << ", string arg" << ") {\n";
+                decDecl << "void parse_" << typeName << "(" << dataType << " val" << arrayIdx << ", string arg" << ") {\n";
             } else {
                 encDecl << "string string64_to_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val) {\n";
-                decDecl << "void parse_" << typeDecl->getName() << "(" << typeDecl->getName() << " *value, string arg) {\n";
+                decDecl << "void parse_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val, string arg) {\n";
                 val = "*(val)";
             }
 

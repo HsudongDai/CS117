@@ -160,14 +160,14 @@ namespace C150NETWORK {
                << "string string64_to_float(float *val) {\n"
                << "  return base64_encode(to_string(*val));\n"
                << "}\n\n";
-        output << "void parse_string(string *value, string arg) {\n"
-               << "  *value = arg;\n"
+        output << "void parse_string(string *val, string arg) {\n"
+               << "  *val = arg;\n"
                << "}\n\n"
-               << "void parse_int(int *value, string arg) {\n"
-               << "  *value = stoi(arg);\n"
+               << "void parse_int(int *val, string arg) {\n"
+               << "  *val = stoi(arg);\n"
                << "}\n\n"
-               << "void parse_float(float *value, string arg) {\n"
-               << "  *value = stof(arg);\n"
+               << "void parse_float(float *val, string arg) {\n"
+               << "  *val = stof(arg);\n"
                << "}\n\n";
         return 0;
     }
@@ -202,10 +202,10 @@ namespace C150NETWORK {
                 string arrayIdx = arrayType.substr(idx, arrayType.size() - idx + 1);
 
                 encDecl << "string string64_to_" << typeName << "(" << dataType << " val" << arrayIdx << ") {\n";
-                decDecl << "void parse_" << typeName << "(" << dataType << " value" << arrayIdx << ", string arg" << ") {\n";
+                decDecl << "void parse_" << typeName << "(" << dataType << " val" << arrayIdx << ", string arg" << ") {\n";
             } else {
                 encDecl << "string string64_to_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val) {\n";
-                decDecl << "void parse_" << typeDecl->getName() << "(" << typeDecl->getName() << " *value, string arg) {\n";
+                decDecl << "void parse_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val, string arg) {\n";
                 val = "*(val)";
             }
 
@@ -246,9 +246,9 @@ namespace C150NETWORK {
             }
 
             encDecl << "  return base64_encode(ss.str());" << endl;
-            encDecl << "}" << endl;
+            encDecl << "}" << endl << endl;
 
-            decDecl << "}" << endl;
+            decDecl << "}" << endl << endl;
         }
 
         output << encDecl.str();
