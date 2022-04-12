@@ -381,7 +381,7 @@ namespace C150NETWORK {
                 output << "  " << getDecDecl(function.second->getReturnType()) << "(&retval, base64_decode(msg));" << endl;
                 output << "  return retval;" << endl;
             } else {
-                output << "  *GRADING << \"Void function " << function.first << " returned\"" << endl;
+                output << "  *GRADING << \"Void function " << function.first << " returned\";" << endl;
                 output << "  return;" << endl;
             }
             output << "}" << endl << endl;
