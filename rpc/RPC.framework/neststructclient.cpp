@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
             .p1 = {.firstname = "John", .lastname = "Smith", .age = 20},
             .p2 = {.firstname = "Jane", .lastname = "Doe", .age = 30},
             .p3 = {.firstname = "Joe", .lastname = "Blow", .age = 40}
-        }
+        };
         cout << "Initialize ThreePeople: p1, 1; p2, 2; p3, 3." << endl;
         Person p = findPerson(tp);
         cout << "returned Person: " << p.lastname << ", " << p.firstname << ", " << p.age << endl;
@@ -80,8 +80,8 @@ int main(int argc, char *argv[])
             {.width = 15, .height = 16},
             {.width = 17, .height = 18},
             {.width = 19, .height = 20}
-        }
-        
+        };
+
         cout << "Initialize rectangle array." << endl;
         rectangle r = searchRectangles(rects);
         cout << "returned rectangle: " << r.width << ", " << r.height << endl; 
