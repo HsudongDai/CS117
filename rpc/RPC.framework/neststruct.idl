@@ -1,0 +1,14 @@
+struct ThreePeople {
+  Person p1;
+  Person p2;
+  Person p3;
+};
+
+Person findPerson(ThreePeople tp);
+
+struct rectangle {
+    int width; 
+    int height;
+};
+
+rectangle searchRectangles(rectangle rects[10]);
