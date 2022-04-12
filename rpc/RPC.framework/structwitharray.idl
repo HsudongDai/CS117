@@ -4,4 +4,4 @@ struct s {
   int m3[4][10][100];
 };
 
-s getStructSum(s arr);
+int getStructSum(s arr);

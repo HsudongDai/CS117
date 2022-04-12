@@ -68,7 +68,7 @@ rpcgenerate: rpcgenerate.o generate_stub.o generate_proxy.o utility.o $(C150AR) 
 	$(CPP) -o rpcgenerate utility.o generate_proxy.o generate_stub.o rpcgenerate.o $(C150AR) $(C150IDSRPCAR) $(CPPFLAGS)
 
 %.proxy.cpp %.stub.cpp:%.idl
-	$(RPCGEN) $<
+	$(RPCGEN) $< ./
  
 arithpro: arithmetic.proxy.o rpcproxyhelper.o  $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
 	$(CPP) $(CPPFLAGS) -c base64.cpp -o base64.o

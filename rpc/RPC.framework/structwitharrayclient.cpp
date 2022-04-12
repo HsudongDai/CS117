@@ -75,14 +75,14 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        int x = getStructSum(arrays); // remote call (we hope!)
+        int x = getStructSum(arr); // remote call (we hope!)
         printf("Got %d\n", x);
     }
 
     //
     //  Handle networking errors -- for now, just print message and give up!
     //
-    catch (C150Exception e) {
+    catch (C150Exception& e) {
         // Write to debug log
         c150debug->printf(C150ALWAYSLOG, "Caught C150Exception: %s\n",
                           e.formattedExplanation().c_str());
