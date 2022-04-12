@@ -3,6 +3,8 @@
 #include "c150debug.h"
 #include "c150grading.h"
 #include <fstream>
+#include <iostream>
+#include <string>
 
 using namespace std;         // for C++ std library
 using namespace C150NETWORK; // for all the comp150 utilities

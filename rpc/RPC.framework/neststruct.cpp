@@ -1,4 +1,5 @@
 #include "neststruct.idl"
+#include <string>
 
 using namespace std;
 
