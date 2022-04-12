@@ -142,7 +142,7 @@ The order of the encoded data is serial, following the appearing order of the pa
 
 <li class="q">Did you get help from anyone other than your teammate? If "yes", then briefly explain who helped you and how.</li>
 <li class="a">
-We discussed the protocol with Rui Yao and Erli Cai. We got inspired by the encoding. We tried to design a 4-byte header for each argument and make the stream self-expressed. They inspired us that we can have a consensus on both sides, so the server can know the mapping between the each byte and argument and the client can output everything into the stream.
+We discussed the protocol with Rui Yao and Erli Cai. We got inspired by the encoding. We tried to design a 4-byte header for each argument and make the stream self-expressed. They inspired us that we can have a consensus on both sides, so the server can know the mapping between the each byte and arguments without assistive information. The client can output everything into the stream in order and the server could deserialize it following the same order.
 </li>
 
 
@@ -158,13 +158,10 @@ Besides, I learned the designing concept of proxies. Using a well-designed unifi
 <!--         ADDITIONAL INFORMATION            -->
 <!-- * * * * * * * * * * * * * * * * * * * * * -->
 
-<h2 id="reportbody">ADDITIONAL iNFORMATION</h2>
+<h2 id="reportbody">ADDITIONAL INFORMATION</h2>
+We prepared 3 tests, which are <i>arithmetic</i>, <i>neststruct</i> and <i>structwitharray</i>. These tests cover all the possible cases of the RPC.samples, like built-in types, arrays of built-in types, structs, nested structs and arrays of structs.
 
-<!-- Delete the entire paragraph below 
-     and replace it with your report. (Do NOT
-     keep the color:grey styling on your report! :-) -->
-
-<p>...put any additional information here, with a brief indication that no additional explanation is needed...</p>
+<p></p>
 
 </div>
 </div>

@@ -18,3 +18,5 @@ struct rectangle {
 };
 
 rectangle searchRectangles(rectangle rects[10]);
+
+void func1();

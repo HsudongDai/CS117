@@ -10,3 +10,7 @@ Person findPerson(ThreePeople tp) {
 rectangle searchRectangles(rectangle rects[10]) {
     return rects[0];
 }
+
+void func1() {
+    cout << "func1!";
+}

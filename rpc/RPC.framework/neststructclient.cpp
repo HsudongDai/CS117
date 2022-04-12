@@ -60,6 +60,9 @@ int main(int argc, char *argv[])
     try
     {
         rpcproxyinitialize(argv[serverArg]);
+        cout << "Call func1()" << endl;
+        func1();
+
         ThreePeople tp {
             .p1 = {.firstname = "John", .lastname = "Smith", .age = 20},
             .p2 = {.firstname = "Jane", .lastname = "Doe", .age = 30},
