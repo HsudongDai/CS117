@@ -67,14 +67,21 @@ int main(int argc, char *argv[])
         }
         cout << "Initialize ThreePeople: p1, 1; p2, 2; p3, 3." << endl;
         Person p = findPerson(tp);
-        cout << "returned Person: " << p.name << ", " << p.age << endl;
+        cout << "returned Person: " << p.lastname << ", " << p.firstname << ", " << p.age << endl;
 
-        rectangle rects[10] = {.width = 1, .height = 2,
-                               .width = 3, .height = 4,
-                               .width = 5, .height = 6,
-                               .width = 7, .height = 8,
-                               .width = 9, .height = 10,
-                               .width = 11, .height = 12};
+        rectangle rects[10] = {
+            {.width = 1, .height = 2},
+            {.width = 3, .height = 4},
+            {.width = 5, .height = 6},
+            {.width = 7, .height = 8},
+            {.width = 9, .height = 10},
+            {.width = 11, .height = 12},
+            {.width = 13, .height = 14},
+            {.width = 15, .height = 16},
+            {.width = 17, .height = 18},
+            {.width = 19, .height = 20}
+        }
+        
         cout << "Initialize rectangle array." << endl;
         rectangle r = searchRectangles(rects);
         cout << "returned rectangle: " << r.width << ", " << r.height << endl; 
