@@ -30,7 +30,7 @@ LDFLAGS =
 INCLUDES = $(C150LIB)c150streamsocket.h $(C150LIB)c150network.h $(C150LIB)c150exceptions.h $(C150LIB)c150debug.h $(C150LIB)c150utility.h IDLToken.h tokenizeddeclarations.h  tokenizeddeclaration.h declarations.h declaration.h functiondeclaration.h typedeclaration.h arg_or_member_declaration.h
 RPCGEN = ./rpcgenerate
 
-all: c150idsrpc.a idl_to_json rpcgenerate arithmeticclient arithmeticserver structwitharrayclient structwitharrayserver
+all: c150idsrpc.a idl_to_json rpcgenerate arithmeticclient arithmeticserver structwitharrayclient structwitharrayserver neststructclient neststructserver
 
 c150idsrpc.a: tokenizeddeclarations.o IDLToken.o tokenizeddeclaration.o declaration.o declarations.o functiondeclaration.o arg_or_member_declaration.o typedeclaration.o  $(C150AR) $(INCLUDES) Makefile
 	$(AR) c150idsrpc.a tokenizeddeclarations.o IDLToken.o tokenizeddeclaration.o declaration.o declarations.o functiondeclaration.o arg_or_member_declaration.o typedeclaration.o 
@@ -88,5 +88,5 @@ arithstb: arithmetic.stub.o $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
 
 # clean up everything we build dynamically (probably missing .cpps from .idl)
 clean:
-	rm -f  *.o c150idsrpc.a idl_to_json rpcgenerate generate_stub generate_proxy arithmeticclient arithmeticserver structwitharrayclient structwitharrayserver 
+	rm -f  *.o c150idsrpc.a idl_to_json rpcgenerate generate_stub generate_proxy arithmeticclient arithmeticserver structwitharrayclient structwitharrayserver neststructclient neststructserver
 	
