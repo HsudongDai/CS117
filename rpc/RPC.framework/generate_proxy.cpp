@@ -265,7 +265,7 @@ namespace C150NETWORK {
         }
         
         output << encHead.str() << endl;
-        output << encDecl.str() << endl;
+        output << decHead.str() << endl;
 
         output << encDecl.str();
         output << endl;
