@@ -58,9 +58,11 @@ int main(int argc, char *argv[])
     try
     {
         rpcproxyinitialize(argv[serverArg]);
-        ThreePeople tp {.p1 = {.name = "p1", .age = 1},
-                        .p2 = {.name = "p2", .age = 2},
-                        .p3 = {.name = "p3", .age = 3}};
+        ThreePeople tp {
+            .p1 = {.firstname = "John", .lastname = "Smith", .age = 20},
+            .p2 = {.firstname = "Jane", .lastname = "Doe", .age = 30},
+            .p3 = {.firstname = "Joe", .lastname = "Blow", .age = 40}
+        }
         cout << "Initialize ThreePeople: p1, 1; p2, 2; p3, 3." << endl;
         Person p = findPerson(tp);
         cout << "returned Person: " << p.name << ", " << p.age << endl;
