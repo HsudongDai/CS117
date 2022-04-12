@@ -1,7 +1,7 @@
-#include "neststruct.idl"
 #include <string>
 
 using namespace std;
+#include "neststruct.idl"
 
 Person findPerson(ThreePeople tp) {
     return tp.p1;

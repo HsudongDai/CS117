@@ -154,7 +154,8 @@ namespace C150NETWORK {
     }
 
     int writeProxyTypeParsers(stringstream& output, const Declarations& parseTree) {
-         output << "string string64_to_string(string *val) {\n"
+        // write the declartions first to deal with dependencies
+        output << "string string64_to_string(string *val) {\n"
                << "  return base64_encode(*val);\n"
                << "}\n\n"
                << "string string64_to_int(int *val) {\n"
@@ -174,6 +175,8 @@ namespace C150NETWORK {
                << "}\n\n";
         stringstream encDecl, decDecl;
 
+        stringstream encHead, decHead;
+
         for (auto& type : parseTree.types) {
             if (type.first == "int" || type.first == "float" || type.first == "string" || type.first == "void") {
                 continue;
@@ -183,6 +186,8 @@ namespace C150NETWORK {
             string val = "val";
             encDecl.clear();
             decDecl.clear();
+            encHead.clear();
+            decHead.clear();
             
             // if the type is an array, we need to replace the square brackets with
             // a legal character, here we use the '_'
@@ -203,10 +208,17 @@ namespace C150NETWORK {
                 string arrayIdx = arrayType.substr(idx, arrayType.size() - idx + 1);
 
                 encDecl << "string string64_to_" << typeName << "(" << dataType << " val" << arrayIdx << ") {\n";
+                encHead << "string string64_to_" << typeName << "(" << dataType << " val" << arrayIdx << ");\n";
+
                 decDecl << "void parse_" << typeName << "(" << dataType << " val" << arrayIdx << ", string arg" << ") {\n";
+                decHead << "void parse_" << typeName << "(" << dataType << " val" << arrayIdx << ", string arg" << ");\n";
             } else {
                 encDecl << "string string64_to_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val) {\n";
+                encHead << "string string64_to_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val);\n";
+
                 decDecl << "void parse_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val, string arg) {\n";
+                decHead << "void parse_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val, string arg);\n";
+
                 val = "(*val)";
             }
 
@@ -251,6 +263,9 @@ namespace C150NETWORK {
 
             decDecl << "}" << endl << endl;
         }
+        
+        output << encHead.str() << endl;
+        output << encDecl.str() << endl;
 
         output << encDecl.str();
         output << endl;

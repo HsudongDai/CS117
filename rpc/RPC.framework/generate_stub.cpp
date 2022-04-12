@@ -132,15 +132,16 @@ namespace C150NETWORK {
             idl_filename_string = idl_filename_string.substr(idl_filename_string.find_last_of('/') + 1);
         }
 
-        output << "#include \"" << idl_filename_string << "\"" << endl;
-        output << endl;
         output << "#include \"rpcstubhelper.h\"" << endl;
         output << "#include \"c150debug.h\"" << endl;
         output << "#include <string>" << endl;
         output << "#include \"base64.hpp\"" << endl;
         output << endl;
         output << "using namespace C150NETWORK;" << endl;
+        output << "using namespace std;" << endl;
         output << endl;
+        output << "#include \"" << idl_filename_string << "\"" << endl << endl;
+
         output << "void getFunctionNamefromStream(char *buffer, unsigned int bufSize);" << endl;
         output << "string readFromStream();" << endl;
         output << endl;
@@ -212,6 +213,7 @@ namespace C150NETWORK {
     }
 
     int writeStubTypeParsers(stringstream& output, const Declarations& parseTree) {
+        // write the declartions first to deal with dependencies
         output << "string string64_to_string(string *val) {\n"
                << "  return base64_encode(*val);\n"
                << "}\n\n"
@@ -232,6 +234,8 @@ namespace C150NETWORK {
                << "}\n\n";
         stringstream encDecl, decDecl;
 
+        stringstream encHead, decHead;
+
         for (auto& type : parseTree.types) {
             if (type.first == "int" || type.first == "float" || type.first == "string" || type.first == "void") {
                 continue;
@@ -241,6 +245,8 @@ namespace C150NETWORK {
             string val = "val";
             encDecl.clear();
             decDecl.clear();
+            encHead.clear();
+            decHead.clear();
             
             // if the type is an array, we need to replace the square brackets with
             // a legal character, here we use the '_'
@@ -261,10 +267,17 @@ namespace C150NETWORK {
                 string arrayIdx = arrayType.substr(idx, arrayType.size() - idx + 1);
 
                 encDecl << "string string64_to_" << typeName << "(" << dataType << " val" << arrayIdx << ") {\n";
+                encHead << "string string64_to_" << typeName << "(" << dataType << " val" << arrayIdx << ");\n";
+
                 decDecl << "void parse_" << typeName << "(" << dataType << " val" << arrayIdx << ", string arg" << ") {\n";
+                decHead << "void parse_" << typeName << "(" << dataType << " val" << arrayIdx << ", string arg" << ");\n";
             } else {
                 encDecl << "string string64_to_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val) {\n";
+                encHead << "string string64_to_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val);\n";
+
                 decDecl << "void parse_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val, string arg) {\n";
+                decHead << "void parse_" << typeDecl->getName() << "(" << typeDecl->getName() << " *val, string arg);\n";
+
                 val = "(*val)";
             }
 
@@ -309,6 +322,9 @@ namespace C150NETWORK {
 
             decDecl << "}" << endl << endl;
         }
+        
+        output << encHead.str() << endl;
+        output << encDecl.str() << endl;
 
         output << encDecl.str();
         output << endl;
