@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
         // Set up the socket so the proxies can find it
         //
         rpcproxyinitialize(argv[serverArg]);
-        cout << "Calling sqrt(16,4)" << endl;
+        cout << "Calling sqrt(12, 13)" << endl;
         cout << "return: " << sqrt(12, 13) << endl;
 
         cout << "calling func2()" << endl;
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
     //
     //  Handle networking errors -- for now, just print message and give up!
     //
-    catch (C150Exception e)
+    catch (C150Exception& e)
     {
         // Write to debug log
         c150debug->printf(C150ALWAYSLOG, "Caught C150Exception: %s\n",

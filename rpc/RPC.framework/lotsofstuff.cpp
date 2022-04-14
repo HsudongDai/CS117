@@ -27,7 +27,7 @@ int showsArraysofArrays(int x[24], int y[24][15], int z[24][15]) {
 }
 
 string upcase(string s) {
-    for (int i = 0; i < s.length(); i++) {
+    for (size_t i = 0; i < s.size(); i++) {
         s[i] = toupper(s[i]);
     }
     return s;
