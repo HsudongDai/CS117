@@ -7,164 +7,330 @@
     <!-- <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/main.css"> -->
     <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">
+
+    <style>
+        h1 {
+            font-family: 'Lato', sans-serif;
+            font-size: 36px;
+            text-align: center;
+            color: #000;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-family: 'Lato', sans-serif;
+            font-size: 28px;
+            text-align: center;
+            color: #000;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            font-family: 'Lato', sans-serif;
+            font-size: 24px;
+            text-align: center;
+            color: #000;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        
+        body {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 18px;
+        }
+
+        html {
+            background-color: rgb(204, 232, 207);
+        }
+
+        span {
+            text-align: center;
+            display: block;
+        }
+
+        .left {
+            text-align: left;
+            margin-left: 15%;
+            margin-right: 15%;
+        }
+
+        .image {
+            margin: 0 auto;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .image p {
+            font-size: 12px;
+            font-style: italic;
+            color: gray;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>Final Project Report</h1>
     </header>
 
-    <h1>The origin of the international Internet</h1>
-    Today, there are more than 3 billion people online. This is a huge number, and it is not surprising. Internet connects netizens speaking every language from all over the world. Internationalization is not a choice, but a must. It is the backbone of the Internet.
-    <br><br>
-    However, when we go back to the origin of the Internet, we find that it was created exclusively for people in several countries speaking a few Latin-alphabet languages. It would be a lot of work to create a website for every country, and it would be a lot of work to create a website for every language.
-    <br><br>
-    In order to create an international Internet, it is far from enough to merely enable the browser to display contents of different languages. The designers must add support from the low-level hardware to the high-level software at the beginning, from the devices to the front-end engines.
+    <span>Author: Xudong Dai</span><br>
+    <span>Tufts UTLN: xdai03</span><br>
+    <span>Email: <a href="mailto:xdai03@cs.tufts.edu">xdai03@cs.tufts.edu</a></span><br>
 
-    <h1>Principles of all the debates</h1>
-    Several principles are hidden as the basis of all the debates. They are set to reach a consensus in the Internet community when meeting with similar but competitive concepts.
-    <ul>
-        <li>Melcalfe's law: the bigger the interconnected network it is, the more powerful the network will be.</li>
-        <li>Separation of concepts: concepts could be separated into different levels, and each level depends on the lowel level and provides interfaces to the upper level.</li>
-        <li>Uniform Interface: All resources will be treated the same, allowing all kinds of data can be expressed the same way.</li>
-        <li>Self Describing: Everything you need to understand a response is in the 
-            response, like said in RFC 3989.</li>
-        <li>Global naming: Everything on the Internet has a unique and global name in the worldwide scope.</li>
-        <li></li>
-    </ul>
+    <h1>The origin of the International Internet</h1>
+
+    <div class="left">
+        Today, there are more than 3 billion people online. This is a huge number, even unimaginable just 30 years ago. Internet connects netizens speaking every language from all over the world. Internationalization is not a choice, but a must. It is the backbone of the Internet.
+        <br><br>
+        However, when we go back to the origin of the Internet, we find that it was created exclusively for people in several countries speaking a few Latin-alphabet languages. It would be a lot of work to create a website for every language. It must be an ambitious decision to make Internet a global network.
+        <br><br>
+        In order to create an international Internet, it is far from being enough to merely enable the browser to display contents of different languages. The designers must consider adding support for Internationalization (i18n) to all the levels of the whole Internet.
+
+        <h1>Principles of all the debates</h1>
+        Several principles are hidden as the basis of all the debates. They are set to reach a consensus in the Internet community when meeting with similar but competitive concepts.
+        <ul>
+            <li>Melcalfe's law: the bigger the interconnected network it is, the more powerful the network will be.</li>
+            <li>Separation of concepts: concepts could be separated into different levels, and each level depends on the lowel level and provides interfaces to the upper level.</li>
+            <li>Uniform Interface: All resources will be treated the same, allowing all kinds of data can be expressed the same way.</li>
+            <li>Self Describing: Everything you need to understand a response is in the 
+                response, like said in RFC 3989.</li>
+            <li>Global naming: Everything on the Internet has a unique and global name in the worldwide scope.</li>
+            <li>Postel's law: Be liberal what you accept, and conservative in what you send.</li>
+        </ul>
+    </div>
+    
 
     <h1>Multi-language support</h1>
-    <h2>How could the designers support different languages</h2>
-    At the very beginning, the designers chose to simply support ASCII characters, just like ARPANets. The reason is simple, all the English characters can be covered ASCII charset. Though it was designed to exchange telegrams, it 
-    Meanwhile, the performance of computers in the 1970s was highly limited. Honeywell 316, used as a terminal server, was designed to support ASCII only. 
-    <br><br>
-    However, when coming to Tim-Berners Lee in CERN, things changed. French and German have some letters not included in ASCII, such as è, ç, é in French and ü, ö, ß in German. 
-    <br><br>
-    Luckily, at that time he has a better choice, that is Latin-1(ISO-8859-1). It is a superset of ASCII, and it is the most widely used charset in West Europe. It was firstly developed based on the European Computer Manufacturers Association (ECMA) and published as ECMA-94. In 1990, it was given its official ISO name. Another extension is Latin-2(ISO-8859-2), as another variant of ASCII, is used in Central Europe.
-    <br><br>
-    With the expansion of Internet, the language support became chaotic, especially for East Asian regions. Languages such as Chinese, Japanese, and Korean have thousands of characters, which goes beyond the capacity of 8-bit charset. As a result, every single country or region defined their own charset, such as GBK for Simplified Chinese, Big5 for traditional Chinese, and EUC-KR for Korean.
-    <br><br>
-    Different charsets caused infinite troubles and chaos for localization. Taking Windows as an example, their localization team had to provide at least 3 versions of the same Windows OS for customers from Europe, Middle-East countries or East Asia, since the language support was hardcoded into codes.
-    <br><br>
-    <h2>Unified Encoding of characters</h2>
-    Different efforts have been made together to unify the encoding of characters, even though it took several hard steps.
-    <h3>Regional Effort to unify encoding</h3>
-    As mentioned above, Latin-1 and Latin-2 are 2 region-unified charsets used in West and Central Europe respectively. Meanwhile, in order to unify the encoding of the same Chinese characters used in China, South Korea, Japan and Vietnam, committee defined the <strong>CJK Unified Ideographs</strong>. Committee intensely debated whether similar deriatives of the same characters should be allocated different codepoints, and they chose to grant different points for compatiblity. 
-    <br><br>
-    Regional unified encoding covers the gap of different languages so that people could send emails to each other using the compatible charset. There was one last step to unify all the characters ever used by humans.
-    <br><br>
-    <h3>Unicode</h3>
-    Based on experiences with the Xerox Character Code Standard(XCCS) since 1980, the first version was published on October, 1991. At the beginning, the designers proposed to use 16-bit for each character, known as UCS-2. It was based on the hypothesis that it would only carry characters in modern use. But in the following versions, the hypothesis was 
-    no longer valid. It became more ambitious, covering all the characters ever existed. The latest version, Unicode 14.0, was published on September, 2021. This repertoire is synchronic to ISO/IEC 10646.
-    <br><br>
-    Though there are several critics to Unicode, like security issues brought by Homoglyphs or the duplicate mapping to legacy characters. Homoglyphs are similar characters like í and i. They can be used in phishing attack. It provides a universal basis for all the expressing all the languages around the world. 
-    <br><br>
-    <h3>Encoding of Unicode</h3>
-    There are several distinct encoding schemes for Unicode. The most popular is UTF-8(Unicode Transformation Format). It is a variable-length encoding scheme, which means that each character is encoded in 8-bit, 16-bit, 24-bit or 32-bit. It provides a flexible way, saving bytes for Latin-alphabet languages while can express other characters with bigger codepoints. UTF-16 and UTF-32, 2 fix-length implementations of Unicode, are also widely used. Due to historical reasons, UTF-16 is the default encoding scheme of Windows.
-    <br><br>
-
-    <h2>How to format texts of different languages</h2>
-    Now we have an Internet that can transmit all the special characters, we have to format these characters into texts. However, not the all the languages follow the <i>'normal'</i> order to organize the characters. For example, Arabic and Hebrew are written right to left and top to bottom, mirror-symmetric to languages like English. What's even stranger, languages like traditional Mongolian are written in a vertical style, top to bottom then left to right. Moreover, Chinese and Japanese are compatible to all these written styles, and their traditional written are top to bottom then right to left.
-    <br><br>
-    Though some of the written styles are archaic even obsolete, they are still possible to be used. In CSS, there are several markups to control the order, such as <i>writing-mode</i>, <i>direction</i> and <i>unicode-bidi</i>. Texts decorated with these markups can be formatted in the right ways of their own languages.
-    <br><br>
-    But there is still one thing to be noted. When meeting numbers or words from other left-to-right languages in right-to-left texts, those characters' order is kept. It is international, but also local.
-    <br><br>
-
-    <h2>Language-independent Network Protocols</h2>
-    Though all th RPCs are written in English, the designers never suppose everything on Internet must be ASCII. In fact, most of the formats of packets of protocols are binary. All the protocols are designed to carry certain binary data to its destinations, and applications would decide how to interpret the data.
-    <br><br>
-    This principle would be highly useful when the Internet is expanding. The designers would be able to create a universal network protocol, which can be used by all the languages without designing any new special protocols for each language.
-
-    <h1>Region-specific features support</h1>
-    People from different countries and regions have different cultures and customs. For calendars, Chinese and Korean people are familiar with the lunisolar calendar while Arabic people also use their lunar calendar. American people are the last barrier of Imperial Units when even British have accepted the International Unit(SI). Whatsoever, developers have to accept the reality and provide these local features, since not every product manager can educate their customers like Steve Jobs. The Internet have to satisfy the needs of the customers.
-    <br><br>
-    It is quite common to automatically set features according to the set language. However, local features are not always binded with local languages. An American student may set his iPhone's language to Japanese to immerse in the Japanese culture, but this student may still want to use Farenheit and mile, but not Celsius or kilometer, to keep his understanding of the environment around him.
-    <br><br>
-
-    <h2>How to recognize the correct region</h2>
-    In order to provide correct local features for users, the programs on Internet must be able to detect the regional information from users. Luckily, it is viable through the information sent with packets.
-
-    <h3>IP address</h3>
-    IPv4 defines an address as a 32-bit number. It is a limited, even rare resource. All the public IP addresses are allocated by Internet Assigned Numbers Authority(IANA) to the Internet Service Provider(ISP) according to regions. The service providers could look up the address into databases so that they can locate the user to a specific region, such as a city, a communit or a certain building. It is enough to provide some local service, like weather forecast or <i>restaurants near you</i>.
-
-    <h3>Preferred Language</h3>
-    Websites serving in different languages must pick up the correct language according to the user's preferred language. To achieve this, browsers would add a field called <strong>Accept-Language</strong>. This tag is used to show the preference of languages to this user like <i>en-US,en;q=0.9, fr-CH, fr;q=0.8</i>. The <i>q-factor weighting</i> means the prioirity of each language, from 0 to 1. The bigger the weight is, the more preferred the language is. The website would go through the list following the priority list till it meets one language it supports, which is <i>en-US</i> in this case. If there is no match, the website would provide its default language.
-
-    <h3>Cookie and Session</h3>
-    As is known to all, HTTP is a stateless protocol. However, sometimes the long connections require to keep some states. The client-side solution is cookie, and the server-side solution is session. Programmars would keep some user-specific states in them to optimize the general experiences of the website, including language preference.
-    <br><br>
-    Generally speaking, the website server will use the <strong>Accept-Language</strong> to set the default language. However, users can have the option to set their preferred language to persist it.
+    <div class="left">
+        The first step of Multi-language support is, how to express all the characters in browsers and Internet protocols. Generally, the characters are encoded in a charset, a collection of characters, in any order. During the history, there are plenty of charsets, but they cannot talk to each other. How could we go back to the era before the building of Tower of Babel?
+    </div>
     
-    <h2>Unified Standard with specific interfaces</h2>
-    Many functions of the Internet, though look different, are based on the same low-level metrics. We can raise many examples, such as,
-    <ul>
-        <li>Mile or Kilometer in online maps</li>
-        <li>Farenheit or Celsium in temperature</li>
-        <li>Gregorian or other calendars</li>
-    </ul>
-    Unit conversion is always troublesome, sometimes causes serious even vital accidents. It is a common problem in the Internet. Luckily, programmers set up a common standard to express these metrics uniformly. Then the localization could pick up an adequate conversion formula to present the local content correctly.
+    <h2>Primitive attempts to encode multiple languages</h2>
 
-    <h3>Demo: Unix Epoch behind calendars</h3>
-    People living in different regions use different calendars. Gregorian as the de-facto global standard, while Lunar calendar is used as an extension. However, all these calendars share some same restrictions, they all have year, month and day. They count a day with the same length of seconds. That is enough. We can count the seconds from a certain beginning, then the seconds could be translated into the every single calendar.
-    <br><br>
-    In the Internet, the beginning is set up as the first second of January 1, 1970, UTC by Unix Epoch. Time before that was counted negatively and the time after that was counted positively. Adjusted by the time zone, the time is counted in the local time and can be presented with a local calendar. 
-    <br><br>
-    The same low-level definitions unify the Internet while assuring the possibility of localization. It separates the complexity and limits the problem to a certain scope.
+    <div class="left">
+        At the very beginning, the designers chose to simply support ASCII characters, just like ARPANets. The reason is simple, all the English characters can be covered by ASCII charset. 
+        Meanwhile, the performance of computers in the 1970s was highly limited. Honeywell 316<a href="#ref01">[1]</a>, used as a terminal server, was designed to support ASCII only. 
+        <br><br>
+        However, when coming to Tim Berners-Lee in CERN, things changed. French and German have some letters not included in ASCII, such as è, ç, é in French and ü, ö, ß in German. 
+        <br><br>
+        Luckily, at that time he has a better choice, that is Latin-1(ISO-8859-1)<a href="#ref02">[2]</a>. It is a superset of ASCII, and it is the most widely used charset in West Europe, such as Spanish, French and Italian. It was firstly developed based on the European Computer Manufacturers Association (ECMA) and published as ECMA-94. In 1990, it was given its official ISO name. Another extension is Latin-2(ISO-8859-2), as another variant of ASCII, is used in Central Europe. This variant provides language support for languages like Polish, Croatian and Mygyar, etc.
+        <br><br>
+        With the expansion of Internet, the language support became chaotic due to different kinds of local charset, especially for East Asian regions. Languages such as Chinese, Japanese, and Korean have thousands of characters, which goes beyond the capacity of single-byte charset. As a result, every single country or region defined their own charset, such as GBK or GB2312 for Simplified Chinese, Big5 for traditional Chinese, and EUC-KR for Korean. A classic problem encountered in Eclipse is, its default charset is not UTF-8 but follows the system, causing a full screen of '?' when opening a new file. 
+        <br><br>
+        Different charsets caused infinite troubles and chaos for localization. Taking Windows as an example, their localization team had to provide at least 3 versions of the same Windows OS for customers from Europe, Middle-East countries or East Asia, since the language support was hardcoded into codes. An example is, when a German user needs to answer "Ja" or "Nein", "Yes" and "No" in German, the user still has to enter 'y' but not 'j'.
+        <br><br>
+    </div>
+    <h2>Unified Encoding of characters</h2>
 
-    <h1>Connecting devices all over the world</h1>
-    As we wish to extend the connection to all over the world, now even astronauts on the International Space Station (ISS) can use the Internet through satellite links. It took a long time to develop, went through many challenges and finally became a reality. It would be interesting to discuss some key issues of the <strong>connection</strong>.
+    <div class="left">
+        Different efforts have been made together to unify the encoding of characters, even though it took several hard steps.
+        <h3>Regional Effort to unify encoding charset</h3>
+        As mentioned above, Latin-1 and Latin-2 are 2 region-unified charsets used in West and Central Europe respectively. Meanwhile, in order to unify the encoding of the same Chinese characters used in China, South Korea, Japan and Vietnam, a joint committee defined the <strong>CJK Unified Ideographs</strong> standard. Committee intensely debated whether similar deriatives of the same characters should be allocated different codepoints, and they chose to grant different points for compatiblity. 
+        <br><br>
+    
+        Regional unified encoding covers the gap of different languages so that people could send emails to each other using the compatible charset. There was one last step left to unify all the charsets.
+        <br><br>
+        <h3>Unicode</h3>
+        Based on experiences with the Xerox Character Code Standard(XCCS) since 1980, the first version was published on October, 1991. At the beginning, the designers proposed to use 16-bit for each character. It was based on the hypothesis that it would only carry characters in modern use. But in the following versions, the hypothesis was no longer valid. In its second version, Unicode 2.0, it included the whole CJK charset, which goes beyond the capacity of 16-bit. Since then, it became more ambitious, attempting to cover all the characters ever existed. The latest version, Unicode 14.0, was published on September, 2021. At this time it includes  This repertoire is synchronic to ISO/IEC 10646.
+        <br><br>
+        Though there are several critics to Unicode, like security issues brought by Homoglyphs like í and i or the duplicate mapping to legacy characters in CJK code plane, it provides a universal basis for all the expressing all the languages around the world. 
+        <br><br>
+    </div>
+    
+    <div class="left">
+        <h3>Encoding Format of Unicode</h3>
+        There are several distinct encoding schemes for Unicode. The most popular is UTF-8(Unicode Transformation Format). It is a variable-length encoding scheme, which means that each character is encoded in 8-bit, 16-bit, 24-bit or 32-bit. It provides a flexible way, saving bytes for Latin-alphabet languages while can express other characters with bigger codepoints. UTF-16 and UTF-32, 2 fix-length implementations of Unicode, are also widely used. Due to historical reasons, UTF-16 is the default encoding scheme of Windows.
+        <br><br>
+        
+        <h3>UTF-8</h3>
+        Among all the encodings of Unicode, UTF-8 is the most important. As mentioned before, UTF-8 uses variable-width encoding, capable of encoding 1,112,064 valid characters. It was first proposed in the Plan 9 operating system in September 1992 and officialy adopted in RFC 2277 to replace Single Byte Character sets in older RFCs. According to statistics, it accounts for 98% of all web pages. JSON can only be encoded in UTF-8, and HTML and DOM is recommended to use UTF-8.
+        <br><br>
+        There are several features that help UTF-8 distinguishes from other encoding formats.
+        <ol>
+            <li>It has a complete backward compatiblity. Its first 127 code points directly map to ASCII codepoints without any additional byte. This feature surpasses UTF-16 when encoding Latin-alphabet languages since the latter needs 1 more byte for the same character.</li>
+            <li>It can detect errors in binary stream. There are several bytes, such as 0xC0, 0xC2, and 0xF5 through 0xFF cannot appear. Besides, bytes with the high bit set must be in pairs. It is easy to detect any error in advance.</li>
+            <li>The first byte indicates the number of bytes in the sequence, so that it does not need extra bytes to mark the boundary of sequence.</li>
+            <li>Most communication(HTML & IP) and storage was designed for a stream of bytes, while UTF-16 must use a pair of bytes for each code unit.</li>
+        </ol>
 
-    <h2>What do we need to connect</h2>
-    The Metcalfe's law tells us the power of the Internet comes with more connections, however, 
-    At the birth age of the Internet, the users were from several certain institutes. Only several mainframes were linked together. 'The world needs only five computers', said Papadopoulos. Though it was an insightful foresee in fact, illustrating the future of big computing clusters, obviously he did not prophet the popularization of personal computers.
-    <br><br>
-    Then things changed. Personal computers became a common furniture for every family, a common and handy tool for clerks in offices. They need to be connected to maximize their powers. The laptops appeared later, but in fact they are congenetic to those desktops or workstations.
-    <br><br>
-    Whatsoever, portable mobile terminal devices, such as smart phones and tablets, are the most popular and convenient way to connect to the Internet. Thank to the boost of evolving semiconductor industry, these devices can connect to the Internet with the speed of light by cellular networks or WiFi. They let their users be avaiable to read, share and produce multimedia contents at any time.
-    <br><br>
-    In the close future, there is another promising field called IoT (Internet on Things). Every sinle stuff, from the tiniest light bulb to the largest truck, could be connected to the Internet. It is a new era of Internet. Intelligent devices can provide unprecedented comfortable and convenient services to the users.
-    <br><br>
-    In conclusion, we always have more and more new devices to connect to the Internet. The bigger the Internet is, the more powerful it will become.
+        <h2>Language-independent Network Protocols</h2>
+        Though all th RFCs are written in English, the designers never suppose everything on Internet must be ASCII. In fact, most of the formats of packets of protocols working below the application layer are binary. That is, they are language independent. All the protocols are designed to carry given binary data to its destinations, and applications would decide how to interpret the data.
+        <br><br>
+        However, for HTTP, it is designed to be able to carry multiple kinds of data. It must provide related type information to interpret its body. Several fields in the header could make it clarified. In the header, the packet can declare its <strong>Content-Type</strong> like <code lang="html">Content-Type: text/html; charset=ISO-8859-4</code>. This field declares that this packet carries a html text and the text is encoded with ISO-8859-4 charset. 
+        <br><br>
 
-    <h2>How could the devices be connected together</h2>
-    With more and more computers were needed to connect to the global network, while the service provider did not have enough resources to snake cables to all the computers. Instead, phone cable was used to connect the computers.
-    <br><br>
-    Pushed by the increasing demand of high-speed and low-latency network, the optical fiber was chosen as the new carrier of network signals. More and more computers were linked together through optical fiber.
-    <br><br>
-    Cables and fibers would always bond the devices to the same place, while wireless network could free users from the same place. From 1G, 2G to 5G, the speed of wireless network is always increasing.
+        <h2>How to format texts of different languages</h2>
+        Now we have a solution that can express all the special characters, we have to format these characters into texts. However, not the all the languages follow the <i>'normal'</i> order to organize the characters. For example, Arabic and Hebrew are written right to left and top to bottom, mirror-symmetric to English. Traditional Mongolian are written in a vertical style, top to bottom then left to right. Moreover, Chinese and Japanese are compatible to all these written styles, and their traditional written are also top to bottom then right to left.
+        <br>
+        <div class="image">
+            <img src="./oldmongolianweb.png" alt="a traditional mongolian website" width="80%">
+            <p>Picture 1: A website written in traditional Mongolian</p>
+        </div>
+        
+        <br><br>
+        Though some of the written styles are archaic even obsolete, they are still possible to be used. The users must have fully control over these websites. In CSS, there are several markups to control the order, such as <i>writing-mode</i>, <i>direction</i> and <i>unicode-bidi</i>. Texts decorated with these markups can be formatted in the right ways of their own languages.
+        <br><br>
+        But there is still one thing to be noted. When meeting numbers or words from other left-to-right languages in right-to-left texts, those characters' order is kept. It is international, but also local.
+        <br><br>
 
-    <h2>Barriers in front of the global connection</h2>
-    Though the Internet is designed to be a globally connected network, it is not always fully connnected due to all kinds of reasons. There is still a lot of effort left for us to do to build a better connected network.
-    <br><br>
-    <h3>Infrastructure</h3>
-    The global network highly depends on submarine optical cables to connect to each other. However, they are extremely fragile to any submarine geological activities, like volcanos or earthquakes. When damaged, it is almost impossible to repair them and people living on islands far away from continents have to wait to months for a new cable.
-    <br><br>
-    The popularization of mobile devices imposes a high pressure on the cellular network. However, in some developing countries, there are far fewer base stations than other developed countries. The investment is far too expensive and it separates millions of potential netizens to the Internet. It is still a long way to go.
-    <br><br>
-    Elon Musk, though a controversial entrepreneur, has been a pioneer of the satellite network. The StarLink hopes to replace the ground base stations with the new satellite base stations. It explores a possibility of covering less-settled areas and oceans.
+        <h1>Region-specific features support</h1>
+        People from different countries and regions have different cultures and customs. For calendars, Chinese and Korean people are familiar with the lunisolar calendar while Arabic people also use their lunar calendar. American people are the last barrier of Imperial Units when even British have accepted the International Unit(SI). Whatsoever, developers have to accept the reality and provide these local features, since not every product manager can educate their customers like Steve Jobs. The Internet have to satisfy the needs of the customers.
+        <br><br>
+        It is quite common to automatically set local features according to the language. However, local features are not always binded with local languages. An American student may set his iPhone's language to Japanese to immerse in the Japanese culture, but this student may still want to use Farenheit and mile, but not Celsius or kilometer, to keep his understanding of the environment around him.
+        <br><br>
 
-    <h3>Devices for global connection</h3>
-    There is no doubt that mobile devices have become the most popular devices connecting to the Internet. However, most of them are still too expensive to be affordable for netizens in developing countries.
-    <br><br>
-    As an effort, Google developed a lite Android Go system adaptable for phones built with entry-level hardwares. It provides lite versions of popular applications such as Facebook, YouTube, Twitter and Google app family. Millions of smart phones operated by the Android Go system have been quite popular in India, linking miilions of new users first time to the Internet.
+        <h2>How to recognize the correct region</h2>
+        In order to provide correct local features for users, the programs on Internet must be able to detect the regional information from users. Luckily, it is viable through the information sent with packets.
 
-    <h3>Political Factors</h3>
-    Sadly, due to multiple reasons, network censorship and blockage exist in several countries' networks, hindering the normal access to certain websites and services. In the close future, it is foreseeable that the Sovereignty of the Internet will be taken over by the many countries' governments, especially when social network has been taken as a weapon to agitate unrests against regimes.
+        <h3>IP address</h3>
+        Take IPv4 as an example, IPv4 defines an address as a 32-bit number. It is a limited, even rare resource. All the public IP addresses are allocated by Internet Assigned Numbers Authority(IANA) to the Internet Service Provider(ISP) according to regions. The service providers could look up the address into databases so that they can locate the user to a specific region, such as a city, a community or a certain building. It is enough to provide some local service, like weather forecast or <i>restaurants near you</i>.
 
+        <h3>Preferred Language</h3>
+        Websites serving in different languages must pick up the correct language according to the user's preferred language. To achieve this, browsers would add a field called <strong>Accept-Language</strong> to the header of request packets. This tag is used to show the preference of languages to this user like <i>en-US,en;q=0.9, fr-CH, fr;q=0.8</i>, known as <i>q-factor weighting</i>. Each q-factor represents the prioirity of each language, from 0 to 1 with 0.1 interval. The bigger the weight is, the more preferred the language is. The website server would pick up the language of top priority it can provide among those provided ones. If there is no match, the website would provide its default language.
+
+        <h3>Cookie and Session</h3>
+        As is known to all, HTTP is a stateless protocol. However, sometimes the long connections require to keep some states to optimize the performance. The client-side solution is cookie, and the server-side solution is session. 
+        <br><br>
+        It is possible that the default language of OS may not be the right language that the user would like to use on a certain website. Hece programmers would keep some user-specific states in them including language preference to give the freedom of choosing to users.
+        <br><br>
+        <h3>Summary</h3>
+        Generally speaking, the website server will use the <strong>Accept-Language</strong> to set the default language. However, users can have the option to set their preferred language and persist it.
+
+        <h2>Separation between Configuration and Implementation</h2>
+        At the very beginning, programmers had to hardcode languages into code files so that they can provide location-specified service. It is simple, but it is difficult to keep synchronization among webpages of different language versions.
+        <br><br>
+        In order to solve this problem, the localized translations are saved in separate files. Words in original places are replaced with a <i>key</i>. When switching to other languages, the program can reload with the local string file easily. There is an interesting example showing how to execute this in Android under the guidance of this idea.
+        
+        <h2>Unified Standard with local-specific interfaces</h2>
+        Many functions of the Internet, though look different, can be expressed by the same unified metrics then mutual converted. We can raise many examples, such as,
+        <ul>
+            <li>Mile or Kilometer</li>
+            <li>Farenheit or Celsium, </li>
+            <li>Gregorian or other calendars</li>
+        </ul>
+        For unity and convenience, the data of one certain index can be saved in one certain unit in databases. When presenting this data locally, just call the conversion function to get the right data.
+
+        <h3>Example: Unix Epoch behind calendars</h3>
+        People living in different regions use different calendars. Gregorian is the de-facto global standard, while Lunar calendar is used as an extension. However, all these calendars share some same features, they all have year, month and day. They count a day with the same length of seconds. That is enough. We can count the seconds from a certain beginning, then the seconds could be translated into the every single calendar.
+        <br><br>
+        In the Internet, the beginning is set up as the first second of January 1, 1970, UTC by Unix Epoch. Time before that was counted negatively and the time after that was counted positively. Adjusted by the time zone, the time is counted in the local time and can be presented with a local calendar. 
+        <br><br>
+        The same low-level definitions unify the Internet while assuring the possibility of localization. It separates the complexity and limits the problem to a certain scope.
+
+        <h1>Connecting devices all over the world</h1>
+        As we wish to extend the connections to all over the world, now even astronauts on the International Space Station (ISS) can use the Internet through satellite links. It took a long time to develop, went through many challenges and finally became a reality. It would be interesting to discuss some key issues of the <strong>connection</strong>.
+
+        <h2>What do we need to connect</h2>
+        The Metcalfe's law tells us the power of the Internet comes with more connections, however, at the birth age of the Internet, the users were merely from several certain institutes. Only several mainframes were linked together. There was no Internet, but several separate local networks. <i>'The world needs only five computers'</i>, said Papadopoulos. Though it was an insightful foresee in fact, illustrating the future of big computing clusters, obviously he did not prophet the popularization of personal computers.    
+        <br><br>
+        Then Internet saved the industry of Personal Computers. PCs were first designed as a professional toy for geeks, then those manufacturers tried to make more profit by turning PC into an entertainment machine, but failed after the video game crash of 1983. PCs were forgotten in the corners of basements. The birth of Internet saved the industry of PC. In 1998, studies found 75% of Americans with Internet access accessed primarily from home. The access to a broader virtual world was not limited to several terminals of mainframes, but to a wide range of personal devices. This trend powered the Internationalization of the Internet, netizens from all over the world could access the Internet, post messages on forums, talk in chatrooms. These requirements powered the development and spread of techniques.
+        <br><br>
+        Whatsoever, portable mobile terminal devices, such as smart phones and tablets, are the most popular and convenient way to connect to the Internet. Thank to the boost of evolving semiconductor industry, these devices can connect to the Internet through wireless networks like cellular networks or WiFi. They enable their users to read, share and produce multimedia contents at any time. This also powers other techniques. Netizens need better tool to cross the gap of different languages. For example, AI-translated transcript of videos have been widely used on YouTube.
+        <br><br>
+
+        <h2>How could the devices be connected together</h2>
+        The evolution of the carrier of connections never stops. It went through several phases in the past 30 years.
+        <br><br>
+        More and more computers are needed to connect to the network, while the service provider found the phone cable can be used to carry network signals. Though its bandwidth is limited, it is enough to carry text webpages popular at that time. This low-cost solution accelerated the spread of the Internet.
+        <br><br>
+        Pushed by the increasing demand of high-speed and low-latency network, the optical fiber was chosen as the new carrier of network signals due to its advantages. At the beginning they were used to connect backbone networks across oceans and continents, but soon they became more widespread to every single house. Nowadays it is possible to reach netspeed as fast as Gigabytes per second in a family plan.
+        <br><br>
+        Cables and fibers would always bond the devices to the same place, while wireless network could free users from the same place. From 1G to 5G, the speed of cellular network is always increasing, so does the WiFi. These wireless techniques boost the development of mobile devices, especially smart phones.
+        <br><br>
+        However, the highspeed of wireless networks needs higher frequency to reach the bandwidth requirement, but the higher frequency limits its coverage due to the physical principles. That is, carriers must invest more to build enough base stations to cover the same area, perhaps double or even higher. The cost would finally be paid by customers. A report says the cost of 5G network doubles than the 4G. The high cost could prevent millions of potential users from connecting to the Internet.
+        <br><br>
+        In fact, the debate of 5G is intense in China. Protestors claimed that the 5G personal price plan is at least double of a 4G plan while 4G speed is enough for daily need like watching high-resolution videos. Though 5G plan is available starting from 18 USD, an unbelievable low price for US costumers, an infinite-traffic 4G plan could cost at most 10 USD per month in China. Consumers hesitated to switch to the 5G plan and the 5G network is far from profitting. 
+
+        <h2>Barriers in front of the global connection</h2>
+        Though the Internet is designed to be a globally connected network, it is not always fully connnected due to all kinds of reasons. There is still a lot of effort left for us to do to build a better connected network. Its future should be in the intelligent factories.
+        <br><br>
+        <h3>Infrastructure</h3>
+        The global network highly depends on submarine optical cables to connect to each other. However, they are extremely fragile to any submarine geological activities, like volcanos or earthquakes. When damaged, it is almost impossible to repair them and people living on islands far away from continents have to wait to months for a new cable.
+        <br><br>
+        The popularization of mobile devices imposes a high pressure on the cellular network. However, in some developing countries, there are far fewer base stations than other developed countries. The investment is far too expensive and it separates millions of potential netizens to the Internet. It is still a long way to go.
+        <br><br>
+        Elon Musk, though a controversial entrepreneur, has been a pioneer of the satellite network. The StarLink hopes to replace the ground base stations with the new satellite base stations. It explores a possibility of covering less-settled areas and oceans.
+        <br><br>
+        It is promising if StarLink constellation could cover the whole surface of our Earth. It jumps over the limit of ground infrastructure, provides affordable network service wherever you are only if you have the antenna. The most serious problem of this plan is how the malfunctioned satellites could be cleaned form the low-Earth orbits.
+
+        <h3>Devices for global connection</h3>
+        There is no doubt that mobile devices have become the most popular devices connecting to the Internet. However, most of them are still too expensive to be affordable for netizens in developing countries.
+        <br><br>
+        As an effort, Google developed a lite Android Go system adaptable for phones built with entry-level hardwares. It provides lite versions of popular applications such as Facebook, YouTube, Twitter and Google app family. Millions of smart phones running the Android Go system have been quite popular in India and some African countries, linking miilions of new users to the Internet first time.
+
+        <h3>Political Factors</h3>
+        Sadly, due to multiple reasons, network censorship and blockage exist in several countries' networks, hindering the normal access to certain websites and services. In the close future, it is foreseeable that the Sovereignty of the Internet will be taken over by the many countries' governments, especially when social network has been taken as a weapon to agitate unrests against regimes. The most famous instance is the never offically recognized Great Firewall in China. 
+    </div>
+    <div class="left">
     <h1>Conclusions</h1>
-    Nowadays, the Internet has become a part of our life. The X-generation has taken it as air, you breath every single second but even you don't feel it. Nowbody can imagine 
+        Nowadays, the Internet has become a part of our life. The Z-generation has taken it as air, you breath every single second but even you don't feel it. Nowbody can imagine a world without Internet.
+        <br><br>
+        The Internet was built with the consideration of Internationalization. From the design of protocols to those hardwares and infrastructure built for the Internet, every part contributes together to link the world together step by step. After 30 years, now it does connect people from all over the world together.
+        <br><br>
+        However, challenges still exist. Different languages prevent mutual understanding between people all around the world. Multimedia contents sweep tradtional text webpages and become the mainstream. Besides, there are still billions of people isolated from the interconnected Internet.
+        <br><br>
+        We still need more investment to the advanced AI technology to cross over the barriers of difference of languages and cultures, and communication technology to surmount the obstacle of distance. We hope one day the Internet would connect every single person together into a united community.
+    </div>
+
+    <br><br><br>
     <h1>References</h1>
+    <div class="left">
     <ol>
-        <li><a href="https://devblogs.microsoft.com/oldnewthing/20120726-00/?p=7043&msclkid=ef51684cbe8d11ec84e78a3b5bebbf4c">A brief and also incomplete history of Windows localization</a></li>
-        <li><a href="https://muse.jhu.edu/article/317500">Early History of ARPANET</a></li>
-        <li><a href="https://www.ecma-international.org/publications-and-standards/standards/ecma-94/">ECMA-94 standard</a></li>
-        <li><a href="https://www.cnet.com/tech/tech-industry/the-world-needs-only-five-computers/#:~:text=%22The%20world%20needs%20only%20five%20computers%2C%22%20Papadopoulos%20said,Great%20Computer%20of%20China--but%20let%27s%20not%20split%20hairs.?msclkid=b9c07359bed811ecb3b74c56242ff728">
+        <li id="ref01">
+            <a href="http://archive.computerhistory.org/resources/text/Honeywell/Honeywell.H316.1965.102646157.pdf">Honeywell 316 Introduction</a>
+        </li>
+        <li id="ref02">
+            <a href="https://cs.stanford.edu/people/miles/iso8859.html">ISO-8859 Codepage</a>
+        </li>
+        <li id="ref03">
+            <a href="https://devblogs.microsoft.com/oldnewthing/20120726-00/?p=7043&msclkid=ef51684cbe8d11ec84e78a3b5bebbf4c">A brief and also incomplete history of Windows localization</a>
+        </li>
+        <li>
+            <a href="https://muse.jhu.edu/article/317500">Early History of ARPANET</a>
+        </li>
+        <li>
+            <a href="https://www.ecma-international.org/publications-and-standards/standards/ecma-94/">ECMA-94 standard</a>
+        </li>
+        <li>
+            <a href="https://www.cnet.com/tech/tech-industry/the-world-needs-only-five-computers/#:~:text=%22The%20world%20needs%20only%20five%20computers%2C%22%20Papadopoulos%20said,Great%20Computer%20of%20China--but%20let%27s%20not%20split%20hairs.?msclkid=b9c07359bed811ecb3b74c56242ff728">
             'The world needs only five computers'
-        </a></li>
-        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language">Accept Language field</a></li>
+        </a>
+        </li>
+        <li>
+            <a href="https://datatracker.ietf.org/doc/html/rfc7231">RFC 7231:  Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content
+        </a>
+        </li>
+        <li>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language">Accept Language field</a>
+        </li>
+        <li>
+            <a href="https://www.geeksforgeeks.org/language-localization-in-android-with-example/">Language Localization in Android with Example</a>
+        </li>
         <li><a href="https://datatracker.ietf.org/doc/html/rfc5416">RFC 5416: 802.11 WiFi standard</a></li>
-        <li><a href="https://www.android.com/versions/go-edition/">Android-Go Official Website</a> </li>
+        <li>
+            <a href="https://en.wikipedia.org/wiki/Video_game_crash_of_1983">Video Game Crash of 1983</a>
+        </li>
+        <li>
+            <a href="https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/the-road-to-5g-the-inevitable-growth-of-infrastructure-cost">The road to 5G: The inevitable growth of infrastructure cost</a>
+        </li>
+        <li>
+            <a href="https://timesofindia.indiatimes.com/gadgets-news/explained-what-is-android-go-and-will-it-make-jiophone-next-a-real-android-smartphone/articleshow/85477328.cms">Explained: What is Android Go and will it make JioPhone Next a 'real' Android Smartphone</a>
+        </li>
+        <li>
+            <a href="https://www.android.com/versions/go-edition/">Android-Go Official Website</a> 
+        </li>
+        <li>
+            <a href="https://www.scmp.com/abacus/tech/article/3036023/5g-available-now-china-just-us18">China's three carriers all launched 5G plans for a fraction of the cost in the US, but some people still find them too expensive</a>
+        </li>
+        <li>
+            <a href="https://en.wikipedia.org/wiki/Starlink">Starlink - Wikipedia</a>
+        </li>
+        <li>
+            <a href="https://en.wikipedia.org/wiki/Great_Firewall">Great Firewall</a>
+        </li>
     </ol>
+    </div>
 </body>
 
 </html>
